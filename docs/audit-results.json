@@ -1,0 +1,1304 @@
+{
+  "date": "2026-10-14",
+  "origin": "https://ceo19.ma",
+  "preview": "http://localhost:3002/en",
+  "scope": "Rendered creative/technical audit of existing V3; no deployment performed",
+  "english": [
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "home",
+      "docWidth": 375,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "music",
+      "docWidth": 375,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "archive",
+      "docWidth": 375,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "world",
+      "docWidth": 375,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "connect",
+      "docWidth": 375,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "home",
+      "docWidth": 390,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "music",
+      "docWidth": 390,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "archive",
+      "docWidth": 390,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "world",
+      "docWidth": 390,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "connect",
+      "docWidth": 390,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "home",
+      "docWidth": 430,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "music",
+      "docWidth": 430,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "archive",
+      "docWidth": 430,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "world",
+      "docWidth": 430,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "connect",
+      "docWidth": 430,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "home",
+      "docWidth": 768,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "music",
+      "docWidth": 768,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "archive",
+      "docWidth": 768,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "world",
+      "docWidth": 768,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "connect",
+      "docWidth": 768,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "home",
+      "docWidth": 1024,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "music",
+      "docWidth": 1024,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "archive",
+      "docWidth": 1024,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "world",
+      "docWidth": 1024,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "connect",
+      "docWidth": 1024,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "home",
+      "docWidth": 1280,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "music",
+      "docWidth": 1280,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "archive",
+      "docWidth": 1280,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "world",
+      "docWidth": 1280,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "connect",
+      "docWidth": 1280,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "home",
+      "docWidth": 1440,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "music",
+      "docWidth": 1440,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "archive",
+      "docWidth": 1440,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "world",
+      "docWidth": 1440,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "connect",
+      "docWidth": 1440,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "home",
+      "docWidth": 1920,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "music",
+      "docWidth": 1920,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "archive",
+      "docWidth": 1920,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Noir.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "world",
+      "docWidth": 1920,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "connect",
+      "docWidth": 1920,
+      "logo": [
+        {
+          "loaded": true,
+          "src": "/_next/image?url=%2FCEO19%2FLogo%2FLOGO%2520CEO%2520OFFICIEL%2520Blanc.png&w=3840&q=75"
+        }
+      ],
+      "sceneHeight": 1080,
+      "top": 0
+    }
+  ],
+  "french": [
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "home",
+      "docWidth": 375,
+      "language": "fr",
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "music",
+      "docWidth": 375,
+      "language": "fr",
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "archive",
+      "docWidth": 375,
+      "language": "fr",
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "world",
+      "docWidth": 375,
+      "language": "fr",
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 375,
+      "viewportHeight": 812,
+      "scene": "connect",
+      "docWidth": 375,
+      "language": "fr",
+      "sceneHeight": 812,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "home",
+      "docWidth": 390,
+      "language": "fr",
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "music",
+      "docWidth": 390,
+      "language": "fr",
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "archive",
+      "docWidth": 390,
+      "language": "fr",
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "world",
+      "docWidth": 390,
+      "language": "fr",
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 390,
+      "viewportHeight": 844,
+      "scene": "connect",
+      "docWidth": 390,
+      "language": "fr",
+      "sceneHeight": 844,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "home",
+      "docWidth": 430,
+      "language": "fr",
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "music",
+      "docWidth": 430,
+      "language": "fr",
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "archive",
+      "docWidth": 430,
+      "language": "fr",
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "world",
+      "docWidth": 430,
+      "language": "fr",
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 430,
+      "viewportHeight": 932,
+      "scene": "connect",
+      "docWidth": 430,
+      "language": "fr",
+      "sceneHeight": 932,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "home",
+      "docWidth": 768,
+      "language": "fr",
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "music",
+      "docWidth": 768,
+      "language": "fr",
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "archive",
+      "docWidth": 768,
+      "language": "fr",
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "world",
+      "docWidth": 768,
+      "language": "fr",
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 768,
+      "viewportHeight": 1024,
+      "scene": "connect",
+      "docWidth": 768,
+      "language": "fr",
+      "sceneHeight": 1024,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "home",
+      "docWidth": 1024,
+      "language": "fr",
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "music",
+      "docWidth": 1024,
+      "language": "fr",
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "archive",
+      "docWidth": 1024,
+      "language": "fr",
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "world",
+      "docWidth": 1024,
+      "language": "fr",
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1024,
+      "viewportHeight": 768,
+      "scene": "connect",
+      "docWidth": 1024,
+      "language": "fr",
+      "sceneHeight": 768,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "home",
+      "docWidth": 1280,
+      "language": "fr",
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "music",
+      "docWidth": 1280,
+      "language": "fr",
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "archive",
+      "docWidth": 1280,
+      "language": "fr",
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "world",
+      "docWidth": 1280,
+      "language": "fr",
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1280,
+      "viewportHeight": 800,
+      "scene": "connect",
+      "docWidth": 1280,
+      "language": "fr",
+      "sceneHeight": 800,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "home",
+      "docWidth": 1440,
+      "language": "fr",
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "music",
+      "docWidth": 1440,
+      "language": "fr",
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "archive",
+      "docWidth": 1440,
+      "language": "fr",
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "world",
+      "docWidth": 1440,
+      "language": "fr",
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1440,
+      "viewportHeight": 900,
+      "scene": "connect",
+      "docWidth": 1440,
+      "language": "fr",
+      "sceneHeight": 900,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "home",
+      "docWidth": 1920,
+      "language": "fr",
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "music",
+      "docWidth": 1920,
+      "language": "fr",
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "archive",
+      "docWidth": 1920,
+      "language": "fr",
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "world",
+      "docWidth": 1920,
+      "language": "fr",
+      "sceneHeight": 1080,
+      "top": 0
+    },
+    {
+      "width": 1920,
+      "viewportHeight": 1080,
+      "scene": "connect",
+      "docWidth": 1920,
+      "language": "fr",
+      "sceneHeight": 1080,
+      "top": 0
+    }
+  ],
+  "video": [
+    {
+      "id": "music",
+      "before": 9.396111,
+      "after": 11.20983,
+      "count": 1,
+      "fit": "cover",
+      "loop": true,
+      "muted": true,
+      "opacity": "0",
+      "paused": false,
+      "scene": "music"
+    },
+    {
+      "id": "archive",
+      "before": 11.220333,
+      "after": 12.900196,
+      "count": 1,
+      "fit": "cover",
+      "loop": true,
+      "muted": true,
+      "opacity": "0.3",
+      "paused": false,
+      "scene": "archive"
+    },
+    {
+      "id": "world",
+      "before": 12.910762,
+      "after": 14.622896,
+      "count": 1,
+      "fit": "cover",
+      "loop": true,
+      "muted": true,
+      "opacity": "0.25",
+      "paused": false,
+      "scene": "world"
+    },
+    {
+      "id": "connect",
+      "before": 14.632854,
+      "after": 16.335655,
+      "count": 1,
+      "fit": "cover",
+      "loop": true,
+      "muted": true,
+      "opacity": "0.38",
+      "paused": false,
+      "scene": "connect"
+    },
+    {
+      "id": "home",
+      "before": 16.345256,
+      "after": 18.787343,
+      "count": 1,
+      "fit": "cover",
+      "loop": true,
+      "muted": true,
+      "opacity": "1",
+      "paused": false,
+      "scene": "home"
+    }
+  ],
+  "keyboard": [
+    {
+      "focus": "music",
+      "hash": "#music",
+      "scene": "music"
+    },
+    {
+      "focus": "archive",
+      "hash": "#archive",
+      "scene": "archive"
+    },
+    {
+      "focus": "world",
+      "hash": "#world",
+      "scene": "world"
+    },
+    {
+      "focus": "connect",
+      "hash": "#connect",
+      "scene": "connect"
+    },
+    {
+      "focus": "world",
+      "hash": "#world",
+      "scene": "world"
+    },
+    {
+      "focus": "archive",
+      "hash": "#archive",
+      "scene": "archive"
+    },
+    {
+      "focus": "music",
+      "hash": "#music",
+      "scene": "music"
+    },
+    {
+      "focus": "home",
+      "hash": "#home",
+      "scene": "home"
+    }
+  ],
+  "dialogCleanup": [
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    },
+    {
+      "dialogs": 0,
+      "focus": "menu-toggle",
+      "frames": 0,
+      "nodes": 557,
+      "overflow": ""
+    }
+  ],
+  "releases": [
+    {
+      "id": "original",
+      "film": {
+        "release": "original",
+        "state": "ready",
+        "url": "https://www.youtube-nocookie.com/embed/Q6KDTbOIsX8?autoplay=0&controls=1&playsinline=1&rel=0&origin=http%3A%2F%2Flocalhost%3A3002&enablejsapi=1&widgetid=3&forigin=http%3A%2F%2Flocalhost%3A3002%2Fen%23release-original&aoriginsup=1&gporigin=http%3A%2F%2Flocalhost%3A3002%2Fen&vf=6"
+      },
+      "lyrics": {
+        "fallback": false,
+        "url": "https://genius.com/Ceo-19-original-lyrics"
+      }
+    },
+    {
+      "id": "kritika",
+      "film": {
+        "release": "kritika",
+        "state": "ready",
+        "url": "https://www.youtube-nocookie.com/embed/7SMjf3VtAy8?autoplay=0&controls=1&playsinline=1&rel=0&origin=http%3A%2F%2Flocalhost%3A3002&enablejsapi=1&widgetid=5&forigin=http%3A%2F%2Flocalhost%3A3002%2Fen%23release-kritika&aoriginsup=1&gporigin=http%3A%2F%2Flocalhost%3A3002%2Fen&vf=6"
+      },
+      "lyrics": {
+        "fallback": false,
+        "url": "https://genius.com/Ceo-19-kritika-lyrics"
+      }
+    },
+    {
+      "id": "fantastique",
+      "film": {
+        "release": "fantastique",
+        "state": "ready",
+        "url": "https://www.youtube-nocookie.com/embed/ZC7KdZrPafY?autoplay=0&controls=1&playsinline=1&rel=0&origin=http%3A%2F%2Flocalhost%3A3002&enablejsapi=1&widgetid=7&forigin=http%3A%2F%2Flocalhost%3A3002%2Fen%23release-fantastique&aoriginsup=1&gporigin=http%3A%2F%2Flocalhost%3A3002%2Fen&vf=6"
+      },
+      "lyrics": {
+        "fallback": false,
+        "url": "https://genius.com/Ceo-19-fanstastique-lyrics"
+      }
+    },
+    {
+      "id": "timals",
+      "film": {
+        "release": "timals",
+        "state": "ready",
+        "url": "https://www.youtube-nocookie.com/embed/9LiaS-4-bXo?autoplay=0&controls=1&playsinline=1&rel=0&origin=http%3A%2F%2Flocalhost%3A3002&enablejsapi=1&widgetid=9&forigin=http%3A%2F%2Flocalhost%3A3002%2Fen%23release-timals&aoriginsup=1&gporigin=http%3A%2F%2Flocalhost%3A3002%2Fen&vf=6"
+      },
+      "lyrics": {
+        "frames": 0,
+        "soon": true
+      }
+    },
+    {
+      "id": "machi-batel",
+      "film": {
+        "release": "machi-batel",
+        "state": "ready",
+        "url": "https://www.youtube-nocookie.com/embed/w75ypBVhefs?autoplay=0&controls=1&playsinline=1&rel=0&origin=http%3A%2F%2Flocalhost%3A3002&enablejsapi=1&widgetid=11&forigin=http%3A%2F%2Flocalhost%3A3002%2Fen%23release-machi-batel&aoriginsup=1&gporigin=http%3A%2F%2Flocalhost%3A3002%2Fen&vf=6"
+      },
+      "lyrics": {
+        "frames": 0,
+        "soon": true
+      }
+    },
+    {
+      "id": "bcp-dargent",
+      "film": {
+        "release": "bcp-dargent",
+        "state": "ready",
+        "url": "https://www.youtube-nocookie.com/embed/QprpeYkvZFM?autoplay=0&controls=1&playsinline=1&rel=0&origin=http%3A%2F%2Flocalhost%3A3002&enablejsapi=1&widgetid=13&forigin=http%3A%2F%2Flocalhost%3A3002%2Fen%23release-bcp-dargent&aoriginsup=1&gporigin=http%3A%2F%2Flocalhost%3A3002%2Fen&vf=6"
+      },
+      "lyrics": {
+        "frames": 1,
+        "soon": false,
+        "url": "https://genius.com/Ceo-19-bcp-dargent-lyrics"
+      }
+    }
+  ],
+  "finalScenes": {
+    "finalModes": [
+      {
+        "fragment": "PAS DE RESEAU",
+        "images": 0,
+        "scene": "world",
+        "treatment": "signal"
+      },
+      {
+        "fragment": "KRITIKA KRITIKA KRITIKA",
+        "images": 0,
+        "scene": "world",
+        "treatment": "impact"
+      },
+      {
+        "fragment": "Kmaya Fantastaique / Roule moi un joint Magique",
+        "images": 0,
+        "scene": "world",
+        "treatment": "haze"
+      },
+      {
+        "fragment": "",
+        "images": 0,
+        "scene": "world",
+        "treatment": "crew"
+      },
+      {
+        "fragment": "MACHI BATEL",
+        "images": 0,
+        "scene": "world",
+        "treatment": "split"
+      },
+      {
+        "fragment": "Pas d'école / Khasna l3A9A",
+        "images": 0,
+        "scene": "world",
+        "treatment": "paper"
+      }
+    ],
+    "platformAudit": [
+      {
+        "href": "https://www.instagram.com/ceo_1.9/",
+        "images": 0,
+        "platform": "instagram",
+        "title": "CEO1.9"
+      },
+      {
+        "href": "https://www.tiktok.com/@ceo1.9",
+        "images": 0,
+        "platform": "tiktok",
+        "title": "ORIGINAL"
+      },
+      {
+        "href": "https://www.youtube.com/watch?v=Q6KDTbOIsX8",
+        "images": 0,
+        "platform": "youtube",
+        "title": "ORIGINAL"
+      },
+      {
+        "href": "https://open.spotify.com/album/5K6jyORnYTaOEqoqLVkTBR",
+        "images": 0,
+        "platform": "spotify",
+        "title": "KRITIKA"
+      }
+    ]
+  },
+  "commands": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "test": "22 passed",
+    "build": "passed",
+    "diffCheck": "passed",
+    "npmAuditProduction": "0 vulnerabilities",
+    "npmAuditAll": "5 high findings in development-only ESLint dependency chain; unresolved upstream"
+  },
+  "limitations": [
+    "Missing supplied aerial map",
+    "Escape does not close Cinema while the cross-origin YouTube player owns keyboard focus",
+    "Genius tracking scripts emit nonfatal blocked-cookie errors in the opaque-origin sandbox",
+    "No physical touch device, actual Mac trackpad, standalone Safari, screen reader, heap profile, Lighthouse, or field Web Vitals run",
+    "No downloadable approved EPK"
+  ],
+  "evidenceDirectory": "/Users/admin/.codex/visualizations/2026/10/14/ceo19-v3-audit",
+  "press": [
+    {
+      "width": 375,
+      "lang": "en",
+      "docWidth": 375,
+      "downloads": 0,
+      "placeholders": 0,
+      "subjects": [
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20EPK",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20Press%20images"
+      ]
+    },
+    {
+      "width": 375,
+      "lang": "fr",
+      "docWidth": 375,
+      "downloads": 0,
+      "placeholders": 0,
+      "subjects": [
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20EPK",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20Press%20images"
+      ]
+    },
+    {
+      "width": 1440,
+      "lang": "en",
+      "docWidth": 1440,
+      "downloads": 0,
+      "placeholders": 0,
+      "subjects": [
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20EPK",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20Press%20images"
+      ]
+    },
+    {
+      "width": 1440,
+      "lang": "fr",
+      "docWidth": 1440,
+      "downloads": 0,
+      "placeholders": 0,
+      "subjects": [
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20EPK",
+        "mailto:CEO1.9CONTACT@GMAIL.COM?subject=CEO1.9%20%E2%80%94%20Press%20images"
+      ]
+    }
+  ]
+}

@@ -1,44 +1,47 @@
 'use client';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
-import { closingCopy } from '@/data/closingScenes';
-import { nightCopy } from '@/data/nightWorld';
-import { gallery } from '@/data/gallery';
+import dynamic from 'next/dynamic';
+import { useRef, useState, type CSSProperties } from 'react';
+import { archiveWorld, archiveCopy } from '@/data/archiveWorld';
+import { useSpatialArchive } from './archive/useSpatialArchive';
+import { visualEffects } from '@/lib/visualEffects';
+import { useSceneState } from '@/lib/sceneNavigation';
 import type { Locale } from '@/types/content';
-import { Arrow, Metadata } from './primitives';
-import { useArchiveRail } from './archive/useArchiveRail';
-import { mediaCopy } from './media/mediaCopy';
-import { gallerySource, nextIndex, visualMetadata } from './media/archiveMath';
-import { DarkroomViewer,type PhotoOrigin } from './archive/DarkroomViewer';
-export function Gallery({locale}: {locale:Locale}) {
- const copy=mediaCopy[locale];
- const rail=useRef<HTMLDivElement>(null);
- const {page,keyboard,clickCapture,reset}=useArchiveRail(rail);
- const [category,setCategory]=useState('all');
- const [memory,setMemory]=useState(gallery[0]?.id);
- const [selected,setSelected]=useState<number|null>(null);
- const filtered=gallery.filter(item=>category==='all'||item.category===category);
- const openerRef=useRef<HTMLElement|null>(null);
- const [origin,setOrigin]=useState<PhotoOrigin|null>(null);
- const current=selected===null?null:filtered[selected];
- const categories=[...new Set(gallery.map(item=>item.category))];
- const move=(direction:number)=>{if(selected===null)return;const next=nextIndex(selected,direction,filtered.length);setMemory(filtered[next]?.id);setSelected(next);};
- return <>
- <div className="archive-wall-tools"><div className="editorial-archive-filter" role="group" aria-label={copy.archiveIndex}>{['all',...categories].map(key=><button type="button" key={key} data-interaction="silent" aria-pressed={category===key} onClick={()=>{setCategory(key);reset();}}>{key==='all'?copy.all:copy.categories[key as keyof typeof copy.categories]}</button>)}</div><div className="archive-rail-controls"><button type="button" aria-label={nightCopy[locale].previous} onClick={()=>page(-1)}><span className="previous-arrow"><Arrow/></span></button><button type="button" aria-label={nightCopy[locale].next} onClick={()=>page(1)}><Arrow/></button></div></div>
- <div ref={rail} className="editorial-archive" data-cursor="drag" role="region" tabIndex={0} aria-label={copy.archiveIndex} onKeyDown={keyboard} onClickCapture={clickCapture}>{filtered.map((item,index)=>{
-  const source=gallerySource(item);
-  const caption=item.caption?.[locale]??item.alt[locale];
-  const number=String(gallery.indexOf(item)+1).padStart(3,'0');
-  return <figure key={item.id} id={`archive-${item.id}`} className="archive-item" data-memory={memory===item.id} data-layout={item.layout??'square'} data-mobile={item.mobile??(index%3===1?'inset':'full')} data-paper={item.paper??false}>
-   <div className="archive-print-label"><span className="archive-sequence-number" aria-hidden="true">{number}</span><span className="archive-registration" aria-hidden="true">+</span></div>
-   <button type="button" className="archive-image-surface" data-interaction="silent" data-cursor="view" data-analytics="archive_open" data-id={item.id} aria-label={`${copy.viewImage}: ${caption}`} aria-haspopup="dialog" onClick={event=>{openerRef.current=event.currentTarget;const rect=event.currentTarget.getBoundingClientRect();setOrigin({left:rect.left,top:rect.top,width:rect.width,height:rect.height});setMemory(item.id);setSelected(index);}}>
-    {source?<Image src={source} alt={item.alt[locale]} fill sizes="(max-width:767px) 72vw, 28vw" draggable={false} style={{objectPosition:item.crop??'50% 50%'}} loading="lazy"/>:<span className="archive-instagram-placeholder"><span>IG</span><Metadata>{copy.instagram} ↗</Metadata></span>}
-    <span className="archive-expand-mark" aria-hidden="true"><Arrow diagonal/></span>
-   </button>
-   <figcaption><div><Metadata>{number} / {caption}</Metadata><div className="archive-item-metadata">{visualMetadata(item.metadata).map(value=><Metadata key={value}>{value}</Metadata>)}</div></div>{item.type==='instagram'&&<a href={item.postUrl} target="_blank" rel="noopener noreferrer" className="archive-instagram-link">{copy.instagram} ↗</a>}</figcaption>
-  </figure>;
- })}</div>
- <div className="archive-contact-footer metadata"><span>{closingCopy[locale].archiveExplore}</span><span>{String(filtered.length).padStart(3,'0')} / CEO 1.9</span></div>
- <DarkroomViewer locale={locale} item={current??null} index={selected??0} count={filtered.length} origin={origin} opener={openerRef} onClose={()=>setSelected(null)} onMove={move}/>
- </>;
+import type { PhotoOrigin } from './archive/DarkroomViewer';
+const DarkroomViewer = dynamic(() => import('./archive/DarkroomViewer').then(module => module.DarkroomViewer), { ssr: false });
+
+export function Gallery({ locale }: { locale: Locale }) {
+ const stage = useRef<HTMLDivElement>(null), opener = useRef<HTMLElement | null>(null), lastFlash = useRef(-Infinity);
+ const { active, compact, motion, select, clickCapture, keyboard } = useSpatialArchive(stage);
+ const [selected, setSelected] = useState<number | null>(null), [origin, setOrigin] = useState<PhotoOrigin | null>(null);
+ const [exposure, setExposure] = useState(true), [flash, setFlash] = useState(false);
+ const copy = archiveCopy[locale], current = archiveWorld[active], scene = useSceneState();
+ const handleOpen = (index: number, button: HTMLButtonElement, now: number) => {
+  opener.current = button; const rect = button.getBoundingClientRect();
+  setOrigin({ left: rect.left, top: rect.top, width: rect.width, height: rect.height });
+  const allowed = motion && exposure && now - lastFlash.current > visualEffects.archive.flashCooldown;
+  setFlash(allowed); if (allowed) lastFlash.current = now;
+  select(index); setSelected(index);
+ };
+ return <div className="spatial-archive" data-viewer-open={selected !== null} data-motion={motion}>
+  <div className="spatial-stage" ref={stage} role="region" tabIndex={0} aria-label={copy.room} aria-describedby="archive-help" data-cursor="drag" data-scene-interaction="archive" onKeyDown={keyboard} onClickCapture={clickCapture}>
+   {archiveWorld.map((photo, index) => {
+    const nearby = Math.abs(index - active) <= (compact ? 1 : 2);
+    return <figure key={photo.id} className="spatial-photo" data-photo-plane={index} data-active={index === active} inert={!nearby} style={{ '--photo-ratio': photo.aspectRatio } as CSSProperties}>
+     <button type="button" data-photo-id={photo.id} className="spatial-photo-button" data-cursor="view" aria-label={`${copy.view}: ${photo.item.alt[locale]}`} aria-haspopup="dialog" tabIndex={index === active ? 0 : -1} onClick={event => handleOpen(index, event.currentTarget, event.timeStamp)}>
+      {nearby && <Image src={photo.asset.path} alt={photo.item.alt[locale]} fill sizes={compact ? '78vw' : '(min-width:1600px) 600px, 36vw'} loading={scene.active === 'archive' && index === active ? 'eager' : 'lazy'} draggable={false} />}
+      <span className="spatial-photo-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+     </button>
+    </figure>;
+   })}
+  </div>
+  <footer className="spatial-controls">
+   <div className="spatial-caption" aria-live="polite" aria-atomic="true"><span className="metadata">{String(active + 1).padStart(2, '0')} / {String(archiveWorld.length).padStart(2, '0')}</span><p>{current.item.caption?.[locale] ?? current.item.alt[locale]}</p></div>
+   <div className="spatial-navigation"><button type="button" aria-label={copy.previous} disabled={active === 0} onClick={() => select(active - 1)}>←</button><span className="metadata">{compact ? copy.touch : copy.hint}</span><button type="button" aria-label={copy.next} disabled={active === archiveWorld.length - 1} onClick={() => select(active + 1)}>→</button></div>
+   <button type="button" className="spatial-exposure metadata" aria-pressed={exposure && motion} disabled={!motion} onClick={() => setExposure(value => !value)}>{copy.exposure} <span>{exposure && motion ? copy.on : copy.off}</span></button>
+   <div className="spatial-progress" aria-hidden="true"><i style={{ transform: `scaleX(${(active + 1) / archiveWorld.length})` }} /></div>
+  </footer>
+  <p id="archive-help" className="sr-only">{copy.help}</p>
+  {selected !== null && <DarkroomViewer locale={locale} index={selected} origin={origin} flash={flash} opener={opener} onClose={() => setSelected(null)} onMove={setSelected} />}
+ </div>;
 }

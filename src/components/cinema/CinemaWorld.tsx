@@ -2,51 +2,61 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {useCallback,useEffect,useRef,useState,type CSSProperties} from 'react';
-import {cinemaCopy,cinemaTiming,resolveCinemaWorld} from '@/data/cinema';
+import {cinemaCopy} from '@/data/cinema';
+import {releaseWorld} from '@/data/releaseWorlds';
+import {assetUrl} from '@/data/assets';
+import {visualEffects} from '@/lib/visualEffects';
+import {dateLabel} from '@/i18n/config';
 import type {Locale,Release,Video} from '@/types/content';
 export interface CinemaOrigin {left:number;top:number;width:number;height:number;}
 const FilmPlayer=dynamic(()=>import('../media/FilmPlayer'),{ssr:false});
-export function CinemaWorld({video,release,locale,closing,origin,onMove,count,motion}:{video:Video;release:Release|undefined;locale:Locale;closing:boolean;origin: CinemaOrigin|null;onMove:(direction:number)=>void;count:number;motion:boolean}){
- const copy=cinemaCopy[locale],world=resolveCinemaWorld(release,video.cinema);
- const scene=useRef<HTMLDivElement>(null);
- const [stage,setStage]=useState<'entering'|'loading'|'ready'|'error'>('entering');
- const [load,setLoad]=useState(false);
+type MediaState='loading'|'ready'|'playing'|'paused'|'error';
 
- const status=useCallback((value:'ready'|'error')=>setStage(value),[]);
- const poster=video.poster??release?.artwork??null;
- const styles={'--cinema-bg':world.cinemaBackground,'--cinema-accent':world.cinemaAccent,'--cinema-fg':world.cinemaForeground,'--cinema-glow':world.cinemaGlow,'--cinema-entry':`${world.entryDuration}ms`,'--cinema-exit':`${world.exitDuration}ms`,'--cinema-phrase-start':`${world.entryDuration*cinemaTiming.phraseStart}ms`,'--cinema-phrase-duration':`${world.entryDuration*(cinemaTiming.phraseEnd-cinemaTiming.phraseStart)}ms`,'--cinema-doors-delay':`${world.entryDuration*cinemaTiming.doorsStart}ms`,'--cinema-doors-duration':`${world.entryDuration*(1-cinemaTiming.doorsStart)}ms`} as CSSProperties;
+/** Persistent release environment. Only the official player is disposed on close/video change. */
+export function CinemaWorld({video,release,locale,closing,origin,onMove,count,motion,visible=true}:{video:Video;release:Release|undefined;locale:Locale;closing:boolean;origin: CinemaOrigin|null;onMove:(direction:number)=>void;count:number;motion:boolean;visible?:boolean}){
+ const copy=cinemaCopy[locale],world=releaseWorld(release?.id??video.releaseId??video.id);
+ const scene=useRef<HTMLDivElement>(null);
+ const [entry,setEntry]=useState<{id:string;visible:boolean;kind:'opening'|'changing';run:number}>({id:video.id,visible,kind:'opening',run:0});
+ if(entry.id!==video.id||entry.visible!==visible)setEntry({id:video.id,visible,kind:entry.visible&&visible?'changing':'opening',run:entry.run+1});
+ const [arrived,setArrived]=useState(-1);
+ const [media,setMedia]=useState<{id:string;status:MediaState}>({id:video.id,status:'loading'});
+ const opening=arrived!==entry.run;
+ const phase=!visible?'closed':closing?'closing':opening?entry.kind:media.id===video.id?media.status:'loading';
+ const status=useCallback((value:'ready'|'error')=>setMedia({id:video.id,status:value}),[video.id]);
+ const playback=useCallback((value:'playing'|'paused'|'loading'|'ready')=>setMedia({id:video.id,status:value}),[video.id]);
+ const poster=video.poster??world.cinemaPoster;
+ const duration=motion?(entry.kind==='changing'?visualEffects.cinema.change:visualEffects.cinema.entry):visualEffects.cinema.reduced;
+ const style={'--cinema-bg':world.cinemaBackground,'--cinema-accent':world.cinemaAccent,'--cinema-fg':'var(--ceo-cream)','--cinema-entry':`${duration}ms`,'--cinema-exit':`${motion?visualEffects.cinema.exit:visualEffects.cinema.reduced}ms`} as CSSProperties;
  useEffect(()=>{
-  const element=scene.current;
-  if(!element)return;
-  // The visitor's motion preference includes the existing menu override.
-  const enabled=motion;
-  element.setAttribute('data-motion',String(enabled));
-  const coverSize=Math.min(window.innerWidth*(window.innerWidth<768?.7:.38),window.innerHeight*.56);
-  element.style.setProperty('--origin-x',`${origin?origin.left+origin.width/2-window.innerWidth/2:0}px`);
-  element.style.setProperty('--origin-y',`${origin?origin.top+origin.height/2-window.innerHeight/2:0}px`);
-  element.style.setProperty('--origin-scale',String(origin?origin.width/coverSize:1));
-  if(closing)return;
-  const timer=window.setTimeout(()=>{setStage(current=>current==='entering'?'loading':current);setLoad(true);},enabled?world.entryDuration:cinemaTiming.reducedEntry);
-  return()=>clearTimeout(timer);
- },[origin,world.entryDuration,motion,closing]);
+  if(!visible)return;
+  const element=scene.current;if(!element)return;
+  const coverSize=Math.min(innerWidth*.6,innerHeight*.55);
+  const from=origin??document.querySelector('#music .deck-artwork')?.getBoundingClientRect();
+  element.style.setProperty('--origin-x',`${from?from.left+from.width/2-innerWidth/2:0}px`);
+  element.style.setProperty('--origin-y',`${from?from.top+from.height/2-innerHeight/2:0}px`);
+  element.style.setProperty('--origin-scale',String(from?from.width/coverSize:1));
+  const start=requestAnimationFrame(()=>setMedia({id:video.id,status:'loading'}));
+  const timer=setTimeout(()=>setArrived(entry.run),duration);
+  return()=>{cancelAnimationFrame(start);clearTimeout(timer);};
+ },[video.id,visible,duration,origin,entry.run]);
  useEffect(()=>{
-  const phase=closing?'exiting':stage;
-  document.documentElement.setAttribute('data-cinema-phase',phase);
-  return()=>document.documentElement.removeAttribute('data-cinema-phase');
- },[closing,stage]);
- return <div ref={scene} className="cinema-world" style={styles} data-motion={motion} data-stage={closing?'exiting':stage} data-entry={world.entry} data-release={release?.id??video.id}>
-  <div className="cinema-ambient" aria-hidden="true">{poster&&<Image src={poster} alt="" fill sizes="100vw" loading="eager"/>}</div>
-  <div className="cinema-takeover" aria-hidden="true"/>
-  <div className="cinema-punchline" aria-hidden="true">{world.punchline}</div>
-  <div className="cinema-poster" aria-hidden="true">{poster&&<Image src={poster} alt="" fill sizes="(max-width:767px) 70vw, 38vw" loading="eager"/>}<span className="cinema-poster-cut"/></div>
-  <div className="cinema-doors" aria-hidden="true"><i/><i/><i/><i/></div>
-  <div className="cinema-aperture" inert={stage!=='ready'||closing} data-cursor="play" aria-busy={stage!=='ready'&&stage!=='error'}>
-   {load&&<FilmPlayer video={video} title={`${video.title} — ${copy.official}`} suspended={closing} onStatus={status}/>}
+  if(!visible)return;
+  document.documentElement.dataset.cinemaPhase=phase;
+  return()=>{delete document.documentElement.dataset.cinemaPhase;};
+ },[visible,phase]);
+ return <div ref={scene} className="cinema-world" style={style} data-motion={motion} data-stage={phase} data-treatment={world.cinemaAtmosphere} data-release={world.id}>
+  <div className="cinema-ambient" aria-hidden="true">{poster&&<Image src={assetUrl(poster)} alt="" fill sizes="100vw"/>}</div>
+  <div className="cinema-atmosphere" aria-hidden="true"/>
+  <div key={`entry-${video.id}-${entry.run}`} className="cinema-takeover" aria-hidden="true"/>
+  <div key={`phrase-${video.id}-${entry.run}`} className="cinema-punchline" aria-hidden="true">{world.lyricFragments[0]}</div>
+  <div key={`poster-${video.id}-${entry.run}`} className="cinema-poster" aria-hidden="true">{poster&&<Image src={assetUrl(poster)} alt="" fill sizes="(max-width:767px) 60vw, 55vh"/>}</div>
+  <div className="cinema-aperture" data-cursor="play" aria-busy={phase==='loading'}>
+   {visible&&<FilmPlayer video={video} title={`${video.title} — ${copy.official}`} suspended={closing} onStatus={status} onPlayback={playback}/>}
   </div>
-  <div className="cinema-load-label" role="status" aria-live="polite"><span>{release?.channel}</span><span>{stage==='error'?copy.failed:stage==='ready'?copy.ready:copy.loading}</span>{stage==='error'&&<a href={video.url} target="_blank" rel="noopener noreferrer">{copy.external} ↗</a>}</div>
-  <footer className="cinema-footer" inert={stage!=='ready'||closing}>
-   <div className="cinema-track"><h2 id="transmission-film-title">{video.title}</h2><p>{copy.official}{release?.featuredArtist&&` / feat. ${release.featuredArtist}`}</p>{release?.credits?.length? <p>{release.credits.join(' / ')}</p>:null}</div>
-   <nav aria-label={copy.cinema}>{count>1&&<button type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(-1)} aria-label={copy.previous}><span>←</span>{copy.previous}</button>}<a href={video.url} target="_blank" rel="noopener noreferrer" data-cursor="enter">YouTube ↗</a>{count>1&&<button type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(1)} aria-label={copy.next}>{copy.next}<span>→</span></button>}</nav>
+  <div className="cinema-load-label" role="status" aria-live="polite">{phase==='opening'||phase==='changing'?'':phase==='loading'?copy.loading:phase==='error'?copy.failed:phase==='playing'?(locale==='fr'?'Lecture':'Playing'):phase==='paused'?(locale==='fr'?'En pause':'Paused'):copy.ready}</div>
+  <footer className="cinema-footer">
+   <div className="cinema-track"><span className="metadata">{copy.official}{release?.featuredArtist&&` / feat. ${release.featuredArtist}`}</span>{release?.date&&<time className="metadata" dateTime={release.date}>{dateLabel(release.date)}</time>}{release?.credits?.length?<p>{release.credits.join(' / ')}</p>:null}</div>
+   <nav aria-label={copy.cinema}>{count>1&&<button type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(-1)} aria-label={copy.previous}>←</button>}<a href={video.url} target="_blank" rel="noopener noreferrer" data-cursor="enter">{copy.external} ↗</a>{count>1&&<button type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(1)} aria-label={copy.next}>→</button>}</nav>
   </footer>
  </div>;
 }

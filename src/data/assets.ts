@@ -1,0 +1,693 @@
+/** Exact public paths, inventoried recursively. Originals are never renamed or made transparent. */
+export interface PublicAsset {
+ readonly path: string;
+ readonly kind: 'image' | 'video' | 'font' | 'document';
+ readonly role: 'photograph' | 'release-artwork' | 'visual-reference' | 'primary-logo' | 'secondary-logo' | 'logo-variant' | 'legacy-generated' | 'texture' | 'platform-icon' | 'license' | 'font' | 'production-logo' | 'artist-video' | 'social-image';
+ readonly width: number | null;
+ readonly height: number | null;
+ readonly bytes: number;
+}
+
+/** Encode each segment once at the browser boundary; retain readable original paths in data. */
+export function assetUrl(path: string): string {
+ return path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+}
+
+export const assets = {
+ primaryLogo: '/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png',
+ primaryLogoDark: '/CEO19/Logo/LOGO CEO OFFICIEL Noir.png',
+ productionLogo: '/brands/hkz.png',
+ backgroundVideo: '/media/ceo-visuals-background.mp4',
+ videoPoster: '/media/ceo-visuals-poster.jpg',
+ secondaryLogo: '/CEO19/Logo/LOGO CEO.jpg',
+ artistVideo: '/CEO19/CEO VISUALS/CEO visuels .mp4',
+ blueReference: "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
+ hero: '/images/portrait.webp',
+ world: '/images/street-close.webp',
+ grain: '/images/grain.svg',
+ releases: {
+  original: '/releases/ORIGINAL.png', kritika: '/releases/KRITIKA.png',
+  fantastique: '/releases/FANTASTIQUE.png', timals: '/releases/TIMALS.png',
+  'machi-batel': '/releases/MACHI BATEL.png', 'bcp-dargent': "/releases/BCP D'ARGENT.png",
+ },
+} as const;
+
+/** Includes inactive legacy assets for provenance; inventory does not imply publication. */
+export const publicAssets = [
+ {
+  "path": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
+  "kind": "image",
+  "role": "visual-reference",
+  "width": 2828,
+  "height": 2828,
+  "bytes": 5680719
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT art/IMG_7193.PNG",
+  "kind": "image",
+  "role": "visual-reference",
+  "width": 2048,
+  "height": 2048,
+  "bytes": 3228016
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT art/IMG_7194.PNG",
+  "kind": "image",
+  "role": "visual-reference",
+  "width": 2048,
+  "height": 2048,
+  "bytes": 4009129
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6685.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 22203754
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6727.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 17183962
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6731.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 17157114
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6787.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 3944,
+  "bytes": 3106602
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6845.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 18759252
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6851.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 16236858
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6876.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 15347749
+ },
+ {
+  "path": "/CEO19/BCP D'ARGENT images/IMG_6940.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3944,
+  "height": 7008,
+  "bytes": 21053568
+ },
+ {
+  "path": "/CEO19/CEO VISUALS/CEO visuels .mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1920,
+  "height": 1080,
+  "bytes": 50018907
+ },
+ {
+  "path": "/CEO19/Logo/LOGO CEO.jpg",
+  "kind": "image",
+  "role": "secondary-logo",
+  "width": 1600,
+  "height": 1600,
+  "bytes": 103175
+ },
+ {
+  "path": "/CEO19/SHOW/CEO-12.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3525,
+  "height": 4406,
+  "bytes": 5025798
+ },
+ {
+  "path": "/CEO19/SHOW/CEO-13.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 5464,
+  "height": 7285,
+  "bytes": 4166548
+ },
+ {
+  "path": "/CEO19/SHOW/CEO-3.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 5464,
+  "height": 7285,
+  "bytes": 5018376
+ },
+ {
+  "path": "/CEO19/SHOW/CEO-6.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 5464,
+  "height": 7285,
+  "bytes": 4645355
+ },
+ {
+  "path": "/CEO19/SHOW/CEO-7.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 5464,
+  "height": 7285,
+  "bytes": 4634354
+ },
+ {
+  "path": "/CEO19/SHOW/CEO-9.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 5464,
+  "height": 7285,
+  "bytes": 4463891
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2848.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 1902429
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2855.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 1642560
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2870.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 2959154
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2887.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 4084441
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2895.JPG",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 7280337
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2896.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 3123063
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2898.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 1649649
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2903.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 1719464
+ },
+ {
+  "path": "/CEO19/TIMALS/IMG_2997.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3064,
+  "height": 4592,
+  "bytes": 1739856
+ },
+ {
+  "path": "/brands/hkz.png",
+  "kind": "image",
+  "role": "production-logo",
+  "width": 160,
+  "height": 160,
+  "bytes": 9668
+ },
+ {
+  "path": "/fonts/ANTON-LICENSE.txt",
+  "kind": "document",
+  "role": "license",
+  "width": null,
+  "height": null,
+  "bytes": 4390
+ },
+ {
+  "path": "/fonts/DM-SANS-LICENSE.txt",
+  "kind": "document",
+  "role": "license",
+  "width": null,
+  "height": null,
+  "bytes": 4502
+ },
+ {
+  "path": "/fonts/anton-latin-400-normal.woff2",
+  "kind": "font",
+  "role": "font",
+  "width": null,
+  "height": null,
+  "bytes": 18612
+ },
+ {
+  "path": "/fonts/dm-sans-latin-400-normal.woff2",
+  "kind": "font",
+  "role": "font",
+  "width": null,
+  "height": null,
+  "bytes": 14200
+ },
+ {
+  "path": "/fonts/dm-sans-latin-500-normal.woff2",
+  "kind": "font",
+  "role": "font",
+  "width": null,
+  "height": null,
+  "bytes": 14304
+ },
+ {
+  "path": "/icons/SOURCES.md",
+  "kind": "document",
+  "role": "license",
+  "width": null,
+  "height": null,
+  "bytes": 371
+ },
+ {
+  "path": "/icons/applemusic.svg",
+  "kind": "image",
+  "role": "platform-icon",
+  "width": null,
+  "height": null,
+  "bytes": 1735
+ },
+ {
+  "path": "/icons/deezer.svg",
+  "kind": "image",
+  "role": "platform-icon",
+  "width": null,
+  "height": null,
+  "bytes": 1198
+ },
+ {
+  "path": "/icons/instagram.svg",
+  "kind": "image",
+  "role": "platform-icon",
+  "width": null,
+  "height": null,
+  "bytes": 2101
+ },
+ {
+  "path": "/icons/spotify.svg",
+  "kind": "image",
+  "role": "platform-icon",
+  "width": null,
+  "height": null,
+  "bytes": 697
+ },
+ {
+  "path": "/icons/tiktok.svg",
+  "kind": "image",
+  "role": "platform-icon",
+  "width": null,
+  "height": null,
+  "bytes": 707
+ },
+ {
+  "path": "/icons/youtube.svg",
+  "kind": "image",
+  "role": "platform-icon",
+  "width": null,
+  "height": null,
+  "bytes": 459
+ },
+ {
+  "path": "/images/Pasted 2026-10-06 at 2.59.00 PM.png",
+  "kind": "image",
+  "role": "photograph",
+  "width": 640,
+  "height": 640,
+  "bytes": 587960
+ },
+ {
+  "path": "/images/architecture/passage.webp",
+  "kind": "image",
+  "role": "legacy-generated",
+  "width": 1536,
+  "height": 1024,
+  "bytes": 63216
+ },
+ {
+  "path": "/images/backstage.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1080,
+  "height": 1079,
+  "bytes": 82060
+ },
+ {
+  "path": "/images/ceo_1.9_1788527054_3978775029635754889_7902047543.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 941,
+  "height": 1248,
+  "bytes": 226008
+ },
+ {
+  "path": "/images/ceo_1.9_1788527054_3978775072140836924_7902047543.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 3550,
+  "height": 4096,
+  "bytes": 1195406
+ },
+ {
+  "path": "/images/ceo_1.9_1788527054_3978775074808290020_7902047543.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 2480,
+  "height": 2861,
+  "bytes": 745568
+ },
+ {
+  "path": "/images/crowd.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1800,
+  "height": 1800,
+  "bytes": 706192
+ },
+ {
+  "path": "/images/daylight.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 198354
+ },
+ {
+  "path": "/images/editorial/street-bus.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 941,
+  "height": 1248,
+  "bytes": 162314
+ },
+ {
+  "path": "/images/grain.svg",
+  "kind": "image",
+  "role": "texture",
+  "width": null,
+  "height": null,
+  "bytes": 251
+ },
+ {
+  "path": "/images/live.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1800,
+  "height": 1800,
+  "bytes": 495496
+ },
+ {
+  "path": "/images/portrait.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 177580
+ },
+ {
+  "path": "/images/seo/ceo19-social.jpg",
+  "kind": "image",
+  "role": "social-image",
+  "width": 1200,
+  "height": 630,
+  "bytes": 90001
+ },
+ {
+  "path": "/images/stage.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1800,
+  "height": 1800,
+  "bytes": 493834
+ },
+ {
+  "path": "/images/street-close.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 112550
+ },
+ {
+  "path": "/images/street.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1439,
+  "bytes": 149920
+ },
+ {
+  "path": "/images/studio.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 208916
+ },
+ {
+  "path": "/images/world/chrome-ring.png",
+  "kind": "image",
+  "role": "legacy-generated",
+  "width": 1536,
+  "height": 1024,
+  "bytes": 1698108
+ },
+ {
+  "path": "/media/ceo-visuals-background.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 2948192
+ },
+ {
+  "path": "/media/ceo-visuals-poster.jpg",
+  "kind": "image",
+  "role": "visual-reference",
+  "width": 1600,
+  "height": 900,
+  "bytes": 147658
+ },
+ {
+  "path": "/releases/BCP D'ARGENT.png",
+  "kind": "image",
+  "role": "release-artwork",
+  "width": 640,
+  "height": 640,
+  "bytes": 616832
+ },
+ {
+  "path": "/releases/FANTASTIQUE.png",
+  "kind": "image",
+  "role": "release-artwork",
+  "width": 640,
+  "height": 640,
+  "bytes": 493047
+ },
+ {
+  "path": "/releases/KRITIKA.png",
+  "kind": "image",
+  "role": "release-artwork",
+  "width": 640,
+  "height": 640,
+  "bytes": 587960
+ },
+ {
+  "path": "/releases/MACHI BATEL.png",
+  "kind": "image",
+  "role": "release-artwork",
+  "width": 640,
+  "height": 640,
+  "bytes": 724108
+ },
+ {
+  "path": "/releases/ORIGINAL.png",
+  "kind": "image",
+  "role": "release-artwork",
+  "width": 640,
+  "height": 640,
+  "bytes": 642537
+ },
+ {
+  "path": "/releases/TIMALS.png",
+  "kind": "image",
+  "role": "release-artwork",
+  "width": 640,
+  "height": 640,
+  "bytes": 756301
+ },
+ {
+  "path": "/media/archive/portrait.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 131536
+ },
+ {
+  "path": "/media/archive/street.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1439,
+  "bytes": 121594
+ },
+ {
+  "path": "/media/archive/live.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 1600,
+  "bytes": 202062
+ },
+ {
+  "path": "/media/archive/studio.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 164136
+ },
+ {
+  "path": "/media/archive/daylight.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 145828
+ },
+ {
+  "path": "/media/archive/crowd.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 1600,
+  "bytes": 325774
+ },
+ {
+  "path": "/media/archive/yellow-portrait.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1080,
+  "height": 1079,
+  "bytes": 64278
+ },
+ {
+  "path": "/media/archive/stage-view.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 1600,
+  "bytes": 258960
+ },
+ {
+  "path": "/media/archive/facade.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 74064
+ },
+ {
+  "path": "/media/archive/timals-2903.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1068,
+  "height": 1600,
+  "bytes": 83726
+ },
+ {
+  "path": "/media/archive/bcp-6845.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 900,
+  "height": 1600,
+  "bytes": 227156
+ },
+ {
+  "path": "/media/archive/show-7.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1200,
+  "height": 1600,
+  "bytes": 306014
+ },
+ {
+  "path": "/media/archive/timals-2887.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1068,
+  "height": 1600,
+  "bytes": 229378
+ },
+ {
+  "path": "/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png",
+  "kind": "image",
+  "role": "primary-logo",
+  "width": 1254,
+  "height": 1254,
+  "bytes": 856402
+ },
+ {
+  "path": "/CEO19/Logo/LOGO CEO OFFICIEL Noir.png",
+  "kind": "image",
+  "role": "primary-logo",
+  "width": 1254,
+  "height": 1254,
+  "bytes": 595370
+ }
+] as const satisfies readonly PublicAsset[];

@@ -1,3 +1,5 @@
+> Superseded for the active V3 presentation by [V3-FOUNDATION.md](V3-FOUNDATION.md). Historical implementation record follows.
+
 # First-stage handoff
 
 ## Starting state and inspection
