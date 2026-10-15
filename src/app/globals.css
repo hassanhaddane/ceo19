@@ -5,18 +5,35 @@
 @font-face { font-family: 'CEO Sans'; src: url('/fonts/dm-sans-latin-500-normal.woff2') format('woff2'); font-weight: 500; font-display: swap; }
 
 :root {
- --color-black: #080a09;
- --color-cream: #eae5d6;
- --color-blue: #24659c;
- --color-white: #faf9f4;
- --color-paper: #ded9cc;
- --color-silver: #bfc4c3;
- --color-concrete: #656966;
+ /* Median blue sampled from IMG_7192.PNG, ROI (150,100)–(700,700).
+    Blue pixels: B > 1.25R, B > 1.1G, G > 40; median RGB (53,114,163). */
+ --ceo-blue: #3572a3;
+ --ceo-blue-deep: #173e60;
+ --ceo-blue-light: #a8c7df;
+ --ceo-cream: #eae5d6;
+ --ceo-white: #faf9f4;
+ --ceo-black: #080a0c;
+ --text-primary: var(--ceo-cream);
+ --text-muted: #b6c1c9;
+ --surface-primary: var(--ceo-black);
+ --surface-paper: var(--ceo-cream);
+ --surface-accent: var(--ceo-blue);
+ --overlay-dark: rgb(8 10 12 / 65%);
+ --border-dark: rgb(234 229 214 / 22%);
+ --border-light: rgb(8 10 12 / 22%);
+ /* Compatibility aliases keep existing player and press styles on the same palette. */
+ --color-black: var(--ceo-black);
+ --color-cream: var(--ceo-cream);
+ --color-blue: var(--ceo-blue);
+ --color-white: var(--ceo-white);
+ --color-paper: var(--ceo-cream);
+ --color-silver: var(--ceo-blue-light);
+ --color-concrete: var(--text-muted);
  --scene-height: min(850px,calc(100svh - var(--header-height)));
  --passage-cut: polygon(0 0,76% 0,76% 5%,100% 5%,100% 100%,13% 100%,13% 88%,0 88%,0 68%,4% 68%,4% 36%,0 36%);
- --color-grey: #aba99f;
- --color-border: #3c3d37;
- --color-ink-border: #b8b3a5;
+ --color-grey: var(--text-muted);
+ --color-border: var(--border-dark);
+ --color-ink-border: var(--border-light);
  --font-display: 'CEO Display', 'Impact', sans-serif;
  --font-interface: 'CEO Sans', Arial, sans-serif;
  --gutter: clamp(20px, 3vw, 64px);
@@ -61,8 +78,11 @@ button { font-size: inherit; }
 .media-frame { position: relative; overflow: hidden; aspect-ratio: 1; }
 .media-frame img { object-fit: cover; }
 .divider { border: 0; border-top: 1px solid var(--color-border); margin-block: 30px; }
-.logo-mark { display: inline-flex; gap: 5px; font-family: var(--font-display); font-size: 28px; line-height: 1; letter-spacing: -.04em; }
-.logo-number { font-size: .73em; align-self: end; line-height: 1.15; }
+.logo-mark { display: block; width: 54px; aspect-ratio: 1; background: white; }
+.logo-mark img { display: block; width: 100%; height: auto; object-fit: contain; }
+.primary-logo { background: transparent; }
+.primary-logo .logo-variant-light { display: var(--logo-light-display,block); }
+.primary-logo .logo-variant-dark { display: var(--logo-dark-display,none); }
 .site-header { position: sticky; top: 0; z-index: 30; height: var(--header-height); display: flex; justify-content: space-between; align-items: center; gap: 32px; padding-inline: var(--gutter); background: var(--color-black); color: var(--color-cream); border-bottom: 1px solid var(--color-border); }
 .brand-link { display: flex; align-items: center; min-height: 44px; }
 .desktop-nav { display: flex; gap: clamp(18px,2.4vw,44px); margin-left: auto; }
@@ -150,14 +170,5 @@ button { font-size: inherit; }
 .press-resources h2 { font-family:var(--font-display); font-size:clamp(32px,4vw,65px); text-transform:uppercase; line-height:1.1; margin-block:20px 28px; }
 .press-resources .editorial-text { font-size:16px; }
 .press-resources .arrow-link { border-bottom:1px solid var(--color-black); margin-top:24px; }
-.press-image-placeholder { display:flex; justify-content:space-between; align-items:center; border:1px solid var(--color-black); aspect-ratio:2.5; margin-bottom:24px; padding:24px; background:var(--color-cream); }
-.press-image-placeholder span:first-child { font-family:var(--font-display); font-size:44px; }
-.press-image-placeholder span:last-child { font-size:50px; }
 .film-player-host,.film-player-host > div,.film-player-host iframe { width:100%; height:100%; }
 .film-player-fallback { display:flex; align-items:center; justify-content:center; height:100%; text-decoration:underline; }
-.ceo-cursor { position:fixed; top:0; left:0; z-index:80; pointer-events:none; width:18px; height:18px; border:1px solid var(--color-cream); border-radius:50%; color:var(--color-black); font-size:10px; text-transform:uppercase; display:grid; place-items:center; margin:-9px; background:var(--color-black); }
-.ceo-cursor[hidden] { display:none; }
-.ceo-cursor:not([data-state="default"]) { width:58px; height:58px; margin:-29px; background:var(--color-cream); }
-@media(hover:hover) and (pointer:fine) { html[data-cursor-ready="true"],html[data-cursor-ready="true"] a,html[data-cursor-ready="true"] button { cursor:none; } }
-
-/* FES AFTER DARK foundations: scene compositions live in world.css. */

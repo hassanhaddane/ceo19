@@ -1,0 +1,165 @@
+/* Five native document snap areas. Content may grow at small heights or high zoom. */
+html:has(.scene-flow) { scroll-snap-type: y mandatory; scroll-padding: 0; scroll-behavior: auto; overflow-x: clip; }
+body:has(.scene-flow) { padding-bottom: 0; }
+.scene-flow { --scene-top: 106px; --scene-bottom: 102px; }
+.scene-flow > .v3-scene { min-height: 100svh; scroll-snap-align: start; scroll-snap-stop: always; scroll-margin: 0; padding-block: var(--scene-top) var(--scene-bottom); }
+.scene-flow > .v3-scene:focus { outline: none; }
+.scene-flow .legacy-anchor { scroll-margin-top: 0; }
+/* Top-layer dialogs must be viewport-fixed; absolute dialogs can scroll a snapped
+   document to its origin when the browser focuses their first control. */
+dialog:is(.entry-dialog,.architectural-menu,.media-viewer),.scene-flow dialog.media-viewer { position: fixed; inset: 0; }
+.scene-flow .scene-heading h2 { font-size: clamp(68px, 10svh, 130px); line-height: 1.08; }
+.scene-flow :is(.music-scene,.scene-archive) { display: flex; flex-direction: column; justify-content: center; }
+.scene-flow .deck-composition { margin-top: 20px; grid-template-columns: 40% 1fr; gap: 9%; }
+.scene-flow .deck-selector button { min-height: 49px; padding-block: 10px; }
+.scene-flow .deck-selector button > span:nth-child(2) { font-size: clamp(23px, 2.3vw, 36px); }
+.scene-flow .deck-art-stage { width: min(100%, 32svh); max-width: 400px; }
+.scene-flow .deck-footer { margin-top: 18px; }
+/* Home's six planes: shared film, atmosphere, passage, lettering, editorial, pointer. */
+.visual-site-shell .moving-home { background: transparent; }
+.scene-flow > .moving-home { height: 100svh; min-height: 580px; display: block; padding: 0; }
+.moving-home > .hero-atmosphere { position: absolute; inset: -60px; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at 7% 72%,rgb(3 17 31 / .8),transparent 62%),linear-gradient(90deg,rgb(8 29 48 / .6),transparent 85%),linear-gradient(0deg,rgb(2 9 18 / .55),transparent 30%); }
+.moving-home > .hero-passage { position: absolute; width: 49%; height: 110%; right: -3%; bottom: -16%; z-index: 2; color: var(--ceo-cream); opacity: .2; pointer-events: none; }
+.fez-architecture { width: 100%; height: 100%; display: block; }
+.moving-home > .hero-composition { position: absolute; left: 6.5vw; top: 41%; z-index: 3; max-width: 86%; }
+.hero-composition h1 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: clamp(82px, 11.8vw, 220px); letter-spacing: -.03em; line-height: 1.08; }
+.hero-title-line { display: block; white-space: nowrap; }
+html[lang='fr'] .hero-composition h1 { font-size: clamp(60px, 8.45vw, 165px); }
+.moving-home > .hero-editorial { position: absolute; left: 6.5vw; bottom: 110px; z-index: 3; display: flex; gap: 32px; }
+.hero-editorial .metadata { font-size: 9px; letter-spacing: .15em; }
+.moving-home > .hero-signature { position: absolute; right: 5vw; bottom: 99px; z-index: 3; }
+.hero-signature .logo-mark { width: 64px; }
+.moving-home > .hero-scroll-cue { position: absolute; bottom: 102px; left: 50%; z-index: 4; display: flex; gap: 16px; align-items: center; min-height: 44px; font-size: 9px; letter-spacing: .16em; }
+.hero-scroll-cue svg { transition: translate 250ms ease; }
+.hero-scroll-cue:hover svg { translate: 0 5px; }
+/* A floating slab of ink / cream, with one measured moving blue marker. */
+.floating-navigation { position: fixed; top: max(18px,env(safe-area-inset-top)); left: 50%; translate: -50% 0; width: min(calc(100% - 64px),1160px); height: 72px; padding: 10px 20px 10px 10px; gap: 26px; background: rgb(5 12 20 / .94); color: var(--ceo-cream); border: 1px solid rgb(238 233 219 / .13); box-shadow: 0 12px 34px rgb(0 0 0 / .14); transition: width 620ms var(--ease),height 620ms var(--ease),background-color 520ms ease,color 520ms ease; }
+.floating-navigation[data-compact='true'] { width: min(calc(100% - 88px),930px); height: 62px; }
+.floating-navigation:is([data-scene='music'],[data-scene='archive']) { background: var(--ceo-cream); color: var(--ceo-black); border-color: var(--border-light); }
+.floating-navigation:is([data-scene='music'],[data-scene='archive']) { --logo-light-display: none; --logo-dark-display: block; }
+.floating-navigation .logo-mark { width: 50px; }
+.floating-navigation[data-compact='true'] .logo-mark { width: 40px; }
+.floating-navigation .desktop-nav { position: relative; display: flex; align-items: center; gap: 28px; height: 100%; margin-left: auto; }
+.floating-navigation .desktop-nav a { display: flex; height: 100%; align-items: center; font-size: 10px; letter-spacing: .085em; position: relative; }
+.floating-navigation .desktop-nav a::after { display: none; }
+.floating-navigation .navigation-marker { position: absolute; height: 2px; left: 0; bottom: 0; background: var(--ceo-blue); transition: transform 620ms var(--ease),width 620ms var(--ease); pointer-events: none; }
+.floating-navigation .desktop-nav:not(:has(a[aria-current])) .navigation-marker { opacity: 0; }
+.floating-navigation .header-controls { margin-left: auto; gap: 26px; }
+.floating-navigation .language-switch a { color: inherit; opacity: .6; font-size: 9px; }
+.floating-navigation .language-switch a[aria-current] { color: inherit; opacity: 1; }
+.floating-navigation .menu-toggle { font-size: 10px; min-height: 40px; }
+html[data-menu-open='true'] .visual-site-shell > :is(main,.persistent-player) { visibility: hidden; }
+/* Keep the opener rendered so native dialogs can restore focus on immediate close. */
+html[data-menu-open='true'] .visual-site-shell > .site-header { opacity: 0; pointer-events: none; }
+.architectural-menu { background: transparent; display: none; isolation: isolate; padding: 0 var(--gutter); }
+.architectural-menu[open] { display: flex; flex-direction: column; }
+.architectural-menu::backdrop { background: transparent; }
+.architectural-menu[data-closing='true'] { pointer-events: none; }
+.menu-atmosphere { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(110deg,rgb(2 9 17 / .95) 0%,rgb(8 34 58 / .88) 42%,rgb(15 47 78 / .32) 70%,rgb(2 9 17 / .5)); }
+.menu-architecture { position: absolute; inset: 0 0 -20% 42%; opacity: .18; z-index: -1; pointer-events: none; color: var(--ceo-blue-light); }
+.architectural-menu .menu-top { min-height: 94px; padding-block: 16px; flex-shrink: 0; }
+.architectural-menu .menu-top .logo-mark { width: 50px; }
+.architectural-menu .menu-top .metadata { color: var(--ceo-cream); font-size: 9px; }
+.architectural-menu .menu-links { display: flex; flex-direction: column; flex: 1; justify-content: center; gap: 0; width: min(100%,1050px); padding-block: 22px; margin-left: 5vw; }
+.architectural-menu .menu-links a { display: flex; align-items: baseline; gap: 34px; min-height: 0; padding: 5px 0; border: none; color: var(--ceo-cream); }
+.architectural-menu .menu-links a > span:nth-child(2) { font-family: var(--font-display); font-size: clamp(50px,10.6svh,140px); font-weight: 400; line-height: 1.12; }
+.architectural-menu .menu-links .metadata { font-size: 9px; color: var(--ceo-blue-light); }
+.architectural-menu .menu-link-arrow { margin-left: auto; font-size: 28px; opacity: 0; translate: -14px 0; transition: opacity 240ms ease,translate 420ms var(--ease); }
+.architectural-menu .menu-links a:is(:hover,:focus-visible,[aria-current]) .menu-link-arrow { opacity: 1; translate: 0 0; }
+.architectural-menu .menu-links a[aria-current] > span:nth-child(2) { color: var(--ceo-blue-light); }
+.architectural-menu .menu-bottom { padding-block: 18px max(26px,env(safe-area-inset-bottom)); flex-shrink: 0; display: flex; gap: 34px; align-items: center; border-top: 1px solid var(--border-dark); }
+.architectural-menu .menu-bottom .metadata { margin-right: auto; }
+/* The SVG tip stays small; labels sit away from the pointing location. */
+.leaf-cursor[popover] { position: fixed; inset: 0 auto auto 0; width: 22px; height: 27px; padding: 0; margin: 0; border: 0; border-radius: 0; background: transparent; color: var(--ceo-cream); pointer-events: none; overflow: visible; filter: drop-shadow(0 1px 2px rgb(0 0 0 / .75)); }
+.leaf-cursor svg { display: block; transform-origin: 50% 75%; }
+.leaf-cursor span { position: absolute; top: 24px; left: 25px; font-size: 8px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; color: var(--ceo-cream); background: var(--ceo-black); padding: 4px 5px; }
+.leaf-cursor span:empty { display: none; }
+.leaf-cursor[data-state='drag'] { color: var(--ceo-blue-light); }
+.leaf-cursor[data-state='close'] { color: var(--ceo-blue-light); }
+.leaf-cursor::backdrop { pointer-events: none; }
+@media (hover:hover) and (pointer:fine) {
+ html[data-cursor-ready='true'],html[data-cursor-ready='true'] :is(a,button,[data-cursor]) { cursor: none; }
+ html[data-cursor-ready='true'] :is(input,textarea,select,[contenteditable='true']) { cursor: auto; }
+}
+.press-finished { padding-top: 140px; }
+@media (max-width: 1023px) {
+ .floating-navigation,.floating-navigation[data-compact='true'] { width: calc(100% - 36px); gap: 16px; }
+ .floating-navigation .desktop-nav { gap: 16px; }
+ .floating-navigation .header-controls { gap: 18px; }
+ .hero-composition h1 { font-size: 12.2vw; }
+ .scene-flow .deck-selector button { gap: 16px; }
+}
+@media (max-width: 767px) {
+ .scene-flow { --scene-top: 94px; --scene-bottom: 86px; }
+ .floating-navigation,.floating-navigation[data-compact='true'] { top: max(12px,env(safe-area-inset-top)); width: calc(100% - 24px); height: 58px; padding: 7px 14px 7px 7px; }
+ .floating-navigation .logo-mark,.floating-navigation[data-compact='true'] .logo-mark { width: 42px; }
+ .floating-navigation .desktop-nav { display: none; }
+ .floating-navigation .header-controls { gap: 20px; }
+ .floating-navigation .menu-toggle { font-size: 9px; }
+ .scene-flow > .moving-home { min-height: 520px; }
+ .moving-home > .hero-composition { left: 22px; top: 48%; max-width: calc(100% - 44px); }
+ .hero-composition h1 { font-size: 12.35vw; letter-spacing: -.035em; line-height: 1.13; }
+ html[lang='fr'] .hero-composition h1 { font-size: 8.8vw; }
+ .moving-home > .hero-passage { right: -48%; width: 125%; height: 90%; bottom: -13%; opacity: .2; }
+ .moving-home > .hero-atmosphere { background: radial-gradient(ellipse at 12% 64%,rgb(3 17 31 / .65),transparent 75%),linear-gradient(0deg,rgb(2 9 18 / .68),transparent 65%); }
+ .moving-home > .hero-editorial { left: 24px; bottom: 110px; flex-direction: column; gap: 5px; }
+ .hero-editorial .metadata { font-size: 8px; letter-spacing: .12em; }
+ .moving-home > .hero-signature { right: 24px; bottom: 102px; }
+ .hero-signature .logo-mark { width: 48px; }
+ .moving-home > .hero-scroll-cue { left: 24px; bottom: 162px; font-size: 8px; }
+ .scene-flow .scene-heading h2 { font-size: clamp(48px,7.6svh,76px); }
+ .scene-flow .scene-heading .metadata { font-size: 8px; margin-top: 7px; }
+ .scene-flow .deck-composition { display: flex; gap: 16px; margin-top: 12px; }
+ .scene-flow .deck-selector { gap: 20px; padding-bottom: 8px; overscroll-behavior-x: contain; }
+ .scene-flow .deck-selector button { min-height: 42px; padding-block: 6px; gap: 8px; }
+ .scene-flow .deck-selector button > span:nth-child(2) { font-size: 18px; }
+ .scene-flow .deck-art-stage { width: min(100%,29svh); min-width: 168px; }
+ .scene-flow .deck-caption { padding-block: 10px; }
+ .scene-flow .deck-actions > * { min-height: 44px; }
+ .scene-flow .deck-platforms { margin-top: 2px; }
+ .scene-flow .deck-footer { margin-top: 10px; }
+ .architectural-menu .menu-top { min-height: 78px; gap: 18px; }
+ .architectural-menu .menu-top > .metadata { display: none; }
+ .architectural-menu .menu-top .logo-mark { width: 42px; }
+ .architectural-menu .menu-links { margin: 0; padding-block: 10px; }
+ .architectural-menu .menu-links a { gap: 20px; padding-block: 8px; }
+ .architectural-menu .menu-links a > span:nth-child(2) { font-size: clamp(40px,8.9svh,76px); }
+ .architectural-menu .menu-link-arrow { font-size: 22px; }
+ .architectural-menu .menu-bottom { flex-wrap: wrap; gap: 6px 24px; padding-block: 16px 24px; }
+ .architectural-menu .menu-bottom .metadata { width: 100%; font-size: 8px; }
+ .menu-architecture { inset: 0 -60% -8% 3%; opacity: .15; }
+}
+@media (hover: none), (pointer: coarse) { .leaf-cursor { display: none; } }
+@media (max-height: 580px) and (min-width: 768px) {
+ .scene-flow > .moving-home { min-height: 100svh; }
+ .moving-home > .hero-composition { top: 31%; }
+ .hero-composition h1 { font-size: min(10vw,19svh); }
+ .moving-home > .hero-editorial { bottom: 94px; }
+ .moving-home > .hero-signature { bottom: 90px; }
+ .hero-signature .logo-mark { width: 42px; }
+ .architectural-menu .menu-top { min-height: 70px; }
+ .architectural-menu .menu-links a > span:nth-child(2) { font-size: 10svh; }
+ .architectural-menu .menu-links { padding-block: 8px; }
+ .architectural-menu .menu-bottom { padding-block: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+ html:not([data-motion-preference='full']) .leaf-cursor { display: none; }
+ html:not([data-motion-preference='full']) .hero-scroll-cue:hover svg { translate: none; }
+ html:not([data-motion-preference='full']) :is(.floating-navigation,.navigation-marker) { transition: none; }
+}
+html[data-motion-preference='reduced'] .leaf-cursor { display: none; }
+html[data-motion-preference='reduced'] .hero-scroll-cue:hover svg { translate: none; }
+html[data-motion-preference='reduced'] :is(.floating-navigation,.navigation-marker) { transition: none; }
+
+/* Make a static accessibility mode distinguishable from failed initialization. */
+.motion-indicator { display:inline-flex; align-items:center; gap:6px; min-height:44px; min-width:44px; padding:0; white-space:nowrap; font-size:9px; letter-spacing:.07em; }
+.motion-indicator i { width:5px; height:5px; border:1px solid currentColor; border-radius:50%; }
+.motion-indicator[aria-pressed='true'] i { background:var(--ceo-blue-light); border-color:var(--ceo-blue-light); }
+.motion-label-mobile { display:none; }
+.menu-motion-reset { min-height:44px; text-align:left; text-transform:uppercase; }
+@media (max-width:767px) {
+ .motion-label-desktop { display:none; }
+ .motion-label-mobile { display:inline; }
+ .floating-navigation .header-controls { gap:14px; }
+ .motion-indicator { font-size:8px; }
+}

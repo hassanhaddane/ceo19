@@ -1,6 +1,8 @@
 import type { Locale } from '@/types/content';
+import { sceneCopy } from '@/data/artist';
 import { Gallery } from '../gallery';
-import { SignalSlot } from '../signal/SignalSlot';
-import { Architecture,Punchline } from '../world/Architecture';
-import { nightCopy,punchlines } from '@/data/nightWorld';
-export function ArchiveExperience({locale}:{locale:Locale}) {return <section id="archive" className="night-scene scene-archive" data-world="street-print" aria-labelledby="archive-title"><Architecture/><Punchline>{punchlines.archive}</Punchline><div className="scene-content archive-wall-heading"><h2 id="archive-title">ARCHIVE <span>1.9</span></h2><span className="metadata">{nightCopy[locale].archive}</span></div><div className="scene-content archive-wall"><Gallery locale={locale}/></div><SignalSlot section="archive"/></section>;}
+
+export function ArchiveExperience({ locale }: { locale: Locale }) {
+ const copy = sceneCopy[locale];
+ return <section tabIndex={-1} id="archive" className="v3-scene scene-archive" aria-labelledby="archive-title"><header className="scene-heading"><h2 id="archive-title">{copy.archive}</h2><span className="metadata">{copy.archiveNote}</span></header><Gallery locale={locale} /></section>;
+}

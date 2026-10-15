@@ -1,28 +1,19 @@
-import Image from 'next/image';
 import type { Locale } from '@/types/content';
-import { homeCampaign } from '@/data/homeCampaign';
-import { SignalSlot } from '../signal/SignalSlot';
-import { HomeMotion } from '../home/HomeMotion';
-/** One campaign opening and one compact printed continuation. All copy stays in the DOM. */
+import { artist } from '@/data/artist';
+import { LogoMark } from '../primitives';
+import { FezArchitecture } from '../visuals/FezArchitecture';
+
+/** The shared film is the hero; lettering and passage are separate depth planes. */
 export function HomeExperience({ locale }: { locale: Locale }) {
- const copy = homeCampaign.copy[locale];
- return <section id="home" className="home-campaign" aria-labelledby="home-title">
-  <div className="campaign-hero">
-   <svg className="campaign-architecture" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true"><path d="M460 900V290Q460 130 610 130H820V50H1040V270H1310V680H1170V750H1050V900M410 900V630H360V440H410V250H490M70 780H270V650H325V545H385M510 580V360Q510 230 620 230H720V470H630V740H580V900" fill="none" stroke="currentColor" strokeWidth="1"/></svg>
-   <div className="campaign-type"><h1 id="home-title"><span>CEO</span><span>1.9</span></h1><p className="campaign-headline">{copy.headline.map(line => <span key={line}>{line}</span>)}</p></div>
-   <div className="campaign-portal"><div className="campaign-portrait-depth"><figure className="campaign-portrait"><Image src={homeCampaign.portrait} alt={homeCampaign.alt[locale]} fill loading="eager" fetchPriority="high" sizes="(max-width:767px) 86vw, 57vw"/></figure></div><span className="campaign-portal-label metadata" aria-hidden="true">CEO 1.9 / FEZ</span></div>
-   <SignalSlot section="home"/>
-   <div className="campaign-meta metadata"><span>SIGNAL 1.9</span><span>{copy.origin}</span></div>
-   <a className="campaign-enter" href="#channels" data-cursor="enter">{copy.enter}<svg width="12" height="23" viewBox="0 0 12 23" fill="none" aria-hidden="true"><path d="M6 1v20m-5-5 5 5 5-5" stroke="currentColor"/></svg></a>
+ const lines = locale === 'fr' ? ['UN NOUVEAU SIGNAL', 'DEPUIS FÈS.'] : ['A NEW SIGNAL', 'FROM FEZ.'];
+ return <section tabIndex={-1} id="home" className="v3-scene home-campaign moving-home" aria-labelledby="home-title">
+  <div className="hero-atmosphere" data-parallax="atmosphere" aria-hidden="true" />
+  <div className="hero-passage" data-parallax="architecture"><FezArchitecture /></div>
+  <div className="hero-composition" data-parallax="type">
+   <h1 id="home-title" aria-label={`${artist.name} — ${lines.join(' ')}`}>{lines.map(line => <span className="hero-title-line" key={line}>{line}</span>)}</h1>
   </div>
-  <div className="campaign-passage" aria-hidden="true"><span>{homeCampaign.passage}</span></div>
-  <div className="campaign-takeover">
-   <div className="campaign-blue-field" aria-hidden="true"/>
-   <span className="campaign-print" aria-hidden="true">{homeCampaign.print}</span>
-   <h2>{copy.roots.map(line => <span key={line}>{line}</span>)}</h2>
-   <figure className="campaign-takeover-photo"><Image src={homeCampaign.portrait} alt="" fill sizes="(max-width:767px) 35vw, 26vw"/></figure>
-   <p className="campaign-destination">FEZ <span aria-hidden="true">→</span> WORLD</p>
-  </div>
-  <HomeMotion/>
+  <div className="hero-editorial" data-parallax="detail"><span className="metadata">{artist.name}</span><span className="metadata">{locale === 'fr' ? 'FÈS / MAROC' : 'FEZ / MOROCCO'}</span></div>
+  <a href="#music" className="hero-scroll-cue" data-cursor="enter"><span>{locale === 'fr' ? 'DÉFILER' : 'SCROLL'}</span><svg width="14" height="26" viewBox="0 0 14 26" aria-hidden="true"><path d="M7 1v23m-5-6 5 6 5-6" stroke="currentColor" fill="none"/></svg></a>
+  <div className="hero-signature" data-parallax="detail"><LogoMark sizes="(max-width:767px) 48px, 64px" /></div>
  </section>;
 }

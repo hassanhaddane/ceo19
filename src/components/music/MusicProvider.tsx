@@ -43,7 +43,7 @@ export function MusicProvider({children,locale}: {children:ReactNode;locale:Loca
   }
  },[]);
  const stop=useCallback(()=>{
-  audio.current?.pause();controls.current=null;
+  audio.current?.pause();controls.current?.pause();controls.current=null;
   if(audio.current){audio.current.removeAttribute('src');audio.current.load();}
   setSource(null);setStatus('idle');setPlayback({isPlaying:false,position:null,duration:null});
  },[]);

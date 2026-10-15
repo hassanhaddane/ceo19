@@ -1,25 +1,11 @@
 export type Locale = 'en' | 'fr';
 export type Localized<T = string> = Record<Locale, T>;
-export type SectionId = 'home' | 'music' | 'visuals' | 'archive' | 'world' | 'connect';
+export type SectionId = 'home' | 'music' | 'archive' | 'world' | 'connect';
 export interface Artist { name: string; firstName: string; origin: Localized; biography: Localized; positioning: Localized; projectBegan: Localized; }
 export interface PlatformLink { platform: string; url: string; }
-export type ChannelVisualMode = 'interrupted' | 'sharp' | 'haze' | 'cluster' | 'dual' | 'chrome';
-export type ChannelMotionProfile = 'snap' | 'cut' | 'float' | 'heavy' | 'cinematic' | 'press';
-export type CinemaEntry = 'offline' | 'impact' | 'haze' | 'shutter' | 'split' | 'poster';
-export interface CinemaArtDirection {
- cinemaBackground:string; cinemaAccent:string; cinemaForeground:string; cinemaGlow:string;
- entry:CinemaEntry; entryDuration:number; exitDuration:number; punchline:string|null;
-}
-export interface ChannelArtDirection {
- channel?: string | null; mood?: Localized | null; accentColor?:string; backgroundColor?:string; foregroundColor?:string;
- visualMode?:ChannelVisualMode; punchlines?:string[]; motionProfile?:ChannelMotionProfile;
- textureMode?:'cut'|'metal'|'glass'|'fabric'|'shadow'|'paper'; videoId?:string|null;
- sceneImage?:{src:string;alt:Localized;crop?:string};
-}
-export interface Release extends ChannelArtDirection { id: string; title: string; date: string | null; featuredArtist: string | null; artwork: string | null; platforms: PlatformLink[]; duration: number | null; credits: string[] | null; audioPreviewUrl?: string | null; spotifyUrl?: string | null; youtubeUrl?: string | null; }
+export interface Release { id: string; title: string; date: string | null; featuredArtist: string | null; artwork: string | null; platforms: PlatformLink[]; duration: number | null; credits: string[] | null; audioPreviewUrl?: string | null; spotifyUrl?: string | null; youtubeUrl?: string | null; }
 export interface Video {
  id: string; title: string; url: string; poster: string | null; releaseId: string | null;
- cinema?:Partial<CinemaArtDirection>;
  fallbackImage?: string | null; imageAlt?: Localized; crop?: string; metadata?: VisualMetadata | null;
 }
 export interface VisualMetadata { reference?: string | null; location?: string | null; year?: number | null; format?: string | null; }
