@@ -1,6 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useSoundManager } from '@/features/audio/SoundProvider';
 import { track } from '@/lib/analytics';
 import { featuredRelease } from '@/data/releases';
 import type { Locale, Release } from '@/types/content';
@@ -13,6 +14,7 @@ interface MusicContextValue { selectedRelease:Release; selectRelease:(release:Re
 const MusicContext=createContext<MusicContextValue|null>(null);
 export function useMusic(){const context=useContext(MusicContext);if(!context) throw new Error('MusicProvider is required');return context;}
 export function MusicProvider({children,locale}: {children:ReactNode;locale:Locale}) {
+ const sound = useSoundManager();
  const [selectedRelease,selectRelease]=useState(featuredRelease);
  const [activeTrack,setActiveTrack]=useState(featuredRelease);
  const [source,setSource]=useState<MusicSource|null>(null);
@@ -20,6 +22,7 @@ export function MusicProvider({children,locale}: {children:ReactNode;locale:Loca
  const [expanded,changeExpanded]=useState(false);
  const [status,setStatus]=useState<Status>('idle');
  const [playback,setPlayback]=useState<PlaybackUpdate>({isPlaying:false,position:null,duration:null});
+ useEffect(() => source ? sound.holdMedia('external') : undefined, [source, sound]);
  const audio=useRef<HTMLAudioElement>(null);
  const controls=useRef<EmbedControls|null>(null);
  const onControls=useCallback((value:EmbedControls|null)=>{controls.current=value;},[]);
@@ -33,6 +36,7 @@ export function MusicProvider({children,locale}: {children:ReactNode;locale:Loca
  const listen=useCallback((release:Release,requested?:MusicSource)=>{
   const next=requested??playableSources(release)[0];
   if(!next) return;
+  sound.externalIntent();
   if(next.kind==='Spotify')track('spotify_click',{id:release.id});if(next.kind==='YouTube')track('youtube_click',{id:release.id});
   audio.current?.pause(); controls.current=null;
   setActiveTrack(release);setSource(next);changeExpanded(true);setStatus('loading');setSession(s=>s+1);
@@ -41,12 +45,16 @@ export function MusicProvider({children,locale}: {children:ReactNode;locale:Loca
    audio.current.src=next.url;
    void audio.current.play().catch(()=>{setStatus('error');setPlayback({isPlaying:false,position:null,duration:null});});
   }
- },[]);
+ },[sound]);
  const stop=useCallback(()=>{
   audio.current?.pause();controls.current?.pause();controls.current=null;
   if(audio.current){audio.current.removeAttribute('src');audio.current.load();}
   setSource(null);setStatus('idle');setPlayback({isPlaying:false,position:null,duration:null});
  },[]);
+ useEffect(()=>{
+  window.addEventListener('ceo:intro-start',stop);
+  return()=>window.removeEventListener('ceo:intro-start',stop);
+ },[stop]);
  const toggle=useCallback(()=>{
   if(!source){listen(activeTrack);return;}
   if(source.kind==='preview') {

@@ -1,0 +1,1433 @@
+{
+  "version": 4,
+  "sourcePolicy": "Exact filenames; original files untouched; SHA-256 verifies provenance.",
+  "roles": {
+    "primaryLogo": "/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png",
+    "primaryLogoDark": "/CEO19/Logo/LOGO CEO OFFICIEL Noir.png",
+    "productionLogo": "/brands/hkz.png",
+    "documentaryVideo": "/CEO19/SHOW/CEO DOCCCCC.mp4",
+    "neighborhoodMap": "/CEO19/WORLD/GPS HKZPROD.png",
+    "officialLogoJpg": null,
+    "backgroundVideo": "/media/ceo-visuals-background.mp4",
+    "videoPoster": "/media/ceo-visuals-poster.jpg",
+    "secondaryLogo": "/CEO19/Logo/LOGO CEO.jpg",
+    "artistVideo": "/CEO19/CEO VISUALS/CEO visuels .mp4",
+    "blueReference": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
+    "timalsCrew": "/CEO19/TIMALS/IMG_2887.jpg",
+    "hero": "/images/portrait.webp",
+    "world": "/images/street-close.webp",
+    "grain": "/images/grain.svg",
+    "releases": {
+      "original": "/releases/ORIGINAL.png",
+      "kritika": "/releases/KRITIKA.png",
+      "fantastique": "/releases/FANTASTIQUE.png",
+      "timals": "/releases/TIMALS.png",
+      "machi-batel": "/releases/MACHI BATEL.png",
+      "bcp-dargent": "/releases/BCP D'ARGENT.png"
+    }
+  },
+  "blueSample": {
+    "path": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
+    "roi": {
+      "left": 150,
+      "top": 100,
+      "width": 550,
+      "height": 600
+    },
+    "filter": "B > 1.25R, B > 1.1G, G > 40",
+    "sampledPixels": 295765,
+    "medianRGB": [
+      53,
+      114,
+      163
+    ],
+    "hex": "#3572a3"
+  },
+  "missing": [
+    "LOGO CEO OFFICIEL.jpg (optional fallback)"
+  ],
+  "inventory": [
+    {
+      "path": "/.DS_Store",
+      "bytes": 14340,
+      "sha256": "83fa5188102b96297f7c871b0826adfbec6a9a090cfd5b0093d3d5ba9f371ea1",
+      "role": "filesystem-metadata",
+      "kind": "metadata",
+      "dimensions": null
+    },
+    {
+      "path": "/CEO19/.DS_Store",
+      "bytes": 14340,
+      "sha256": "6108e797f5a7c89b49f724b614c7bee37e962c830ac591dd829df163cd2b819d",
+      "role": "filesystem-metadata",
+      "kind": "metadata",
+      "dimensions": null
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
+      "bytes": 5680719,
+      "sha256": "9918c678f62c2ac6d74d05bee7056e7711c5c144017d013f6b8783b1b03a5f3f",
+      "role": "visual-reference",
+      "kind": "image",
+      "dimensions": {
+        "width": 2828,
+        "height": 2828,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT art/IMG_7193.PNG",
+      "bytes": 3228016,
+      "sha256": "c411c43c93cc6931c68f02d796a633ff5a5c20b31f29c2fb591aca52bf4d043b",
+      "role": "visual-reference",
+      "kind": "image",
+      "dimensions": {
+        "width": 2048,
+        "height": 2048,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT art/IMG_7194.PNG",
+      "bytes": 4009129,
+      "sha256": "a1256e83aab2f9a4e5fa5f5661ce774b155c7f84f5b8cf093b40f22cc077e80e",
+      "role": "visual-reference",
+      "kind": "image",
+      "dimensions": {
+        "width": 2048,
+        "height": 2048,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6685.JPG",
+      "bytes": 22203754,
+      "sha256": "9d934b45c9d579471f82f523e17c02691e4976c0484971af960df3e340883f23",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6727.JPG",
+      "bytes": 17183962,
+      "sha256": "0a79ddd293457338a16b1dfc0c1ec973695bf399b3c683b815b7d9ab012bc829",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6731.JPG",
+      "bytes": 17157114,
+      "sha256": "6a884b7be911ca55fdc1150e5b9e4966d73423ec6dbbfc139b97a749570ed1b8",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6787.jpg",
+      "bytes": 3106602,
+      "sha256": "0d876bb1f94129d8e6d0accc7d35d46d1499b97de3129f80813859f26885f47b",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 3944,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6845.JPG",
+      "bytes": 18759252,
+      "sha256": "ed367b3be1f4e1f08658f256e5caaa3a289db338368df0246a0c206e58b699ad",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6851.JPG",
+      "bytes": 16236858,
+      "sha256": "4c5877dc019c82f42b7ddd73368e55fee68484c70a302dcc7ab540d5acb42dac",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6876.JPG",
+      "bytes": 15347749,
+      "sha256": "5441c208e1657c743c1e4ef4cd066c8764c6eb1df4f5dba3ec4908326c91fef5",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/BCP D'ARGENT images/IMG_6940.JPG",
+      "bytes": 21053568,
+      "sha256": "e57c83cf099179e71c0de156beae845d5f8b26c35f90eb2f07030dfdedeb285a",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3944,
+        "height": 7008,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/CEO VISUALS/CEO visuels .mp4",
+      "bytes": 50018907,
+      "sha256": "e179e08563b3ee9e8dfeb098776111cd98d9da84d4c8e8749bc187cd659836db",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 20.083333333333332
+          },
+          {
+            "kind": "soun",
+            "durationSeconds": 20.117333333333335
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/CEO19/Fanstastique/Pasted 2026-10-16 at 1.23.25 PM.png",
+      "bytes": 1462512,
+      "sha256": "4ea5672359631563e09d9cb6ff5f65f4462a6102def88328b4f8f34fc77bf064",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 2712,
+        "height": 1722,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/Kritika/street-close.webp",
+      "bytes": 112550,
+      "sha256": "b9819aba60591dd8e259e76c7d4817f70fa9bcd7e96e16e829f602a96cded4ac",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/Logo/.DS_Store",
+      "bytes": 6148,
+      "sha256": "392d12c4d4f6c0fe59e0aa398c6f2410a48af119d2355a3b01d17ed91cbbae5b",
+      "role": "filesystem-metadata",
+      "kind": "metadata",
+      "dimensions": null
+    },
+    {
+      "path": "/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png",
+      "bytes": 856402,
+      "sha256": "b78d77e12d745a1759be7ae40cb0f88599d2ea02f964c8688756239e20f4752a",
+      "role": "primary-logo",
+      "kind": "image",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/Logo/LOGO CEO OFFICIEL Noir.png",
+      "bytes": 595370,
+      "sha256": "725513849a3c023a4973897cc19b72e1127a245bd4aec0f428e2e141cae95be1",
+      "role": "primary-logo",
+      "kind": "image",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/Logo/LOGO CEO.jpg",
+      "bytes": 103175,
+      "sha256": "cafa31ce7db647f702dd2909c4ab815c9b143065bcdd552d4372357fb70c2440",
+      "role": "secondary-logo",
+      "kind": "image",
+      "dimensions": {
+        "width": 1600,
+        "height": 1600,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/MACHI BATEL/Machi batel.png",
+      "bytes": 4470142,
+      "sha256": "952580b52fcb314e33219a887b7860c608f99b60fba84761516a39df9897f41f",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 2712,
+        "height": 1722,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/CEO19/Original/portrait.webp",
+      "bytes": 177580,
+      "sha256": "9ed91a323f736e178e5d234252e98cd5079511a3d2787e6279fde2dd9c7f9e79",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO DOCCCCC.mp4",
+      "bytes": 409256910,
+      "sha256": "042e62175384043fc5eddd1c8cd473394ae451a02d8e35a73ca83036b5f20126",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 206.60481770833334
+          },
+          {
+            "kind": "soun",
+            "durationSeconds": 206.60483333333335
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 502.2083333333333
+          }
+        ],
+        "fastStart": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO-12.jpg",
+      "bytes": 5025798,
+      "sha256": "46100575e1e5e08d3214215a92778482845eaf61faf0650e480741b48c8a6ed7",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3525,
+        "height": 4406,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO-13.jpg",
+      "bytes": 4166548,
+      "sha256": "0bc393a789c8ab5da38e92e0516a1ac076a04f943023eb6ae59669627cb143ed",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 5464,
+        "height": 7285,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO-3.jpg",
+      "bytes": 5018376,
+      "sha256": "c7762456dc75a225d8e4a0d0dc4b1795718a1fd69c7638dafd13c18f9b34e231",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 5464,
+        "height": 7285,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO-6.jpg",
+      "bytes": 4645355,
+      "sha256": "d8bc08cde8efad5b1c87a9f0c177958480c98ccb11bad41011d3e6c0ba964e3f",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 5464,
+        "height": 7285,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO-7.jpg",
+      "bytes": 4634354,
+      "sha256": "a8f36b26bb1febc15b43eb41906d32431ea2b2abfd9c0c6dd78974d8b92e7838",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 5464,
+        "height": 7285,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/SHOW/CEO-9.jpg",
+      "bytes": 4463891,
+      "sha256": "95121d53e0fae8d4c0d4888fe487a81545f9d170ae67dafe80bb5565febb3ed6",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 5464,
+        "height": 7285,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2848.jpg",
+      "bytes": 1902429,
+      "sha256": "d0d8cda97ba8895290658b30ad433abf62a5d38da33b14f7d892ed9b9225fbf5",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2855.jpg",
+      "bytes": 1642560,
+      "sha256": "ff76bf08f3283df7dc4d9cb73ebcccccaf2aa1047e098686805e67fac1caabec",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2870.jpg",
+      "bytes": 2959154,
+      "sha256": "bb62bbbee28af24601f2871af1a876de9b23bd7655f25077f4e43d452d4f7d90",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2887.jpg",
+      "bytes": 4084441,
+      "sha256": "8bda572a1ad7f56d1a00abe23d1cc7f6e449d14a5db155195f840e083b2eed7c",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2895.JPG",
+      "bytes": 7280337,
+      "sha256": "b13e41738f9d1c77c20ef074f993ebc9f3e7371ce082bece01af3b15c70c1755",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2896.jpg",
+      "bytes": 3123063,
+      "sha256": "5343df42af348872312392d6ffa2d71cda776ac289642ca833ec8fbf975e9c1e",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2898.jpg",
+      "bytes": 1649649,
+      "sha256": "2f51fa0d0c9e2b33134d857ed245a603335f22db03d35e7eb67ecd3238ef84f5",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2903.jpg",
+      "bytes": 1719464,
+      "sha256": "d24a11ec2347fd704b4317dc3f65951fb168367f0b2770c348c9ace07230d715",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/TIMALS/IMG_2997.jpg",
+      "bytes": 1739856,
+      "sha256": "7adc068207c306ff67c5e903e8f127ccaf05b56fed15d765cb53bad851b68eec",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3064,
+        "height": 4592,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/CEO19/WORLD/.gitkeep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "filesystem-metadata",
+      "kind": "metadata",
+      "dimensions": null
+    },
+    {
+      "path": "/CEO19/WORLD/GPS HKZPROD.png",
+      "bytes": 678749,
+      "sha256": "3615bb6145dd8b86d36d1dfeac9b094de70d976ba5d359d9e11d6b325872ac72",
+      "role": "neighborhood-map",
+      "kind": "image",
+      "dimensions": {
+        "width": 884,
+        "height": 416,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/brands/hkz.png",
+      "bytes": 9668,
+      "sha256": "2363a219b75d05fbfcebe55ee42d521a8adfa903c096951eaa0881db615f7487",
+      "role": "production-logo",
+      "kind": "image",
+      "dimensions": {
+        "width": 160,
+        "height": 160,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/fonts/ANTON-LICENSE.txt",
+      "bytes": 4390,
+      "sha256": "9267baca92b7a7ce9db6dd9e6cc32c9fe3ddf1ac96e421d5f87c5746b9089d6a",
+      "role": "license",
+      "kind": "document",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/DM-SANS-LICENSE.txt",
+      "bytes": 4502,
+      "sha256": "6fbd040a29c2037a765dfb9f2561e9965b5c95c6dcb5dce516089d63d5f17af7",
+      "role": "license",
+      "kind": "document",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/anton-latin-400-normal.woff2",
+      "bytes": 18612,
+      "sha256": "d0fa07ff63dd60cbc0e2f58e29c802dca2a5ae0276c999f59c6111ab7bbaec3b",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/dm-sans-latin-400-normal.woff2",
+      "bytes": 14200,
+      "sha256": "4ab51eb2cd7305d177187908d6397474d4520663f6c6e572feb0a64f4fa80006",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/dm-sans-latin-500-normal.woff2",
+      "bytes": 14304,
+      "sha256": "19bf1984956517c35c2bd35b6cdedac12a21d6fcd3596c614ecdfb88b648909d",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/icons/SOURCES.md",
+      "bytes": 371,
+      "sha256": "d715bc3ab0126516e8dcdc6c573cad97951f1a6f7af5bf4f59c8866a992168e1",
+      "role": "license",
+      "kind": "document",
+      "dimensions": null
+    },
+    {
+      "path": "/icons/applemusic.svg",
+      "bytes": 1735,
+      "sha256": "365264bcf032a1acb6f18554cf7d34b1b2a75f7e571848629173bbfd0e1cadbb",
+      "role": "platform-icon",
+      "kind": "image",
+      "dimensions": {
+        "width": 24,
+        "height": 24,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/icons/deezer.svg",
+      "bytes": 1198,
+      "sha256": "928ee1c513ccf49c125956f8cb300558701a112eb2adaede966d032408cc480c",
+      "role": "platform-icon",
+      "kind": "image",
+      "dimensions": {
+        "width": 24,
+        "height": 24,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/icons/instagram.svg",
+      "bytes": 2101,
+      "sha256": "f53af2d1fc5292ba1433b5c1faf50005ce6a997fa302d1816989929f379a59dc",
+      "role": "platform-icon",
+      "kind": "image",
+      "dimensions": {
+        "width": 24,
+        "height": 24,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/icons/spotify.svg",
+      "bytes": 697,
+      "sha256": "b9ec9bec7769c35643981586d6ea0d675aaf3871b32f8a291bcac7a87fff0bc1",
+      "role": "platform-icon",
+      "kind": "image",
+      "dimensions": {
+        "width": 24,
+        "height": 24,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/icons/tiktok.svg",
+      "bytes": 707,
+      "sha256": "6f54ac8d325faacea8935bdc44cbed60206a6b408641799e5fea1cba7c1a0af7",
+      "role": "platform-icon",
+      "kind": "image",
+      "dimensions": {
+        "width": 24,
+        "height": 24,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/icons/youtube.svg",
+      "bytes": 459,
+      "sha256": "5038808acbbc4e6edda16cbeb1cc6dec80e4e4ee4e227e039c41229fa222aa8c",
+      "role": "platform-icon",
+      "kind": "image",
+      "dimensions": {
+        "width": 24,
+        "height": 24,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/images/.DS_Store",
+      "bytes": 12292,
+      "sha256": "5686f43592f6fc4dcb86823e4fcecb7aa13429b6470c3a7f5436259ac4ab538f",
+      "role": "filesystem-metadata",
+      "kind": "metadata",
+      "dimensions": null
+    },
+    {
+      "path": "/images/Pasted 2026-10-06 at 2.59.00 PM.png",
+      "bytes": 587960,
+      "sha256": "c086afde14f212a318e79dad911366fc4dbe9392ae0f898725ab144eea641a00",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/architecture/passage.webp",
+      "bytes": 63216,
+      "sha256": "0e979ef8fe3cc08f24bf10382b68550fde91143d68d7e8bbd5ea43593975dcd2",
+      "role": "legacy-generated",
+      "kind": "image",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/backstage.webp",
+      "bytes": 82060,
+      "sha256": "2880398e007443ca4816a63e5d11fe4848afa66417fcefcb6bae6fbd42a9c3b2",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1080,
+        "height": 1079,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/ceo_1.9_1788527054_3978775029635754889_7902047543.jpg",
+      "bytes": 226008,
+      "sha256": "006e3087c90460f47ed5f554a01b581b93ce61bdbcb1fbd3218c0d2279927d69",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 941,
+        "height": 1248,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/ceo_1.9_1788527054_3978775072140836924_7902047543.jpg",
+      "bytes": 1195406,
+      "sha256": "443570eac2491701ae9b0f8591e298db8dafe700be00b3c033f6a7cee02fee13",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 3550,
+        "height": 4096,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/ceo_1.9_1788527054_3978775074808290020_7902047543.jpg",
+      "bytes": 745568,
+      "sha256": "4c79ac89fbea2b16744526d478fed7c45602c1fad819006580258a81c0dd40d7",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 2480,
+        "height": 2861,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/crowd.webp",
+      "bytes": 706192,
+      "sha256": "a8bf4a518f7315cec3a89526f947ae2baf31b9369eca71e7945221ff9154d35f",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1800,
+        "height": 1800,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/daylight.webp",
+      "bytes": 198354,
+      "sha256": "39b466b5ff1bee4c0363647f6f7c4ab825dda8165eedb7bde5666e4d8ae58f24",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/editorial/street-bus.webp",
+      "bytes": 162314,
+      "sha256": "7147962fe417dd7049724635dafd580881649bdef75808dfc0b6c1853c737894",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 941,
+        "height": 1248,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/grain.svg",
+      "bytes": 251,
+      "sha256": "df2eb86ee9b6ee84c654a8fedcdfee25d6a4e817a7e9545a92ddaec3f12e2c13",
+      "role": "texture",
+      "kind": "image",
+      "dimensions": {
+        "width": 180,
+        "height": 180,
+        "format": "svg",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/images/live.webp",
+      "bytes": 495496,
+      "sha256": "5bd55a7e56278fa5c148fe9ab1411d02d03998e777246f06cc7c5f27158750dc",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1800,
+        "height": 1800,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/portrait.webp",
+      "bytes": 177580,
+      "sha256": "9ed91a323f736e178e5d234252e98cd5079511a3d2787e6279fde2dd9c7f9e79",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/seo/ceo19-social.jpg",
+      "bytes": 90001,
+      "sha256": "3545e6a2a81429e63105ed0a3b4c31df399895910f362c0cd77826caea99dbef",
+      "role": "social-image",
+      "kind": "image",
+      "dimensions": {
+        "width": 1200,
+        "height": 630,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/stage.webp",
+      "bytes": 493834,
+      "sha256": "6a13d31cf87b8ba18b348d7ecea23e958ad6641253b6d3b4645fa4ce09b781fc",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1800,
+        "height": 1800,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/street-close.webp",
+      "bytes": 112550,
+      "sha256": "b9819aba60591dd8e259e76c7d4817f70fa9bcd7e96e16e829f602a96cded4ac",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/street.webp",
+      "bytes": 149920,
+      "sha256": "c23e32adedb95bf7fda38acdcbd646ce0cb0c3e58351d775b4f9c3e4a1965be7",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1439,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/studio.webp",
+      "bytes": 208916,
+      "sha256": "8690165a9e0519a792a96fcca83d0033b7e748730a9f2d1a44d7e1301776f0a7",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/images/world/chrome-ring.png",
+      "bytes": 1698108,
+      "sha256": "31ebedef6b8881451a3f89a8c21e61c1b468075360636e945fcb97e2f8c14a34",
+      "role": "legacy-generated",
+      "kind": "image",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024,
+        "format": "png",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/media/archive/bcp-6845.webp",
+      "bytes": 227156,
+      "sha256": "812408390c0727aa25092fe9641fedb341143f9a7fe7e552647a9c2d32efc5d7",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 900,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/crowd.webp",
+      "bytes": 325774,
+      "sha256": "aba201c173ee3eec8db6054aa5b8944a49ac6bc417518c3847d5e6144b07871e",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1600,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/daylight.webp",
+      "bytes": 145828,
+      "sha256": "ebfcd3871ed368576b3281d86f5e42bf623ac22aaa0a428ac210e14dbdb5bd77",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/facade.webp",
+      "bytes": 74064,
+      "sha256": "7a443402a79b4036aa28d2a69eade4d4ca06996cf58a61898277f4d7aadef22e",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/live.webp",
+      "bytes": 202062,
+      "sha256": "3f41dc9ff95a4ddaf2aeab708659b3b2f1849761724247cee6de1c7952e72535",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1600,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/portrait.webp",
+      "bytes": 131536,
+      "sha256": "50f49af234e59ef1ae1dd3e7409edb0069da05489bae7e7815ac99bfb9f113ae",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/show-7.webp",
+      "bytes": 306014,
+      "sha256": "488a359cf3769b469f3112bc31a540486d98bdbbfef25f38556bc39c2c68a04b",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1200,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/stage-view.webp",
+      "bytes": 258960,
+      "sha256": "185b58ebf23f62c5817ac2688bd056b356e5a04cdc89745ad5799b750e69beeb",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1600,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/street.webp",
+      "bytes": 121594,
+      "sha256": "1d54e8c4a0ce0ce9089b413f0a9a9a33bf22626f8ab0935adc53482efeef820c",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1439,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/studio.webp",
+      "bytes": 164136,
+      "sha256": "675c6c15de0efdfd3636a62e731e8fee82b88f3d9e01f0c4c0d7c22035c9862a",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1440,
+        "height": 1440,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/timals-2887.webp",
+      "bytes": 229378,
+      "sha256": "dbeae1f68174fa83ea7bbca7df7d14047faf275fff50081598558c5223510ae0",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1068,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/timals-2903.webp",
+      "bytes": 83726,
+      "sha256": "a8f81758efe7ff782c30a9e6775664141bdf14d00e3049e2c19a39157cfc71ab",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1068,
+        "height": 1600,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/archive/yellow-portrait.webp",
+      "bytes": 64278,
+      "sha256": "79d439a535ff2d9f0a77eaf6233281561528fea2b0681d38a486633e104b6b54",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1080,
+        "height": 1079,
+        "format": "webp",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/ceo-visuals-background.mp4",
+      "bytes": 2948192,
+      "sha256": "101e31fd3a5837fdc4313a41f9ada2afa938b522ee2abdd37ef59a3348620130",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 20.083333333333332
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/media/ceo-visuals-poster.jpg",
+      "bytes": 147658,
+      "sha256": "c619e9f0ca1bfbca032f1e276b02bfea458e6aba508c630cac04ed54bfba4821",
+      "role": "visual-reference",
+      "kind": "image",
+      "dimensions": {
+        "width": 1600,
+        "height": 900,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/crowd-close.jpg",
+      "bytes": 39797,
+      "sha256": "79a4eae8819253e9cf18f878c71f3c7730242bf9bfbab32d94e97e83de2f924c",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/crowd-close.mp4",
+      "bytes": 1038983,
+      "sha256": "d4d00f0a1f45e09fcad928b819578f8359c58ef46d233958e5ab59569d968231",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 4
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 4
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/media/world/crowd-front.jpg",
+      "bytes": 138874,
+      "sha256": "6820f0362ee82efe5bca7e9623cda8491af3774ffbb699c42d2e53f236470fe8",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/crowd-front.mp4",
+      "bytes": 1067860,
+      "sha256": "d1e1827ac8f1d9adb2b442638b7ef808a2df0a93773d87db8b624b049e93d864",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 4
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 4
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/media/world/night-audience.jpg",
+      "bytes": 67448,
+      "sha256": "892b9d7e38752b361bb6651d8f9a397975a044375c859386b18cea6a5d60f44f",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/night-audience.mp4",
+      "bytes": 1049638,
+      "sha256": "d5bc701791d0fa94bb42aa1a78137aa52b61e0c2ff8701585e94841a1ac6bc22",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 4
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 4
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/media/world/performance.jpg",
+      "bytes": 73674,
+      "sha256": "d9b24e4eb6efb9a245be10c779f0793fd51f1d0f6a6c315a7087d4791f072f1f",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/performance.mp4",
+      "bytes": 1012638,
+      "sha256": "39aef1fd81114993ecac1f44d726ff25a32149efed135192f77b9e6183cb1a2c",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 4
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 4
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/media/world/stage-depth.jpg",
+      "bytes": 59369,
+      "sha256": "7ae660f53fcf5039af59a52111f2149dcbdec4e4eef3d6dd59d35b28c6628e77",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/stage-depth.mp4",
+      "bytes": 1038665,
+      "sha256": "ff435bc4ae101333963a831d8520698942c25d43681a52ba41e7d0f254d9d58e",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 4
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 4
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/media/world/stage-side.jpg",
+      "bytes": 51145,
+      "sha256": "c1daa43a1654ff8f3e7a79497c184673eb5d78a9a165e37530c2e5ddfe0d3691",
+      "role": "photograph",
+      "kind": "image",
+      "dimensions": {
+        "width": 1280,
+        "height": 720,
+        "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/world/stage-side.mp4",
+      "bytes": 1023261,
+      "sha256": "7b7646e743af02b0b0a1cab0008eca5fb0d797c09bec63f96128e1e4e18470f2",
+      "role": "artist-video",
+      "kind": "video",
+      "dimensions": null,
+      "video": {
+        "tracks": [
+          {
+            "kind": "vide",
+            "durationSeconds": 4
+          },
+          {
+            "kind": "tmcd",
+            "durationSeconds": 4
+          }
+        ],
+        "fastStart": true
+      }
+    },
+    {
+      "path": "/releases/BCP D'ARGENT.png",
+      "bytes": 616832,
+      "sha256": "9ad2683cba03c55a50216f8de6228dc3fde3eeb6132e56812c87f10c6d7a80f0",
+      "role": "release-artwork",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/releases/FANTASTIQUE.png",
+      "bytes": 493047,
+      "sha256": "016906509b3c187c6ec6e117e85bf8be3f62eb52e51f0656966de7013be948e2",
+      "role": "release-artwork",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/releases/KRITIKA.png",
+      "bytes": 587960,
+      "sha256": "c086afde14f212a318e79dad911366fc4dbe9392ae0f898725ab144eea641a00",
+      "role": "release-artwork",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/releases/MACHI BATEL.png",
+      "bytes": 724108,
+      "sha256": "c810a500eb97a714834cf72ef43eacfaeb9935a1042d5da73216e5cd6f9a3f4a",
+      "role": "release-artwork",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/releases/ORIGINAL.png",
+      "bytes": 642537,
+      "sha256": "f3964b87a9dee2315adbe16344c61e4f068ba912fc81d242b11c3dff2ac4e275",
+      "role": "release-artwork",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/releases/TIMALS.png",
+      "bytes": 756301,
+      "sha256": "ef2e47d0b25244902c914cff80f419a54d54a25a972c47126be47c5289fb62aa",
+      "role": "release-artwork",
+      "kind": "image",
+      "dimensions": {
+        "width": 640,
+        "height": 640,
+        "format": "png",
+        "alpha": false
+      }
+    }
+  ]
+}

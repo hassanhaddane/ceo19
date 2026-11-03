@@ -2,23 +2,20 @@ import type { Artist, SectionId, Localized } from '@/types/content';
 export const artist: Artist = {
  projectBegan: {en:'Late 2025',fr:'Fin 2025'},
  name: 'CEO1.9', firstName: 'Samadi', origin: { en: 'Fez, Morocco', fr: 'Fès, Maroc' },
- positioning: { en: 'A new signal from Fez.', fr: 'Un nouveau signal de Fès.' },
- biography: {
- en: 'Samadi, aka CEO1.9, is an independent Moroccan artist from Fez. His universe connects contemporary international rap with Moroccan daily life, street culture, fashion and visual storytelling.',
- fr: 'Samadi, alias CEO1.9, est un artiste indépendant marocain de Fès. Son univers connecte le rap contemporain international au quotidien marocain, à la culture de rue, à la mode et à la narration visuelle.'
- }
+ positioning: { en: 'Local roots. Global reach.', fr: 'Ancrage local. Portée globale.' },
 };
 
-/** The five public scenes. Navigation and section state derive from this one order. */
+/** Public scenes only. EPK and Shop are independent locale routes. */
 export const scenes = [
- { id: 'home', label: { en: 'Home', fr: 'Accueil' } },
- { id: 'music', label: { en: 'Music', fr: 'Musique' } },
- { id: 'archive', label: { en: 'Archive', fr: 'Archives' } },
- { id: 'world', label: { en: 'World', fr: 'Univers' } },
- { id: 'connect', label: { en: 'Connect', fr: 'Contact' } },
-] as const satisfies readonly { id: SectionId; label: Localized }[];
+ { number: '01', navigationSurface: 'dark', id: 'home', label: { en: 'Home', fr: 'Accueil' } },
+ { number: '02', navigationSurface: 'dark', id: 'music', label: { en: 'Music', fr: 'Musique' } },
+ { number: '03', navigationSurface: 'dark', id: 'archive', label: { en: 'Archive', fr: 'Archives' } },
+] as const satisfies readonly { number: string; navigationSurface: 'dark' | 'cream'; id: SectionId; label: Localized }[];
 
 export const sceneCopy = {
- en: { explore: 'Explore', listen: 'Listen', watch: 'Watch', music: 'Music', catalogue: 'Sound / image', archive: 'Archive', archiveNote: 'Street / studio / stage', world: ['From Fez.', 'To the world.'], connect: 'Connect', contact: 'Booking / press / partnerships', origin: 'Fez / Morocco' },
- fr: { explore: 'Explorer', listen: 'Écouter', watch: 'Voir', music: 'Musique', catalogue: 'Son / image', archive: 'Archives', archiveNote: 'Rue / studio / scène', world: ['Depuis Fès.', 'Vers le monde.'], connect: 'Contact', contact: 'Booking / presse / partenariats', origin: 'Fès / Maroc' },
+ en: { explore: 'Explore', listen: 'Listen', watch: 'Watch', music: 'Music', catalogue: 'Sound / image', archive: 'Archive', archiveNote: 'Street / studio / stage', contact: 'Booking / press / partnerships', origin: 'Fez / Morocco' },
+ fr: { explore: 'Explorer', listen: 'Écouter', watch: 'Voir', music: 'Musique', catalogue: 'Son / image', archive: 'Archives', archiveNote: 'Rue / studio / scène', contact: 'Booking / presse / partenariats', origin: 'Fès / Maroc' },
 } as const;
+
+/** Intro is an overlay, never a fifth document scroll stop. */
+export const introScene = { number: '00', id: 'intro', label: { en: 'Intro', fr: 'Intro' } } as const;

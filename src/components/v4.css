@@ -1,0 +1,4 @@
+/* Foundation only: real assets, four scenes, one shared motion vocabulary. */
+.editorial-typography { font:var(--weight-display) var(--type-scene)/var(--leading-display) var(--font-display); letter-spacing:var(--tracking-display); text-transform:uppercase; }
+.irregular-blue-gradient { position:absolute; inset:0; pointer-events:none; z-index:0; background:radial-gradient(ellipse at 2% 80%,color-mix(in srgb,var(--ceo-blue) var(--gradient-strength),transparent),transparent 65%); clip-path:var(--mask-cinematic); }
+.cinematic-mask { overflow:clip; clip-path:var(--mask-cinematic); }

@@ -24,8 +24,8 @@ export function geniusEntry(releaseId: string): GeniusEntry | null {
 export const lyricFragments: Record<string, readonly string[]> = {
  original: ['Original Vocodo', 'Soduko', 'PAS DE RESEAU'],
  kritika: ['KRITIKA KRITIKA KRITIKA', 'DU CHOCOLLAT'],
- fantastique: ['Kmaya Fantastaique', 'Roule moi un joint Magique'],
+ fantastique: ['KMAYA FANTASTIQUE', 'ROULE MOI UN JOINT MAGIQUE'],
  timals: [],
  'machi-batel': ['MACHI BATEL'],
- 'bcp-dargent': ["Pas d'école", 'Khasna l3A9A'],
+ 'bcp-dargent': ["PAS D'ECOLE", 'KHASNA L3A9A'],
 };

@@ -8,8 +8,3 @@ export const motion = {
  ease:'cubic-bezier(.2,.7,.2,1)', snapEase:'cubic-bezier(.2,0,0,1)',
  cinematicEase:'cubic-bezier(.76,0,.24,1)', gsapEase:'power3.inOut',
 } as const;
-
-/** V3 foundation: event/scroll driven only. Entry/media presets live in visualEffects.ts. */
-export const v3Effects = {
- grainOpacity: 0.035,
-} as const;

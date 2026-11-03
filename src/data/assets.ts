@@ -1,8 +1,8 @@
 /** Exact public paths, inventoried recursively. Originals are never renamed or made transparent. */
 export interface PublicAsset {
  readonly path: string;
- readonly kind: 'image' | 'video' | 'font' | 'document';
- readonly role: 'photograph' | 'release-artwork' | 'visual-reference' | 'primary-logo' | 'secondary-logo' | 'logo-variant' | 'legacy-generated' | 'texture' | 'platform-icon' | 'license' | 'font' | 'production-logo' | 'artist-video' | 'social-image';
+ readonly kind: 'image' | 'video' | 'font' | 'document' | 'audio';
+ readonly role: 'photograph' | 'release-artwork' | 'visual-reference' | 'neighborhood-map' | 'primary-logo' | 'secondary-logo' | 'logo-variant' | 'legacy-generated' | 'texture' | 'platform-icon' | 'license' | 'font' | 'production-logo' | 'artist-video' | 'social-image' | 'audio-preview';
  readonly width: number | null;
  readonly height: number | null;
  readonly bytes: number;
@@ -17,11 +17,17 @@ export const assets = {
  primaryLogo: '/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png',
  primaryLogoDark: '/CEO19/Logo/LOGO CEO OFFICIEL Noir.png',
  productionLogo: '/brands/hkz.png',
+ introLogo: '/brands/ceo-mask-256.webp', // Lossless 256px derivative for the intro's in-memory texture; official original preserved.
+ documentaryVideo: '/CEO19/SHOW/CEO DOCCCCC.mp4',
+ epk: null, // Actual approved PDF required. Historical source is named in data/epk.ts but absent.
+ neighborhoodMap: '/CEO19/WORLD/GPS HKZPROD.png',
+ officialLogoJpg: null,
  backgroundVideo: '/media/ceo-visuals-background.mp4',
  videoPoster: '/media/ceo-visuals-poster.jpg',
  secondaryLogo: '/CEO19/Logo/LOGO CEO.jpg',
  artistVideo: '/CEO19/CEO VISUALS/CEO visuels .mp4',
  blueReference: "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
+ timalsCrew: '/CEO19/TIMALS/IMG_2887.jpg',
  hero: '/images/portrait.webp',
  world: '/images/street-close.webp',
  grain: '/images/grain.svg',
@@ -34,6 +40,150 @@ export const assets = {
 
 /** Includes inactive legacy assets for provenance; inventory does not imply publication. */
 export const publicAssets = [
+ {
+  "path": "/CEO19/Original/portrait.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 177580
+ },
+ {
+  "path": "/CEO19/Kritika/street-close.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1440,
+  "height": 1440,
+  "bytes": 112550
+ },
+ {
+  "path": "/CEO19/Fanstastique/Pasted 2026-10-16 at 1.23.25 PM.png",
+  "kind": "image",
+  "role": "photograph",
+  "width": 2712,
+  "height": 1722,
+  "bytes": 1462512
+ },
+ {
+  "path": "/CEO19/MACHI BATEL/Machi batel.png",
+  "kind": "image",
+  "role": "photograph",
+  "width": 2712,
+  "height": 1722,
+  "bytes": 4470142
+ },
+ {
+  "path": "/CEO19/WORLD/GPS HKZPROD.png",
+  "kind": "image",
+  "role": "neighborhood-map",
+  "width": 884,
+  "height": 416,
+  "bytes": 678749
+ },
+ {
+  "path": "/media/world/crowd-close.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 39797
+ },
+ {
+  "path": "/media/world/crowd-close.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 1038983
+ },
+ {
+  "path": "/media/world/crowd-front.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 138874
+ },
+ {
+  "path": "/media/world/crowd-front.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 1067860
+ },
+ {
+  "path": "/media/world/night-audience.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 67448
+ },
+ {
+  "path": "/media/world/night-audience.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 1049638
+ },
+ {
+  "path": "/media/world/performance.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 73674
+ },
+ {
+  "path": "/media/world/performance.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 1012638
+ },
+ {
+  "path": "/media/world/stage-depth.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 59369
+ },
+ {
+  "path": "/media/world/stage-depth.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 1038665
+ },
+ {
+  "path": "/media/world/stage-side.jpg",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 51145
+ },
+ {
+  "path": "/media/world/stage-side.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 1280,
+  "height": 720,
+  "bytes": 1023261
+ },
+ {
+  "path": "/CEO19/SHOW/CEO DOCCCCC.mp4",
+  "kind": "video",
+  "role": "artist-video",
+  "width": 3840,
+  "height": 2160,
+  "bytes": 409256910
+ },
  {
   "path": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
   "kind": "image",
@@ -576,7 +726,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1440,
   "height": 1440,
-  "bytes": 131536
+  "bytes": 127378
  },
  {
   "path": "/media/archive/street.webp",
@@ -584,7 +734,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1440,
   "height": 1439,
-  "bytes": 121594
+  "bytes": 117164
  },
  {
   "path": "/media/archive/live.webp",
@@ -600,7 +750,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1440,
   "height": 1440,
-  "bytes": 164136
+  "bytes": 156056
  },
  {
   "path": "/media/archive/daylight.webp",
@@ -608,7 +758,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1440,
   "height": 1440,
-  "bytes": 145828
+  "bytes": 141650
  },
  {
   "path": "/media/archive/crowd.webp",
@@ -624,7 +774,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1080,
   "height": 1079,
-  "bytes": 64278
+  "bytes": 62574
  },
  {
   "path": "/media/archive/stage-view.webp",
@@ -632,7 +782,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1600,
   "height": 1600,
-  "bytes": 258960
+  "bytes": 249736
  },
  {
   "path": "/media/archive/facade.webp",
@@ -640,7 +790,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1440,
   "height": 1440,
-  "bytes": 74064
+  "bytes": 71516
  },
  {
   "path": "/media/archive/timals-2903.webp",
@@ -648,7 +798,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1068,
   "height": 1600,
-  "bytes": 83726
+  "bytes": 79442
  },
  {
   "path": "/media/archive/bcp-6845.webp",
@@ -656,7 +806,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 900,
   "height": 1600,
-  "bytes": 227156
+  "bytes": 220340
  },
  {
   "path": "/media/archive/show-7.webp",
@@ -672,7 +822,7 @@ export const publicAssets = [
   "role": "photograph",
   "width": 1068,
   "height": 1600,
-  "bytes": 229378
+  "bytes": 221842
  },
  {
   "path": "/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png",
@@ -689,5 +839,141 @@ export const publicAssets = [
   "width": 1254,
   "height": 1254,
   "bytes": 595370
+ },
+ {
+  "path": "/media/archive/show-13.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1200,
+  "height": 1600,
+  "bytes": 289964
+ },
+ {
+  "path": "/media/archive/crowd-front.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 98242
+ },
+ {
+  "path": "/media/archive/bcp-print.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 1600,
+  "bytes": 122250
+ },
+ {
+  "path": "/media/archive/fantastique-still.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 879,
+  "bytes": 40474
+ },
+ {
+  "path": "/media/archive/machi-still.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 956,
+  "bytes": 56918
+ },
+ {
+  "path": "/media/archive/timals-detail.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1068,
+  "height": 1600,
+  "bytes": 106734
+ },
+ {
+  "path": "/media/archive/bcp-cover-session.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1600,
+  "height": 1600,
+  "bytes": 155774
+ },
+ {
+  "path": "/media/archive/show-3.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1200,
+  "height": 1600,
+  "bytes": 197038
+ },
+ {
+  "path": "/media/archive/performance.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1280,
+  "height": 720,
+  "bytes": 47160
+ },
+ {
+  "path": "/media/archive/timals-bicycle.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1068,
+  "height": 1600,
+  "bytes": 204608
+ },
+ {
+  "path": "/media/archive/bcp-backstage.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 900,
+  "height": 1600,
+  "bytes": 64222
+ },
+ {
+  "path": "/media/archive/show-6.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1200,
+  "height": 1600,
+  "bytes": 302902
+ },
+ {
+  "path": "/media/archive/bcp-night.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 900,
+  "height": 1600,
+  "bytes": 102980
+ },
+ {
+  "path": "/media/archive/timals-duo.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 1068,
+  "height": 1600,
+  "bytes": 134334
+ },
+ {
+  "path": "/media/archive/original-artwork.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 640,
+  "height": 640,
+  "bytes": 59880
+ },
+ {
+  "path": "/media/archive/bcp-van.webp",
+  "kind": "image",
+  "role": "photograph",
+  "width": 900,
+  "height": 1600,
+  "bytes": 85166
+ },
+ {
+  "path": "/brands/ceo-mask-256.webp",
+  "kind": "image",
+  "role": "logo-variant",
+  "width": 256,
+  "height": 256,
+  "bytes": 31942
  }
 ] as const satisfies readonly PublicAsset[];

@@ -1,4 +1,5 @@
 'use client';
+import { RevealAction } from '../interactive/RevealAction';
 import {useEffect,useRef,useState} from 'react';
 import {track} from '@/lib/analytics';
 import {youtubeId} from '../music/musicSources';
@@ -20,5 +21,5 @@ export default function FilmPlayer({video,title,suspended=false,onStatus,onPlayb
   loadYoutubeApi().then(api=>{if(disposed)return;player=new api.Player(target,{host:'https://www.youtube-nocookie.com',videoId:id,width:'100%',height:'100%',playerVars:{autoplay:0,controls:1,playsinline:1,rel:0,origin:window.location.origin},events:{onReady:()=>{if(disposed)return;playerReady.current=true;clearTimeout(readyTimer);setError(false);host.querySelector('iframe')?.setAttribute('title',title);if(suspendedRef.current)player?.pauseVideo?.();onStatus?.('ready');},onError:()=>{if(!disposed){clearTimeout(readyTimer);setError(true);onStatus?.('error');} },onStateChange:event=>{if(disposed)return;if(event.data===1&&!playing)track('video_play',{id:video.id});playing=event.data===1;host.setAttribute('data-playing',String(playing));onPlayback?.(event.data===1?'playing':event.data===2||event.data===0?'paused':event.data===3?'loading':'ready');}}});playerRef.current=player;readyTimer=window.setTimeout(()=>{if(!disposed){setError(true);onStatus?.('error');}},15000);}).catch(()=>{if(!disposed){setError(true);onStatus?.('error');}});
   return()=>{disposed=true;clearTimeout(readyTimer);playerRef.current=null;if(host.isConnected&&playerReady.current)player?.pauseVideo?.();playerReady.current=false;player?.destroy();target.remove();};
  },[video.id,video.url,title,onStatus,onPlayback]);
- return <div className="film-player-host" ref={hostRef}>{error&&<a className="film-player-fallback" href={video.url} target="_blank" rel="noopener noreferrer">YouTube ↗</a>}</div>;
+ return <div className="film-player-host" ref={hostRef}>{error&&<RevealAction className="film-player-fallback" href={video.url} target="_blank" rel="noopener noreferrer">YouTube</RevealAction>}</div>;
 }

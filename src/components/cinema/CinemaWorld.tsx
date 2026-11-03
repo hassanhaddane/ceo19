@@ -1,7 +1,10 @@
 'use client';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import {useCallback,useEffect,useRef,useState,type CSSProperties} from 'react';
+import {UtilityButton,UtilityGlyph} from '../interactive/UtilityAction';
+import {NavigationAction} from '../interactive/NavigationAction';
+import {ActionLabel,ActionMark} from '../interactive/ActionButton';
+import {useCallback,useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from 'react';
 import {cinemaCopy} from '@/data/cinema';
 import {releaseWorld} from '@/data/releaseWorlds';
 import {assetUrl} from '@/data/assets';
@@ -24,10 +27,10 @@ export function CinemaWorld({video,release,locale,closing,origin,onMove,count,mo
  const phase=!visible?'closed':closing?'closing':opening?entry.kind:media.id===video.id?media.status:'loading';
  const status=useCallback((value:'ready'|'error')=>setMedia({id:video.id,status:value}),[video.id]);
  const playback=useCallback((value:'playing'|'paused'|'loading'|'ready')=>setMedia({id:video.id,status:value}),[video.id]);
- const poster=video.poster??world.cinemaPoster;
+ const poster=video.poster??world.cover;
  const duration=motion?(entry.kind==='changing'?visualEffects.cinema.change:visualEffects.cinema.entry):visualEffects.cinema.reduced;
- const style={'--cinema-bg':world.cinemaBackground,'--cinema-accent':world.cinemaAccent,'--cinema-fg':'var(--ceo-cream)','--cinema-entry':`${duration}ms`,'--cinema-exit':`${motion?visualEffects.cinema.exit:visualEffects.cinema.reduced}ms`} as CSSProperties;
- useEffect(()=>{
+ const style={'--cinema-bg':world.backgroundColor,'--cinema-accent':world.accentColor,'--cinema-fg':world.textColor,'--cinema-ambient':world.ambientGradient,'--cinema-entry':`${duration}ms`,'--cinema-exit':`${motion?visualEffects.cinema.exit:visualEffects.cinema.reduced}ms`} as CSSProperties;
+ useLayoutEffect(()=>{
   if(!visible)return;
   const element=scene.current;if(!element)return;
   const coverSize=Math.min(innerWidth*.6,innerHeight*.55);
@@ -44,7 +47,7 @@ export function CinemaWorld({video,release,locale,closing,origin,onMove,count,mo
   document.documentElement.dataset.cinemaPhase=phase;
   return()=>{delete document.documentElement.dataset.cinemaPhase;};
  },[visible,phase]);
- return <div ref={scene} className="cinema-world" style={style} data-motion={motion} data-stage={phase} data-treatment={world.cinemaAtmosphere} data-release={world.id}>
+ return <div ref={scene} className="cinema-world" style={style} data-motion={motion} data-stage={phase} data-treatment={world.motionPreset} data-release={world.releaseId}>
   <div className="cinema-ambient" aria-hidden="true">{poster&&<Image src={assetUrl(poster)} alt="" fill sizes="100vw"/>}</div>
   <div className="cinema-atmosphere" aria-hidden="true"/>
   <div key={`entry-${video.id}-${entry.run}`} className="cinema-takeover" aria-hidden="true"/>
@@ -56,7 +59,7 @@ export function CinemaWorld({video,release,locale,closing,origin,onMove,count,mo
   <div className="cinema-load-label" role="status" aria-live="polite">{phase==='opening'||phase==='changing'?'':phase==='loading'?copy.loading:phase==='error'?copy.failed:phase==='playing'?(locale==='fr'?'Lecture':'Playing'):phase==='paused'?(locale==='fr'?'En pause':'Paused'):copy.ready}</div>
   <footer className="cinema-footer">
    <div className="cinema-track"><span className="metadata">{copy.official}{release?.featuredArtist&&` / feat. ${release.featuredArtist}`}</span>{release?.date&&<time className="metadata" dateTime={release.date}>{dateLabel(release.date)}</time>}{release?.credits?.length?<p>{release.credits.join(' / ')}</p>:null}</div>
-   <nav aria-label={copy.cinema}>{count>1&&<button type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(-1)} aria-label={copy.previous}>←</button>}<a href={video.url} target="_blank" rel="noopener noreferrer" data-cursor="enter">{copy.external} ↗</a>{count>1&&<button type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(1)} aria-label={copy.next}>→</button>}</nav>
+   <nav aria-label={copy.cinema}>{count>1&&<UtilityButton type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(-1)} aria-label={copy.previous}><UtilityGlyph kind="previous"/></UtilityButton>}<NavigationAction href={video.url} target="_blank" rel="noopener noreferrer" data-cursor="enter"><ActionLabel>{copy.external}</ActionLabel><ActionMark/></NavigationAction>{count>1&&<UtilityButton type="button" disabled={closing} data-cursor="enter" onClick={()=>onMove(1)} aria-label={copy.next}><UtilityGlyph kind="next"/></UtilityButton>}</nav>
   </footer>
  </div>;
 }

@@ -13,7 +13,7 @@ function harness(t) {
   pause() { this.paused = true; this.dispatchEvent(new Event('pause')); }, load() { this.loads++; },
  });
  const states = [], errors = [], playing = [];
- const attach = (enabled = true) => attachBackgroundPlayback(media, { enabled, onPlaying: value => playing.push(value), onStatus: state => states.push(state), onError: error => errors.push(error) });
+ const attach = (enabled = true, suspended = false) => attachBackgroundPlayback(media, { enabled, suspended, onPlaying: value => playing.push(value), onStatus: state => states.push(state), onError: error => errors.push(error) });
  return { media, document, window, states, errors, playing, attach };
 }
 const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
@@ -72,4 +72,17 @@ test('network recovery reloads the same failed element once until successful pla
  const h = harness(t), dispose = h.attach(); h.media.error = { code: 2 }; h.media.dispatchEvent(new Event('error'));
  h.window.dispatchEvent(new Event('online')); h.window.dispatchEvent(new Event('pageshow'));
  assert.equal(h.media.loads, 1); assert.equal(h.errors.length, 1); dispose();
+});
+
+test('covered scenes pause and resume the existing playhead without reloading the persistent source', t => {
+ const h = harness(t);
+ h.media.currentTime = 11.4; h.media.readyState = 4;
+ const covered = h.attach(true, true);
+ h.media.dispatchEvent(new Event('canplay')); h.document.dispatchEvent(new Event('pointerdown'));
+ assert.equal(h.media.paused, true); assert.equal(h.media.plays.length, 0);
+ assert.equal(h.media.loads, 0); assert.equal(h.media.currentTime, 11.4);
+ assert.equal(h.states.at(-1), 'covered'); covered();
+ const visible = h.attach();
+ assert.equal(h.media.plays.length, 1); assert.equal(h.media.currentTime, 11.4); assert.equal(h.media.loads, 0);
+ visible();
 });

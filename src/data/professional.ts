@@ -1,6 +1,8 @@
 import type { ProfessionalContact } from '@/types/content';
+import { assets } from './assets.ts';
 export const professional: ProfessionalContact = {
- // TODO: Add only the approved updated EPK and authorized downloadable press photography.
- email: 'CEO1.9CONTACT@GMAIL.COM', epk: null, pressImages: [],
+ // Publication allowlist: add only explicitly approved, descriptively named press files.
+ // The historical inventory names an EPK, but the actual PDF is absent from this checkout.
+ email: 'CEO1.9CONTACT@GMAIL.COM', epk: assets.epk, pressImages: [],
  services: { en: ['Press & interviews', 'Live bookings', 'Creative partnerships'], fr: ['Presse et interviews', 'Programmation live', 'Partenariats créatifs'] }
 };

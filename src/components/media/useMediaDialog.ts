@@ -2,8 +2,9 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 function restoreFocus(trigger:HTMLElement|null,opener:RefObject<HTMLElement|null>){
  // Film navigation may replace the original trigger; resolve the current, connected control on exit.
- const control=trigger?.isConnected?trigger:opener.current;
- const stranded=document.activeElement===document.body||!!document.activeElement?.closest('dialog:not([open])');
+ const usable=(node:HTMLElement|null)=>!!node?.isConnected&&!node.closest('[inert],[hidden]')&&node.getClientRects().length>0;
+ const control=usable(opener.current)?opener.current:usable(trigger)?trigger:null;
+ const stranded=document.activeElement===document.body||document.activeElement===trigger||!!document.activeElement?.closest('dialog:not([open])');
  if(control?.isConnected&&stranded&&!document.querySelector('dialog[open]'))control.focus({preventScroll:true});
 }
 /** Native showModal supplies inert background and focus containment; preserve existing scroll styles. */
@@ -25,7 +26,7 @@ export function useMediaDialog(open:boolean, providedOpener?:RefObject<HTMLEleme
   element.showModal();
   const containFocus=(event:KeyboardEvent)=>{
    if(event.key!=='Tab')return;
-   const controls=Array.from(element.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], iframe, [tabindex="0"]')).filter(control=>control.getClientRects().length>0&&!control.closest('[inert], [hidden]'));
+   const controls=Array.from(element.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, iframe, [tabindex]')).filter(control=>!control.matches(':disabled')&&control.tabIndex>=0&&control.getClientRects().length>0&&!control.closest('[inert], [hidden]'));
    const first=controls[0],last=controls[controls.length-1];
    if(!first||!last){event.preventDefault();element.focus();return;}
    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}

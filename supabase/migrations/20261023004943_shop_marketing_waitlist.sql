@@ -1,0 +1,186 @@
+-- CEO1.9 Shop marketing. One contact row per channel: never merge unverified identities.
+create table public.marketing_consent_versions (
+ version text not null, locale text not null check (locale in ('en','fr')),
+ channel text not null check (channel in ('email','sms')), consent_text text not null,
+ primary key (version, locale, channel)
+);
+insert into public.marketing_consent_versions values
+ ('shop-waitlist-2026-10-23.1','en','email','I agree to receive CEO1.9 marketing emails.'),
+ ('shop-waitlist-2026-10-23.1','en','sms','I agree to receive CEO1.9 promotional SMS.'),
+ ('shop-waitlist-2026-10-23.1','fr','email','J’accepte de recevoir les emails marketing de CEO1.9.'),
+ ('shop-waitlist-2026-10-23.1','fr','sms','J’accepte de recevoir les SMS promotionnels de CEO1.9.');
+
+create table public.marketing_contacts (
+ id uuid primary key default gen_random_uuid(),
+ channel text not null check (channel in ('email','sms')),
+ email text unique, phone_e164 text unique,
+ email_consent boolean not null default false, sms_consent boolean not null default false,
+ email_consent_at timestamptz, sms_consent_at timestamptz,
+ consent_text_version text not null, source text not null default 'shop_waitlist' check (source='shop_waitlist'),
+ locale text not null check (locale in ('en','fr')),
+ status text not null default 'pending' check (status in ('pending','confirmed','suppressed')),
+ created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
+ confirmed_at timestamptz, unsubscribed_email_at timestamptz, unsubscribed_sms_at timestamptz,
+ confirmation_token_hash text, confirmation_expires_at timestamptz,
+ confirmation_delivery text not null default 'pending' check (confirmation_delivery in ('pending','accepted','failed','unconfigured')),
+ check ((channel='email' and email is not null and phone_e164 is null and sms_consent=false and sms_consent_at is null)
+     or (channel='sms' and phone_e164 is not null and email is null and email_consent=false and email_consent_at is null)),
+ check (email is null or (email=lower(btrim(email)) and length(email)<=254 and email ~ '^[^@ ]+@[^@ ]+\.[^@ ]+$')),
+ check (phone_e164 is null or phone_e164 ~ '^\+[1-9][0-9]{6,14}$'),
+ check (not email_consent or email_consent_at is not null),
+ check (not sms_consent or sms_consent_at is not null),
+ check (status<>'confirmed' or confirmed_at is not null)
+);
+create unique index marketing_confirmation_hash on public.marketing_contacts(confirmation_token_hash) where confirmation_token_hash is not null;
+create index marketing_pending_created on public.marketing_contacts(created_at) where status='pending';
+create table public.marketing_consent_events (
+ id uuid primary key default gen_random_uuid(), contact_id uuid not null references public.marketing_contacts(id) on delete cascade,
+ channel text not null check(channel in ('email','sms')), event text not null check(event in ('opt_in_requested','email_confirmed','unsubscribed','pending_expired')),
+ consent boolean not null, occurred_at timestamptz not null default now(),
+ consent_text_version text not null, consent_text text not null,
+ locale text not null, source text not null check(source='shop_waitlist')
+);
+create index marketing_events_contact_time on public.marketing_consent_events(contact_id,occurred_at);
+create table public.marketing_rate_limits (
+ key text not null, window_start timestamptz not null, hits integer not null check(hits>0),
+ primary key(key,window_start)
+);
+create index marketing_rate_expiry on public.marketing_rate_limits(window_start);
+
+alter table public.marketing_contacts enable row level security;
+alter table public.marketing_consent_events enable row level security;
+alter table public.marketing_consent_versions enable row level security;
+alter table public.marketing_rate_limits enable row level security;
+revoke all on public.marketing_contacts,public.marketing_consent_events,public.marketing_consent_versions,public.marketing_rate_limits from public,anon,authenticated;
+grant usage on schema public to service_role;
+grant select,insert,update,delete on public.marketing_contacts,public.marketing_rate_limits to service_role;
+grant select,insert on public.marketing_consent_events to service_role;
+grant select on public.marketing_consent_versions to service_role;
+
+create function public.marketing_health() returns boolean language sql stable security invoker set search_path='' as $$
+ select exists(select 1 from public.marketing_consent_versions where version='shop-waitlist-2026-10-23.1');
+$$;
+create function public.marketing_subscribe(p_channels jsonb,p_locale text,p_version text,p_rate_keys jsonb)
+returns jsonb language plpgsql security invoker set search_path='' as $$
+declare
+ item jsonb; bucket jsonb; v_channel text; v_address text; v_text text; v_id uuid;
+ v_count integer; v_limit integer; v_seconds integer; v_window timestamptz;
+ v_result jsonb := '[]'::jsonb;
+begin
+ if p_channels is null or p_rate_keys is null or p_locale not in ('en','fr') or p_version<>'shop-waitlist-2026-10-23.1' or p_locale is null or p_version is null
+  or jsonb_typeof(p_channels)<>'array' or jsonb_array_length(p_channels) not between 1 and 2
+  or jsonb_typeof(p_rate_keys)<>'array' or jsonb_array_length(p_rate_keys) not between 1 and 3 then
+  raise exception 'invalid_marketing_request';
+ end if;
+ if (select count(distinct c->>'channel') from jsonb_array_elements(p_channels)c)<>jsonb_array_length(p_channels) then raise exception 'duplicate_channel'; end if;
+ for item in select value from jsonb_array_elements(p_channels) loop
+  if (item->'consent') is distinct from 'true'::jsonb or coalesce(item->>'channel','') not in ('email','sms')
+   or coalesce(item->>'token_hash','') !~ '^[a-f0-9]{64}$' then raise exception 'explicit_consent_required'; end if;
+ end loop;
+ -- Atomic distributed windows. Deterministic ordering prevents competing lock-order cycles.
+ for bucket in select value from jsonb_array_elements(p_rate_keys) order by value->>'key' loop
+  v_limit := (bucket->>'limit')::integer; v_seconds := (bucket->>'seconds')::integer;
+  if v_limit is null or v_seconds is null or v_limit not between 1 and 1000 or v_seconds not between 1 and 86400 or coalesce(bucket->>'key','') !~ '^[a-f0-9]{64}$' then raise exception 'invalid_rate_bucket'; end if;
+  v_window := to_timestamp(floor(extract(epoch from now()) / v_seconds) * v_seconds);
+  v_count := null;
+  insert into public.marketing_rate_limits as limits(key,window_start,hits) values(bucket->>'key',v_window,1)
+  on conflict(key,window_start) do update set hits=limits.hits+1 where limits.hits<v_limit returning hits into v_count;
+  if v_count is null then return jsonb_build_object('stored',false,'rate_limited',true,'retry_after',greatest(1,ceil(extract(epoch from(v_window+make_interval(secs=>v_seconds)-now())))::integer)); end if;
+ end loop;
+ delete from public.marketing_rate_limits where window_start<now()-interval '2 days';
+ for item in select value from jsonb_array_elements(p_channels) order by value->>'channel' loop
+  v_channel := item->>'channel'; v_address := item->>'address';
+  select consent_text into strict v_text from public.marketing_consent_versions where version=p_version and locale=p_locale and channel=v_channel;
+  if v_channel='email' then
+   insert into public.marketing_contacts as contact(channel,email,email_consent,email_consent_at,consent_text_version,locale,confirmation_token_hash,confirmation_expires_at)
+   values('email',lower(btrim(v_address)),true,now(),p_version,p_locale,item->>'token_hash',(item->>'token_expires_at')::timestamptz)
+   on conflict(email) do update set email_consent=true,email_consent_at=now(),consent_text_version=p_version,locale=p_locale,updated_at=now(),
+    status=case when contact.status='confirmed' and (contact.unsubscribed_email_at is null or contact.confirmed_at>contact.unsubscribed_email_at) then 'confirmed' else 'pending' end,
+    confirmation_token_hash=excluded.confirmation_token_hash,confirmation_expires_at=excluded.confirmation_expires_at,confirmation_delivery='pending'
+   returning id into v_id;
+  else
+   insert into public.marketing_contacts as contact(channel,phone_e164,sms_consent,sms_consent_at,consent_text_version,locale)
+   values('sms',v_address,true,now(),p_version,p_locale)
+   on conflict(phone_e164) do update set sms_consent=true,sms_consent_at=now(),consent_text_version=p_version,locale=p_locale,updated_at=now(),
+    status=case when contact.status='confirmed' and (contact.unsubscribed_sms_at is null or contact.confirmed_at>contact.unsubscribed_sms_at) then 'confirmed' else 'pending' end
+   returning id into v_id;
+  end if;
+  insert into public.marketing_consent_events(contact_id,channel,event,consent,consent_text_version,consent_text,locale,source)
+  values(v_id,v_channel,'opt_in_requested',true,p_version,v_text,p_locale,'shop_waitlist');
+  v_result := v_result || jsonb_build_array(jsonb_build_object('id',v_id,'channel',v_channel));
+ end loop;
+ return jsonb_build_object('stored',true,'channels',v_result);
+end; $$;
+
+create function public.marketing_delivery(p_id uuid,p_hash text,p_status text) returns void
+language sql security invoker set search_path='' as $$
+ update public.marketing_contacts set confirmation_delivery=p_status,updated_at=now()
+ where id=p_id and confirmation_token_hash=p_hash and p_status in ('accepted','failed','unconfigured');
+$$;
+create function public.marketing_confirm(p_token_hash text) returns boolean
+language plpgsql security invoker set search_path='' as $$
+declare contact public.marketing_contacts;
+begin
+ update public.marketing_contacts set status='confirmed',confirmed_at=now(),updated_at=now(),confirmation_token_hash=null,confirmation_expires_at=null
+ where channel='email' and email_consent=true and confirmation_token_hash=p_token_hash and confirmation_expires_at>now()
+  and (unsubscribed_email_at is null or email_consent_at>unsubscribed_email_at) returning * into contact;
+ if not found then return false; end if;
+ insert into public.marketing_consent_events(contact_id,channel,event,consent,consent_text_version,consent_text,locale,source)
+ select contact.id,'email','email_confirmed',true,contact.consent_text_version,consent_text,contact.locale,'shop_waitlist'
+ from public.marketing_consent_versions where version=contact.consent_text_version and locale=contact.locale and channel='email';
+ return true;
+end; $$;
+create function public.marketing_unsubscribe(p_id uuid,p_channel text) returns boolean
+language plpgsql security invoker set search_path='' as $$
+declare contact public.marketing_contacts;
+begin
+ select * into contact from public.marketing_contacts where id=p_id and channel=p_channel for update;
+ if not found then return false; end if;
+ if contact.status='suppressed' then return true; end if;
+ update public.marketing_contacts set status='suppressed',updated_at=now(),
+  email_consent=case when channel='email' then false else email_consent end,
+  sms_consent=case when channel='sms' then false else sms_consent end,
+  unsubscribed_email_at=case when channel='email' then now() else unsubscribed_email_at end,
+  unsubscribed_sms_at=case when channel='sms' then now() else unsubscribed_sms_at end,
+  confirmation_token_hash=null,confirmation_expires_at=null where id=p_id;
+ insert into public.marketing_consent_events(contact_id,channel,event,consent,consent_text_version,consent_text,locale,source)
+ select contact.id,p_channel,'unsubscribed',false,contact.consent_text_version,consent_text,contact.locale,'shop_waitlist'
+ from public.marketing_consent_versions where version=contact.consent_text_version and locale=contact.locale and channel=p_channel;
+ return true;
+end; $$;
+
+-- Campaigns must read these eligibility views, not raw opt-in requests.
+create view public.marketing_email_audience with(security_invoker=true) as
+ select id,email,locale from public.marketing_contacts where channel='email' and status='confirmed' and email_consent
+ and (unsubscribed_email_at is null or confirmed_at>unsubscribed_email_at);
+create view public.marketing_sms_audience with(security_invoker=true) as
+ select id,phone_e164,locale from public.marketing_contacts where channel='sms' and status='confirmed' and sms_consent
+ and (unsubscribed_sms_at is null or confirmed_at>unsubscribed_sms_at);
+revoke all on public.marketing_email_audience,public.marketing_sms_audience from public,anon,authenticated;
+grant select on public.marketing_email_audience,public.marketing_sms_audience to service_role;
+revoke all on function public.marketing_health(),public.marketing_subscribe(jsonb,text,text,jsonb),public.marketing_delivery(uuid,text,text),public.marketing_confirm(text),public.marketing_unsubscribe(uuid,text) from public,anon,authenticated;
+grant execute on function public.marketing_health(),public.marketing_subscribe(jsonb,text,text,jsonb),public.marketing_delivery(uuid,text,text),public.marketing_confirm(text),public.marketing_unsubscribe(uuid,text) to service_role;
+
+-- Run daily from a trusted scheduler/SQL dashboard. No public maintenance endpoint.
+create function public.marketing_maintenance() returns jsonb
+language plpgsql security invoker set search_path='' as $$
+declare v_deleted integer; v_expired integer; v_tokens integer; v_rates integer;
+begin
+ delete from public.marketing_contacts where status='pending' and updated_at<now()-interval '30 days'
+  and unsubscribed_email_at is null and unsubscribed_sms_at is null;
+ get diagnostics v_deleted=row_count;
+ insert into public.marketing_consent_events(contact_id,channel,event,consent,consent_text_version,consent_text,locale,source)
+ select c.id,c.channel,'pending_expired',false,c.consent_text_version,v.consent_text,c.locale,'shop_waitlist'
+ from public.marketing_contacts c join public.marketing_consent_versions v on v.version=c.consent_text_version and v.locale=c.locale and v.channel=c.channel
+ where c.status='pending' and c.updated_at<now()-interval '30 days' and (c.unsubscribed_email_at is not null or c.unsubscribed_sms_at is not null);
+ update public.marketing_contacts set status='suppressed',email_consent=false,sms_consent=false,confirmation_token_hash=null,confirmation_expires_at=null,updated_at=now()
+ where status='pending' and updated_at<now()-interval '30 days' and (unsubscribed_email_at is not null or unsubscribed_sms_at is not null);
+ get diagnostics v_expired=row_count;
+ update public.marketing_contacts set confirmation_token_hash=null,confirmation_expires_at=null where confirmation_expires_at<now();
+ get diagnostics v_tokens=row_count;
+ delete from public.marketing_rate_limits where window_start<now()-interval '2 days';
+ get diagnostics v_rates=row_count;
+ return jsonb_build_object('pending_deleted',v_deleted,'requests_expired',v_expired,'tokens_cleared',v_tokens,'rate_deleted',v_rates);
+end; $$;
+revoke all on function public.marketing_maintenance() from public,anon,authenticated;
+grant execute on function public.marketing_maintenance() to service_role;

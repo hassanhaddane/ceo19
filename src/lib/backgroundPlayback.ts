@@ -2,15 +2,16 @@
  * visibility, network or user-gesture events; it never polls or replaces the decoder. */
 export function attachBackgroundPlayback(media: HTMLVideoElement, options: {
  enabled: boolean;
+ suspended?: boolean;
  onPlaying: (playing: boolean) => void;
  onStatus?: (state: string, detail?: unknown) => void;
  onError?: (error: unknown) => void;
 }) {
  let disposed = false, attempt = 0, pending = false, networkRecovery = false;
- const eligible = () => !disposed && options.enabled && !document.hidden;
+ const eligible = () => !disposed && options.enabled && !options.suspended && !document.hidden;
  const status = options.onStatus ?? (() => {});
  const sync = () => {
-  if (!eligible()) { attempt++; pending = false; media.pause(); options.onPlaying(false); status(options.enabled ? 'hidden' : 'reduced motion'); return; }
+  if (!eligible()) { attempt++; pending = false; media.pause(); options.onPlaying(false); status(!options.enabled ? 'reduced motion' : options.suspended ? 'covered' : 'hidden'); return; }
   if (pending || (!media.paused && media.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA)) return;
   media.muted = true;
   const ticket = ++attempt; pending = true; status('starting');

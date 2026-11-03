@@ -1,10 +1,20 @@
-import Link from 'next/link';
 import type { Locale } from '@/types/content';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { artist } from '@/data/artist';
-import { socials } from '@/data/socials';
 import { LogoMark } from './primitives';
+import { NavigationAction } from './interactive/NavigationAction';
+import { ActionLabel } from './interactive/ActionButton';
+import { socials, channelProduction } from '@/data/socials';
+import { professional } from '@/data/professional';
+import { experienceStart } from '@/lib/experienceRoutes';
+import { HkzMark } from './interaction/HkzMark';
 
-export function Footer({ locale, copy, expanded = false }: { locale: Locale; copy: Dictionary; expanded?: boolean }) {
- return <footer className={`site-footer${expanded ? ' site-footer--expanded' : ''}`}><a href={`/${locale}#home`} aria-label={`${artist.name} — ${copy.nav.home}`}><LogoMark secondary sizes={expanded ? '42px' : '(max-width:767px) 70px, 90px'} /></a>{expanded ? <><span className="metadata footer-artist">CEO1.9</span><nav aria-label={locale === 'fr' ? 'Réseaux sociaux' : 'Social links'}>{socials.map(social => <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer">{social.platform}</a>)}</nav><nav className="footer-language" aria-label={locale === 'fr' ? 'Langue' : 'Language'}><Link href="/en#connect" aria-current={locale === 'en' ? 'page' : undefined}>EN</Link><Link href="/fr#connect" aria-current={locale === 'fr' ? 'page' : undefined}>FR</Link></nav></> : <span className="metadata">{artist.origin[locale]}</span>}<span className="metadata">© {new Date().getUTCFullYear()} {artist.name}</span></footer>;
+export function Footer({ locale, copy }: { locale: Locale; copy: Dictionary }) {
+ return <footer id="connect" tabIndex={-1} className="site-footer compact-footer" aria-label={locale === 'fr' ? 'Réseaux et contact' : 'Socials and contact'}>
+  <NavigationAction client href={`/${locale}#home`} aria-label={`${artist.name} — ${copy.nav.home}`}><LogoMark secondary sizes="40px" /></NavigationAction>
+  <nav className="footer-socials" aria-label={locale === 'fr' ? 'Réseaux sociaux' : 'Social links'}>{socials.map(social => <NavigationAction key={social.id} href={social.url} target="_blank" rel="noopener noreferrer" data-analytics="social_click" data-id={social.id}><ActionLabel>{social.platform}</ActionLabel></NavigationAction>)}</nav>
+  <NavigationAction className="footer-production" href={channelProduction.instagram} target="_blank" rel="noopener noreferrer" aria-label="HKZ PROD — Instagram"><HkzMark sizes="32px"/><ActionLabel>HKZ PROD</ActionLabel></NavigationAction>
+  <nav className="footer-professional" aria-label={copy.contact}><NavigationAction client href={experienceStart(locale,'epk')}><ActionLabel>{copy.press}</ActionLabel></NavigationAction><NavigationAction href={`mailto:${professional.email}`} data-analytics="contact_click"><ActionLabel>{copy.contact}</ActionLabel></NavigationAction></nav>
+  <span className="metadata">© {new Date().getUTCFullYear()} {artist.name}</span>
+ </footer>;
 }

@@ -1,5 +1,7 @@
 'use client';
 import {useEffect,useRef,useState,type RefObject} from 'react';
+import {SoundSettings} from '@/features/audio/SoundSettings';
+import {useSoundManager} from '@/features/audio/SoundProvider';
 import {videos} from '@/data/videos';
 import {cinemaCopy} from '@/data/cinema';
 import {visualEffects} from '@/lib/visualEffects';
@@ -7,10 +9,13 @@ import {useSignalMotion} from '@/lib/signalMotion';
 import type {Locale,Release} from '@/types/content';
 import {useMediaDialog} from '../media/useMediaDialog';
 import {LogoMark} from '../primitives';
+import {UtilityButton,UtilityGlyph} from '../interactive/UtilityAction';
 import {CinemaWorld,type CinemaOrigin} from './CinemaWorld';
 
 /** Mounted once on first Watch, retained across films and later openings. Native dialog supplies inert/focus semantics. */
 export default function MusicCinema({open,release,locale,opener,origin,onClose,onMove}:{open:boolean;release:Release;locale:Locale;opener:RefObject<HTMLElement|null>;origin:CinemaOrigin|null;onClose:()=>void;onMove:(direction:number)=>void}){
+ const sound=useSoundManager();
+ useEffect(()=>open?sound.holdMedia('cinema'):undefined,[open,sound]);
  const {dialog}=useMediaDialog(open,opener),motion=useSignalMotion(),copy=cinemaCopy[locale];
  const [closing,setClosing]=useState(false);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null),closingRef=useRef(false);
@@ -25,7 +30,7 @@ export default function MusicCinema({open,release,locale,opener,origin,onClose,o
   if(closing||event.target instanceof HTMLIFrameElement)return;
   if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();onMove(event.key==='ArrowLeft'?-1:1);}
  }}>
-  <header className="cinema-header"><div className="cinema-signature"><LogoMark/><span>CEO1.9</span></div><div className="cinema-channel"><span className="metadata">{locale==='fr'?'CINÉMA':'CINEMA'} / CEO1.9</span><h2>{release.title}{release.featuredArtist&&<small> feat. {release.featuredArtist}</small>}</h2></div><button type="button" className="cinema-close" data-cursor="close" aria-label={copy.close} disabled={closing} onClick={close}>{locale==='fr'?'Fermer':'Close'} ×</button></header>
+  <header className="cinema-header"><div className="cinema-signature"><LogoMark/><span>CEO1.9</span></div><div className="cinema-channel"><span className="metadata">{locale==='fr'?'CINÉMA':'CINEMA'} / CEO1.9</span><h2>{release.title}{release.featuredArtist&&<small> feat. {release.featuredArtist}</small>}</h2></div><SoundSettings locale={locale}/><UtilityButton type="button" className="cinema-close" data-cursor="close" aria-label={copy.close} disabled={closing} onClick={close}>{locale==='fr'?'Fermer':'Close'}<UtilityGlyph kind="close"/></UtilityButton></header>
   {video&&<CinemaWorld video={video} release={release} locale={locale} closing={closing} origin={origin} onMove={onMove} count={videos.length} motion={motion} visible={open}/>}
   <p id="music-cinema-help" className="sr-only">{copy.hint}</p>
  </dialog>;

@@ -1,16 +1,8 @@
 'use client';
 import { useSyncExternalStore } from 'react';
 import type { SectionId } from '@/types/content';
-import { scenes } from '@/data/artist';
+export { sceneOrder, sceneFromHash, resolveSceneTarget, sceneScrollTarget } from './sceneTargets';
 
-export const sceneOrder: readonly SectionId[] = scenes.map(scene => scene.id);
-export function sceneFromHash(hash: string): SectionId | null {
- const id = hash.replace(/^#/, '');
- if (sceneOrder.includes(id as SectionId)) return id as SectionId;
- if (/^(release-|film-)/.test(id) || ['channels', 'transmissions', 'visuals'].includes(id)) return 'music';
- if (id.startsWith('archive-')) return 'archive';
- return null;
-}
 export interface SceneState {
  active: SectionId; settled: SectionId; previous: SectionId;
  phase: 'idle' | 'scrolling'; compact: boolean; enabled: boolean; menuOpen: boolean;

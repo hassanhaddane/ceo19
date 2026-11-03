@@ -1,0 +1,24 @@
+/* Shared shell only; EPK and shop own their detailed route styles. */
+.experience-page { padding:144px var(--gutter) 64px; min-height:85svh; }
+.experience-return { display:inline-flex; align-items:center; min-height:44px; margin-top:48px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+body:has(.experience-page):not(:has(.persistent-player[data-engaged='true'])) { padding-bottom:0; }
+.visual-site-shell:has(.experience-page) > .persistent-player[data-engaged='false'] { display:none; }
+.compact-footer.site-footer { min-height:106px; padding:18px var(--gutter); gap:16px 28px; flex-wrap:wrap; color:var(--ceo-cream); background:var(--ceo-black); scroll-snap-align:end; scroll-margin-top:100px; }
+.compact-footer .logo-mark { width:40px; }
+.compact-footer nav { display:flex; flex-wrap:wrap; gap:0 20px; }
+.compact-footer a { display:inline-flex; align-items:center; min-height:44px; font-size:10px; letter-spacing:.06em; }
+.compact-footer .footer-professional { margin-left:auto; }
+.compact-footer .footer-production { gap:8px; flex-shrink:0; }
+.compact-footer .footer-production .hkz-mark { width:32px; height:32px; object-fit:contain; }
+.compact-footer .metadata:last-child { width:auto; }
+.compact-footer:focus-visible { outline:1px solid var(--ceo-blue-light); outline-offset:-4px; }
+.experience-page :is(a,button):focus-visible { outline:2px solid currentColor; outline-offset:5px; }
+.experience-page :is(a,button) { text-underline-offset:5px; }
+.architectural-menu .menu-bottom { flex-wrap:wrap; gap:6px 24px; }
+@media(max-width:767px) {
+ .experience-page { padding-top:110px; }
+ .compact-footer.site-footer { gap:8px 20px; }
+ .compact-footer .footer-socials { flex:1; gap:0 14px; }
+ .compact-footer .footer-professional { margin-left:0; }
+ .compact-footer .metadata:last-child { margin-left:auto; font-size:7px; }
+}

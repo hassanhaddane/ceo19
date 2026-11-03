@@ -1,7 +1,7 @@
 export type Locale = 'en' | 'fr';
 export type Localized<T = string> = Record<Locale, T>;
-export type SectionId = 'home' | 'music' | 'archive' | 'world' | 'connect';
-export interface Artist { name: string; firstName: string; origin: Localized; biography: Localized; positioning: Localized; projectBegan: Localized; }
+export type SectionId = 'home' | 'music' | 'archive';
+export interface Artist { name: string; firstName: string; origin: Localized; positioning: Localized; projectBegan: Localized; }
 export interface PlatformLink { platform: string; url: string; }
 export interface Release { id: string; title: string; date: string | null; featuredArtist: string | null; artwork: string | null; platforms: PlatformLink[]; duration: number | null; credits: string[] | null; audioPreviewUrl?: string | null; spotifyUrl?: string | null; youtubeUrl?: string | null; }
 export interface Video {

@@ -12,4 +12,10 @@ export const releases: Release[] = [
  { platform: 'YouTube', url: 'https://www.youtube.com/watch?v=QprpeYkvZFM' }
  ] }
 ];
-export const featuredRelease = releases[5];
+export const featuredRelease = releases.find(item => item.id === 'bcp-dargent')!;
+/** Featured first, then the existing catalogue in reverse editorial order. No copied metadata. */
+export const homeReleases = [featuredRelease, ...releases.toReversed().filter(item => item !== featuredRelease)];
+/** Scene-only hashes preserve the current selection; only a release hash selects a sleeve. */
+export function releaseFromHash(hash: string): Release | null {
+ return releases.find(item => hash === `#release-${item.id}` || hash === `#film-${item.id}`) ?? null;
+}

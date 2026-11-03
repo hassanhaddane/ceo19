@@ -1,0 +1,8 @@
+# Private runtime files and local-only credentials must never be deployment assets.
+.private/
+.env*
+
+# Preserve artist originals locally; the website serves reviewed web derivatives.
+CEO DOCCCCC.mp4
+public/CEO19/SHOW/CEO DOCCCCC.mp4
+public/CEO19/CEO VISUALS/CEO visuels .mp4
