@@ -4,7 +4,7 @@ import type { SectionId } from '@/types/content';
 export const visualEffects = {
  background: { duration: 700 },
  scenes: { transition: 720, settleDelay: 180, wheelIdle: 190, wheelIntent: 80 },
- menu: { open: 720, close: 520, aperture: 'polygon(48% 100%,48% 42%,48.5% 36%,50% 33%,51.5% 36%,52% 42%,52% 100%,50% 100%)', full: 'polygon(0% 100%,0% 0%,0% 0%,50% 0%,100% 0%,100% 0%,100% 100%,50% 100%)' },
+ menu: { open: 780, close: 780 },
  parallax: { intensity: .8, mobileIntensity: .28, interpolation: .12 },
  releases: { retract: 160, duration: 760, reduced: 120, fragments: 2400, interruption: 160, wheelIdle: 250, wheelThreshold: 90, easing: 'cubic-bezier(.2,.7,.2,1)' },
  cinema: { entry: 760, change: 650, exit: 520, reduced: 140, providerTimeout: 15000 },

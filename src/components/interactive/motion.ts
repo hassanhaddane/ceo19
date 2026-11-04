@@ -5,7 +5,7 @@ export type ActionPrinciple = 'cutout' | 'ink' | 'shift' | 'depth';
 export const actionMotion = {
  press: 110, reveal: 320, shift: 220, settle: 320, depth: 3.5,
  families: {
-  entry: ['cutout', 'depth'], music: ['ink', 'shift'],
+  entry: ['shift'], music: ['ink', 'shift'],
   navigation: ['cutout', 'shift'], shop: ['ink', 'depth'], utility: ['cutout'],
  } satisfies Record<ActionFamily, readonly ActionPrinciple[]>,
 };

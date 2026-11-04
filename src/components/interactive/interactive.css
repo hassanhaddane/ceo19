@@ -178,20 +178,13 @@ html[data-motion-preference='reduced'] .ceo-label-echo { visibility:hidden; }
 .ceo-action--shop:is(:hover,:focus-visible) .ceo-action-mark { rotate:0deg; transform:translate(2px,-2px); }
 .ceo-action--shop .ceo-label-original,.ceo-action--shop .ceo-label-echo { translate:none; }
 .ceo-action--shop .ceo-label-echo { display:none; }
-/* Intro: compact editorial lettering, one brief print reveal, no repeating waveform. */
-.intro-choices .audio-choice-type { font:var(--weight-ui) 15px/1.3 var(--font-editorial); letter-spacing:.1em; }
-.intro-choices .audio-choice-wave > path { animation:none; }
-.intro-choices .ceo-label-original,.intro-choices .ceo-label-echo { translate:none; }
-.intro-choices .ceo-label-echo { display:none; }
-.intro-choices .audio-choice:focus-visible { outline:1px solid var(--intro-cream); outline-offset:4px; }
-.intro-choices .audio-choice:focus-visible::after { content:none; }
 /* Product geometry and carousel artwork stay with their existing owners. */
 .drop-view-controls .ceo-action[aria-pressed='true'] { color:var(--ceo-cream); }
 .drop-view-controls .ceo-action[aria-pressed='true']::after { content:''; position:absolute; left:50%; bottom:2px; width:12px; height:2px; translate:-50% 0; background:var(--ceo-blue-light); }
 .drop-early-access .shop-access,.shop-waitlist .waitlist-submit.ceo-action { font-family:var(--font-editorial); letter-spacing:.045em; }
 .compact-footer .ceo-action { font:var(--weight-ui) 13px/1.3 var(--font-editorial); letter-spacing:.08em; }
 .compact-footer .metadata { font:400 9px/1.5 var(--font-interface); letter-spacing:.08em; }
-@media(max-width:767px) { .music-release-actions > .ceo-action { font-size:16px; letter-spacing:.06em; } .intro-choices .audio-choice-type { font-size:14px; letter-spacing:.07em; } }
+@media(max-width:767px) { .music-release-actions > .ceo-action { font-size:16px; letter-spacing:.06em; } }
 /* Physical press remains accessible without motion; no required content lives in an effect. */
 html[data-motion-preference='reduced'] .ceo-action:active { transform:none; }
 @media(prefers-reduced-motion:reduce) { html:not([data-motion-preference='full']) .ceo-action:active { transform:none; } }
@@ -201,5 +194,4 @@ html[data-motion-preference='reduced'] :is(.ceo-action,.ceo-action-visual,.ceo-a
 }
 /* These variants keep their original line; only Music uses the duplicate-line mask. */
 .ceo-action--utility:is(:hover,:focus-visible) .ceo-label-original,
-.ceo-action--shop:is(:hover,:focus-visible) .ceo-label-original,
-.intro-choices .audio-choice:is(:hover,:focus-visible) .ceo-label-original { translate:none; }
+.ceo-action--shop:is(:hover,:focus-visible) .ceo-label-original { translate:none; }

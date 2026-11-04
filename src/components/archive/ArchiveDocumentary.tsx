@@ -21,9 +21,9 @@ export function ArchiveDocumentary({ paused = false }: { paused?: boolean }) {
   if (!entered || !enabled || active !== 'archive' || menuOpen) { layer.dataset.state = 'hidden'; return; }
   if (!motion) { layer.dataset.state = 'poster'; return; }
   const device = navigator as Navigator & { connection?: { saveData?: boolean }; deviceMemory?: number };
-  if (device.connection?.saveData || device.deviceMemory !== undefined && device.deviceMemory <= 2) { layer.dataset.state = 'poster'; return; }
+  const economy = !!device.connection?.saveData || device.deviceMemory !== undefined && device.deviceMemory <= 2;
   const mobile = matchMedia('(max-width:767px)').matches;
-  const playback = attachArchiveDocumentary([first, second], layer, archiveClips, { fade: mobile ? 350 : 550, preloadLead: mobile ? 1100 : 1500, loadTimeout: 8000, paused: pausedRef.current });
+  const playback = attachArchiveDocumentary([first, second], layer, archiveClips, { fade: economy ? 100 : mobile ? 350 : 550, preloadLead: economy ? 400 : mobile ? 1100 : 1500, loadTimeout: 8000, paused: pausedRef.current });
   controller.current = playback;
   return () => { playback.dispose(); controller.current = null; };
  }, [active, enabled, menuOpen, motion, entered]);

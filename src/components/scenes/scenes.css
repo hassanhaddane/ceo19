@@ -10,9 +10,8 @@ body:has(.scene-flow) { padding-bottom: 0; }
 dialog:is(.architectural-menu,.media-viewer),.scene-flow dialog.media-viewer { position: fixed; inset: 0; }
 .scene-flow .scene-heading h2 { font-size: clamp(68px, 10svh, 130px); line-height: 1.08; }
 .scene-flow :is(.music-scene,.scene-archive) { display: flex; flex-direction: column; justify-content: center; }
-/* Gallery and carousel planes set their own visibility. Opacity on their parent
-   also conceals those planes while the native dialog makes the scene inert. */
-html[data-menu-open='true'] .visual-site-shell > :is(main,.persistent-player) { visibility: hidden; opacity:0; }
+/* Native dialog inertness blocks interaction while the editorial paper reveals
+   over the existing scene, then uncovers that same scene on close. */
 /* Keep the opener rendered so native dialogs can restore focus on immediate close. */
 html[data-menu-open='true'] .visual-site-shell > .site-header { animation:none; opacity: 0; pointer-events: none; }
 .architectural-menu { background: transparent; display: none; isolation: isolate; padding: 0 var(--gutter); }

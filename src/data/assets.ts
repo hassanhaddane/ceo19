@@ -182,7 +182,7 @@ export const publicAssets = [
   "role": "artist-video",
   "width": 3840,
   "height": 2160,
-  "bytes": 409256910
+  "bytes": 26308238
  },
  {
   "path": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",

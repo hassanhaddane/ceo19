@@ -119,6 +119,6 @@
  .epk-production { align-items:flex-start; flex-wrap:wrap; }
  .epk-production .hkz-mark { width:100px; height:100px; }
 }
-@media(prefers-reduced-motion:reduce) { .epk-depth > img,.epk-video-image img { transform:none; transition:none; } }
+@media(prefers-reduced-motion:reduce) { html:not([data-motion-preference='full']) :is(.epk-depth > img,.epk-video-image img) { transform:none; transition:none; } }
 html[data-motion-preference='reduced'] .epk-depth > img,html[data-motion-preference='reduced'] .epk-video-image img { transform:none; transition:none; }
 @media(hover:none) { .epk-depth > img { transform:none; } }

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type MouseEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 import { NavigationAction } from './interactive/NavigationAction';
 import { UtilityButton, UtilityGlyph } from './interactive/UtilityAction';
 import { ActionButton, ActionLabel, ActionMark } from './interactive/ActionButton';
@@ -14,21 +14,22 @@ import { LogoMark } from './primitives';
 import { useEntryExperience } from './visuals/VisualExperience';
 import { navigateScene, publishScene, useSceneState } from '@/lib/sceneNavigation';
 import { isSignalMotionEnabled, resetSignalMotion, setSignalMotion, useSignalMotion, useSignalMotionPreference } from '@/lib/signalMotion';
-import { visualEffects } from '@/lib/visualEffects';
 import { experienceStart } from '@/lib/experienceRoutes';
 import { shopEntry } from '@/lib/shopEntry';
 import { ShopNavigationAction } from './interactive/ShopNavigationAction';
+import { createMenuController } from './navigation/MenuController';
 
 export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dictionary }) {
  const pathname = usePathname(), router = useRouter(), scene = useSceneState(), motion = useSignalMotion();
  const motionPreference = useSignalMotionPreference();
- const motionLabel = locale === 'fr' ? 'Mouvement complet' : 'Full motion';
+ const motionLabel = locale === 'fr' ? 'Animations' : 'Motion';
  const motionStatus = motion ? (locale === 'fr' ? 'Animations activées.' : 'Motion enabled.') : motionPreference === 'system' ? (locale === 'fr' ? 'Animations réduites selon le réglage de votre appareil.' : 'Reduced motion follows your device setting.') : (locale === 'fr' ? 'Animations réduites par votre choix.' : 'Reduced motion is your saved choice.');
  const [open, setOpen] = useState(false), [closing, setClosing] = useState(false);
  const entry = useEntryExperience();
  const { dialog: menuRef, openerRef } = useMediaDialog(open);
  const trigger = useRef<HTMLButtonElement>(null), nav = useRef<HTMLElement>(null), marker = useRef<HTMLSpanElement>(null);
- const animations = useRef<Animation[]>([]), timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+ const menuController = useRef<ReturnType<typeof createMenuController> | null>(null);
+ const closeAction = useRef<(() => void) | undefined>(undefined);
  const closingRef = useRef(false);
  const departureTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
  useEffect(() => {
@@ -66,44 +67,82 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
   document.fonts.addEventListener('loadingdone', update); window.addEventListener('resize', update);
   return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); document.fonts.removeEventListener('loadingdone', update); window.removeEventListener('resize', update); };
  }, [scene.active, scene.compact, locale, pathname]);
- useEffect(() => {
+ const finishClose = useCallback(() => {
+  const after = closeAction.current; closeAction.current = undefined;
+  menuRef.current?.close();
+  closingRef.current = false; setClosing(false); setOpen(false);
+  requestAnimationFrame(() => { if (after) after(); else trigger.current?.focus({ preventScroll: true }); });
+ }, [menuRef]);
+ useLayoutEffect(() => {
   if (!open) return;
-  document.documentElement.dataset.menuOpen = 'true'; publishScene({ menuOpen: true });
   const element = menuRef.current;
-  if (element && isSignalMotionEnabled()) {
-   animations.current.push(element.animate([{ clipPath: visualEffects.menu.aperture }, { clipPath: visualEffects.menu.full }], { duration: visualEffects.menu.open, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'forwards' }));
-   element.querySelectorAll<HTMLElement>('.menu-links a').forEach((link, index) => animations.current.push(link.animate([{ translate: '0 34px', opacity: 0 }, { translate: '0 0', opacity: 1 }], { duration: 520, delay: 120 + index * 42, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'both' })));
-  }
+  if (!element) return;
+  document.documentElement.dataset.menuOpen = 'true'; publishScene({ menuOpen: true });
+  if (isSignalMotionEnabled()) {
+   const controller = createMenuController({
+    sheet: element.querySelector('.menu-paper'), cut: element.querySelector('.menu-cut-track'),
+    items: element.querySelectorAll('.menu-links > a'), signature: element.querySelector('.menu-editorial-marker'),
+    scope: element, onClosed: finishClose, onStage: stage => { element.dataset.menuStage = stage; },
+   });
+   menuController.current = controller; controller.open();
+  } else element.dataset.menuStage = 'open';
+  const visibility = () => { if (document.hidden) menuController.current?.settle(); };
+  document.addEventListener('visibilitychange', visibility);
   return () => {
+   document.removeEventListener('visibilitychange', visibility);
+   menuController.current?.dispose(); menuController.current = null;
    delete document.documentElement.dataset.menuOpen; publishScene({ menuOpen: false });
-   animations.current.forEach(animation => animation.cancel()); animations.current = [];
-   clearTimeout(timer.current);
+   closeAction.current = undefined;
   };
- }, [open, menuRef]);
- useEffect(() => {
-  if (motion || !open || closingRef.current) return;
-  animations.current.forEach(animation => animation.cancel()); animations.current = [];
- }, [motion, open]);
+ }, [open, menuRef, finishClose]);
+ useLayoutEffect(() => {
+  if (!open || motion) return;
+  if (closingRef.current) finishClose();
+  else menuController.current?.settle();
+ }, [motion, open, finishClose]);
+ useLayoutEffect(() => {
+  if (!open) return;
+  const element = menuRef.current, index = element?.querySelector<HTMLElement>('.menu-links');
+  const signature = element?.querySelector<HTMLElement>('.menu-editorial-marker');
+  if (!index || !signature) return;
+  const links = Array.from(index.querySelectorAll<HTMLElement>('a'));
+  let selected = links.find(link => link.hasAttribute('aria-current')) ?? links[0];
+  const position = () => {
+   if (!selected) return;
+   signature.style.height = `${Math.max(20, selected.offsetHeight * .5)}px`;
+   signature.style.translate = `0 ${selected.offsetTop + selected.offsetHeight * .25}px`;
+  };
+  const emphasize = (link?: HTMLElement) => {
+   selected = link ?? links.find(item => item.hasAttribute('aria-current')) ?? links[0];
+   index.dataset.preview = String(!!link);
+   links.forEach(item => { item.dataset.emphasized = String(item === link); });
+   position();
+  };
+  const over = (event: Event) => {
+   if (event instanceof PointerEvent && event.pointerType !== 'mouse') return;
+   const link = event.target instanceof Element ? event.target.closest<HTMLElement>('.menu-links > a') : null;
+   if (link) emphasize(link);
+  };
+  const leave = () => {
+   const focused = document.activeElement instanceof HTMLElement && links.includes(document.activeElement) ? document.activeElement : undefined;
+   emphasize(focused);
+  };
+  const blur = (event: FocusEvent) => { if (!(event.relatedTarget instanceof Node) || !index.contains(event.relatedTarget)) emphasize(); };
+  position();
+  const observer = new ResizeObserver(position); links.forEach(link => observer.observe(link));
+  index.addEventListener('pointerover', over); index.addEventListener('pointerleave', leave);
+  index.addEventListener('focusin', over); index.addEventListener('focusout', blur);
+  return () => { observer.disconnect(); index.removeEventListener('pointerover', over); index.removeEventListener('pointerleave', leave); index.removeEventListener('focusin', over); index.removeEventListener('focusout', blur); };
+ }, [open, menuRef, scene.active, pathname]);
  function close(after?: () => void) {
   if (closingRef.current) return;
-  closingRef.current = true; setClosing(true);
-  const element = menuRef.current;
-  const finish = () => {
-   delete document.documentElement.dataset.menuOpen;
-   // Release the native top layer before returning focus to the revealed header.
-   menuRef.current?.close();
-   closingRef.current = false; setClosing(false); setOpen(false);
-   requestAnimationFrame(() => { if (after) after(); else trigger.current?.focus({ preventScroll: true }); });
-  };
-  if (!element || !motion || document.hidden) { finish(); return; }
-  const from = getComputedStyle(element).clipPath;
-  animations.current.forEach(animation => animation.cancel()); animations.current = [];
-  animations.current.push(element.animate([{ clipPath: from }, { clipPath: visualEffects.menu.aperture }], { duration: visualEffects.menu.close, easing: 'cubic-bezier(.76,0,.24,1)', fill: 'forwards' }));
-  timer.current = setTimeout(finish, visualEffects.menu.close);
+  closeAction.current = after; closingRef.current = true; setClosing(true);
+  if (!menuController.current || !isSignalMotionEnabled() || document.hidden) finishClose();
+  else menuController.current.close();
  }
  function menuNavigate(event: MouseEvent<HTMLAnchorElement>, id: SectionId) {
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  if (pathname !== `/${locale}`) { close(); return; }
+  if (pathname !== `/${locale}`) { event.preventDefault(); close(() => router.push(`/${locale}#${id}`)); return; }
   event.preventDefault(); close(() => navigateScene(id));
  }
  return <>
@@ -117,11 +156,20 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
    }} aria-label={`${artist.name} — ${copy.nav.home}`}><LogoMark /></NavigationAction>
    <div className="header-controls"><SoundSettings locale={locale}/><LanguageSwitcher locale={locale} label={copy.language} pathname={pathname}/><ActionButton family="navigation" ref={trigger} className="menu-toggle" data-cursor="enter" data-owned-interaction aria-label={copy.menu} aria-haspopup="dialog" aria-expanded={open} aria-controls="site-menu" onClick={() => { openerRef.current = trigger.current; setOpen(true); }}><span className="header-menu-label"><span className="header-menu-desktop">INDEX</span><span className="header-menu-mobile">MENU</span></span><span className="menu-toggle-mark" aria-hidden="true"><i/><i/></span></ActionButton><nav aria-label="Shop" className="header-shop-nav"><ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/></nav></div>
   </header>
-  <dialog id="site-menu" ref={menuRef} className="menu-dialog architectural-menu" data-owned-interaction data-closing={closing} aria-labelledby="menu-title" onCancel={event => { event.preventDefault(); close(); }}>
-   <div className="menu-atmosphere" aria-hidden="true"/>
+  <dialog id="site-menu" ref={menuRef} onClick={event => { if (event.target === event.currentTarget || event.target instanceof Element && event.target.classList.contains('menu-paper')) close(); }} className="menu-dialog architectural-menu" data-owned-interaction data-closing={closing} aria-labelledby="menu-title" onCancel={event => { event.preventDefault(); close(); }}>
+   <div className="menu-paper" aria-hidden="true"/><div className="menu-cut-track" aria-hidden="true"><span/></div>
    <div className="menu-top"><NavigationAction client href={`/${locale}#home`} data-cursor="enter" onClick={event => menuNavigate(event, 'home')}><LogoMark /></NavigationAction><span id="menu-title" className="metadata">{artist.name} / {copy.index}</span><LanguageSwitcher locale={locale} label={copy.language} pathname={pathname}/><UtilityButton className="menu-toggle" data-cursor="close" onClick={() => close()}>{copy.close}<UtilityGlyph kind="close"/></UtilityButton></div>
-   <nav aria-label={copy.index} className="menu-links">{scenes.map(({ id, number }) => <NavigationAction client key={id} href={`/${locale}#${id}`} onClick={event => menuNavigate(event, id)} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="metadata">{number}</span><ActionLabel>{copy.nav[id]}</ActionLabel></NavigationAction>)}<ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event, true)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/></nav>
-   <div className="menu-bottom"><SoundSettings locale={locale}/><span id="motion-setting-status" className="sr-only" role="status">{motionStatus}</span><span className="metadata">{artist.origin[locale]}</span><details className="menu-preferences"><summary>{locale === 'fr' ? 'EXPÉRIENCE' : 'EXPERIENCE'}</summary><div><UtilityButton type="button" className="menu-motion" aria-describedby="motion-setting-status" data-cursor="enter" aria-pressed={motion} aria-label={motionLabel} onClick={() => setSignalMotion(!motion)}>{motion ? (locale === 'fr' ? 'Réduire le mouvement' : 'Reduce motion') : (locale === 'fr' ? 'Activer le mouvement' : 'Enable full motion')}</UtilityButton>{motionPreference !== 'system' && <UtilityButton type="button" className="menu-motion-reset" onClick={resetSignalMotion}>{locale === 'fr' ? 'Suivre le réglage de l’appareil' : 'Use device setting'}</UtilityButton>}{entry && <UtilityButton type="button" className="menu-replay" data-cursor="enter" onClick={() => close(entry.replay)}><ActionLabel>{locale === 'fr' ? 'Revoir l’intro' : 'Replay intro'}</ActionLabel><ActionMark/></UtilityButton>}</div></details><NavigationAction client href={experienceStart(locale,'epk')} onClick={() => close()} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}>{copy.press}</NavigationAction><NavigationAction href={`mailto:${professional.email}`}><ActionLabel>{copy.contact}</ActionLabel></NavigationAction></div>
+   <nav aria-label={copy.index} className="menu-links">{scenes.map(({ id, number }) => <NavigationAction client key={id} href={`/${locale}#${id}`} onClick={event => menuNavigate(event, id)} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="metadata">{number}</span><ActionLabel>{copy.nav[id]}</ActionLabel></NavigationAction>)}<ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event, true)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/><span className="menu-editorial-marker" aria-hidden="true"/></nav>
+   <div className="menu-bottom">
+    <div className="menu-settings-row"><SoundSettings locale={locale}/><UtilityButton type="button" className="menu-motion" aria-describedby="motion-setting-status" data-cursor="enter" aria-pressed={motion} aria-label={motionLabel} onClick={() => setSignalMotion(!motion)}>MOTION {motion ? 'ON' : 'OFF'}</UtilityButton></div>
+    <span id="motion-setting-status" className="sr-only" role="status">{motionStatus}</span>
+    <details className="menu-preferences"><summary>{locale === 'fr' ? 'EXPÉRIENCE' : 'EXPERIENCE'}</summary><div>
+     {motionPreference !== 'system' && <UtilityButton type="button" className="menu-motion-reset" onClick={resetSignalMotion}>{locale === 'fr' ? 'Suivre le réglage de l’appareil' : 'Use device setting'}</UtilityButton>}
+     {entry && <UtilityButton type="button" className="menu-replay" data-cursor="enter" onClick={() => close(entry.replay)}><ActionLabel>{locale === 'fr' ? 'Revoir l’intro' : 'Replay intro'}</ActionLabel><ActionMark/></UtilityButton>}
+    </div></details>
+    <NavigationAction client href={experienceStart(locale,'epk')} onClick={event => { if (!event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); close(() => router.push(experienceStart(locale,'epk'))); } }} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}>{copy.press}</NavigationAction>
+    <NavigationAction href={`mailto:${professional.email}`}><ActionLabel>{copy.contact}</ActionLabel></NavigationAction>
+   </div>
   </dialog>
  </>;
 }

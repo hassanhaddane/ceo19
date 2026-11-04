@@ -133,3 +133,24 @@ html[data-motion-preference='reduced'] .floating-navigation,html[data-motion-pre
 .floating-navigation .desktop-nav > a:is(:hover,:focus-visible) { color:inherit; }
 .floating-navigation :is(.sound-toggle,.menu-toggle):is(:hover,:focus-visible) { color:var(--navigation-accent); }
 .floating-navigation[data-surface='cream'] .sound-toggle[aria-pressed='true'] { color:var(--ceo-blue-deep); }
+
+/* V5.3 / THE EDITORIAL CUT: only the decorative paper is masked, never the controls. */
+.architectural-menu { position:fixed; inset:0; isolation:isolate; background:transparent; padding-bottom:0; overflow:auto; overscroll-behavior:contain; }
+.architectural-menu[open] { display:flex; flex-direction:column; }
+.architectural-menu::backdrop { background:transparent; }
+.menu-paper { position:fixed; z-index:-2; inset:0; background:var(--ceo-black); pointer-events:none; }
+.menu-cut-track { position:fixed; z-index:-1; inset:0; pointer-events:none; opacity:0; }
+.menu-cut-track > span { position:absolute; left:0; top:-10%; height:120%; width:2px; background:var(--ceo-cream); transform:skewX(-8deg); }
+.architectural-menu .menu-links { position:relative; display:flex; flex-direction:column; flex-shrink:0; justify-content:center; }
+.architectural-menu .menu-links > a { transition:opacity 260ms var(--action-ease),translate 280ms var(--action-ease); }
+.architectural-menu .menu-links[data-preview='true'] > a:not([data-emphasized='true']) { opacity:.52!important; translate:-2px 0; }
+.architectural-menu .menu-links > a[data-emphasized='true'] { translate:5px 0; }
+.architectural-menu .menu-links .ceo-label-original { translate:none!important; }
+.architectural-menu .menu-links .ceo-label-echo { display:none; }
+.menu-editorial-marker { position:absolute; left:32px; top:0; width:2px; height:40px; background:var(--ceo-blue); transform-origin:50% 50%; pointer-events:none; transition:translate 280ms var(--action-ease),height 280ms var(--action-ease); }
+.architectural-menu .menu-settings-row { flex-basis:100%; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.architectural-menu .menu-settings-row .sound-settings { flex-basis:auto; }
+.architectural-menu .menu-settings-row .menu-motion { font:var(--weight-ui) 13px/1.2 var(--font-editorial); letter-spacing:.08em; opacity:1; }
+.architectural-menu .menu-settings-row .menu-motion::before { display:none; }
+.architectural-menu .menu-top,.architectural-menu .menu-bottom { flex-shrink:0; }
+@media(max-width:767px) { .architectural-menu .menu-bottom { padding-top:12px; } }

@@ -26,7 +26,7 @@ export function useMediaDialog(open:boolean, providedOpener?:RefObject<HTMLEleme
   element.showModal();
   const containFocus=(event:KeyboardEvent)=>{
    if(event.key!=='Tab')return;
-   const controls=Array.from(element.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, iframe, [tabindex]')).filter(control=>!control.matches(':disabled')&&control.tabIndex>=0&&control.getClientRects().length>0&&!control.closest('[inert], [hidden]'));
+   const controls=Array.from(element.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, iframe, summary, [tabindex]')).filter(control=>!control.matches(':disabled')&&control.tabIndex>=0&&control.getClientRects().length>0&&!control.closest('[inert], [hidden]'));
    const first=controls[0],last=controls[controls.length-1];
    if(!first||!last){event.preventDefault();element.focus();return;}
    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
