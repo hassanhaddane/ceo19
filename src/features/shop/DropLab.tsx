@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { demoCatalogue } from '@/data/demoCatalogue';
 import { useSignalMotion } from '@/lib/signalMotion';
 import { useEntryExperience } from '@/components/visuals/VisualExperience';
@@ -17,15 +17,16 @@ import './drop-lab.css';
 export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: ReactNode }) {
  const fr = locale === 'fr', motion = useSignalMotion(), entry = useEntryExperience();
  const [index, setIndex] = useState(0), [phase, setPhase] = useState<'stable' | 'out' | 'in'>('stable');
- const [view, setView] = useState<InspectionView>('front'), [spread, setSpread] = useState(false);
+ const [view, setView] = useState<InspectionView>('rotate'), [spread, setSpread] = useState(false);
  const [available, setAvailable] = useState(true), [visible, setVisible] = useState(true), [blocked, setBlocked] = useState(true);
  const [mountedViewer, setMountedViewer] = useState(false);
- const region = useRef<HTMLElement>(null), requested = useRef(0), timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+ const region = useRef<HTMLElement>(null), requested = useRef(0), committed = useRef(0), exchanging = useRef(false), timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+ const [direction, setDirection] = useState(1);
  const [controller] = useState(() => new InspectionController());
  const product = demoCatalogue[index];
  const setInspection = useCallback((next: InspectionView) => {
   setView(next);
-  if (next !== 'rotate') controller.setPose({ yaw: snapYaw(controller.getPose().yaw, next === 'back'), pitch: 0 });
+  if (next !== 'rotate') controller.setPose({ yaw: snapYaw(controller.getDisplayedPose().yaw, next === 'back'), pitch: 0 });
  }, [controller]);
  useEffect(() => {
   const update = () => {
@@ -40,21 +41,28 @@ export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: 
   return () => { cancelAnimationFrame(frame); observer.disconnect(); intersection.disconnect(); document.removeEventListener('visibilitychange', update); };
  }, [entry?.entered]);
  useEffect(() => () => { timers.current.forEach(clearTimeout); }, []);
+ useLayoutEffect(() => {
+  if (motion || !exchanging.current) return;
+  timers.current.forEach(clearTimeout); timers.current = []; exchanging.current = false;
+  committed.current = requested.current; controller.reset();
+  setIndex(requested.current); setView('rotate'); setSpread(false); setPhase('stable');
+ }, [motion, controller]);
  function select(next: number) {
   if (next === requested.current) return;
+  setDirection(next > committed.current ? 1 : -1);
   requested.current = next; timers.current.forEach(clearTimeout); timers.current = [];
   const commit = () => {
    controller.reset();
-   setIndex(next); setView('front'); setSpread(false); setPhase(motion ? 'in' : 'stable');
-   if (motion) timers.current.push(setTimeout(() => setPhase('stable'), 560));
+   committed.current = next; setIndex(next); setView('rotate'); setSpread(false); setPhase(motion ? 'in' : 'stable');
+   if (motion) timers.current.push(setTimeout(() => { exchanging.current = false; setPhase('stable'); }, 560));
   };
   if (!motion) { commit(); return; }
-  setPhase('out'); timers.current.push(setTimeout(commit, 180));
+  exchanging.current = true; setPhase('out'); timers.current.push(setTimeout(commit, 340));
  }
  const selectors = demoCatalogue.map((item, i) => ({ id: item.id, name: item.name,
-  selectorLabel: [fr ? 'HOODIE' : 'HOODIE', 'T-SHIRT', 'STICKERS', fr ? 'PORTE-CLÉS' : 'KEYCHAIN'][i] }));
+  presentation: item, selectorLabel: ['HOODIE', 'T-SHIRT', 'STICKERS', fr ? 'ACCESSOIRE' : 'ACCESSORY'][i] }));
  return <section ref={region} className="drop-lab" data-mode="demo" data-product={product.id} data-phase={phase} data-motion={motion}
-  style={{ '--drop-accent': product.accent } as CSSProperties} aria-labelledby="drop-lab-title">
+  style={{ '--drop-accent': product.accent, '--exchange-direction': direction } as CSSProperties} aria-labelledby="drop-lab-title">
   <div className="drop-exhibition">
    <div className="drop-atmosphere" aria-hidden="true"/>
    <header className="drop-heading"><div><h1 id="drop-lab-title">DROP LAB</h1><p className="drop-demo-label"><span/>{fr ? 'DÉMO / PAS À VENDRE' : 'DEMO / NOT FOR SALE'}</p></div>
@@ -73,11 +81,12 @@ export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: 
    </div>
    <div className="drop-inspection">
     <div className="drop-view-controls" role="group" aria-label={fr ? 'Vues du prototype' : 'Prototype views'}>
-     {(['front', 'back', 'rotate'] as const).map(item => <UtilityButton key={item} className="drop-view-button" aria-pressed={view === item} disabled={item === 'rotate' && !available} onClick={() => setInspection(item)}><ActionLabel>{fr ? item === 'front' ? 'FACE' : item === 'back' ? 'DOS' : 'ROTATION' : item.toUpperCase()}</ActionLabel></UtilityButton>)}
-     <UtilityButton className="drop-reset" onClick={() => { setInspection('front'); setSpread(false); }} aria-label={fr ? 'Revenir de face' : 'Reset to front'}>RESET<span aria-hidden="true" className="drop-reset-mark"/></UtilityButton>
+     {(['front', 'back'] as const).map(item => <UtilityButton key={item} className="drop-view-button" aria-pressed={view === item} onClick={() => setInspection(item)}><ActionLabel>{fr ? item === 'front' ? 'FACE' : 'DOS' : item.toUpperCase()}</ActionLabel></UtilityButton>)}
+     <UtilityButton className="drop-reset" onClick={() => { controller.reset(true); setView('rotate'); setSpread(false); }} aria-label={fr ? 'Réinitialiser la vue' : 'Reset product view'}>RESET<span aria-hidden="true" className="drop-reset-mark"/></UtilityButton>
      {product.previewType === 'sticker-stack' && <UtilityButton className="drop-fan" aria-pressed={spread} onClick={() => setSpread(value => !value)}>{fr ? spread ? 'RÉUNIR' : 'DÉPLOYER' : spread ? 'GATHER' : 'FAN OUT'}</UtilityButton>}
     </div>
-    <p id="drop-inspection-help" className="drop-inspection-help">{view === 'back' ? product.backLabel[locale] : !available ? fr ? 'Face / Dos : aperçu 2D' : 'Front / Back: 2D preview' : view === 'rotate' ? fr ? 'Glissez pour tourner · flèches au clavier' : 'Drag to rotate · arrow keys when focused' : fr ? 'Choisissez ROTATION pour explorer' : 'Select ROTATE to explore'}</p>
+    <p id="drop-inspection-help" className="drop-inspection-help">{!available ? fr ? 'Face / Dos : aperçu 2D' : 'Front / Back: 2D preview' : fr ? 'Glissez pour tourner · flèches au clavier' : 'Drag to rotate · arrow keys when focused'}</p>
+    {view === 'back' && <span className="sr-only">{product.backLabel[locale]}</span>}
    </div>
   </div>
   <div className="drop-lab-footer"><ProductNavigation products={selectors} selected={index} locale={locale} onSelect={select} onStep={direction => select(nextProduct(requested.current, direction, demoCatalogue.length))}/><div className="drop-early-access">{earlyAccess}</div></div>

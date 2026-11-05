@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { Component, useCallback, useRef, useState, type ReactNode, type PointerEvent } from 'react';
+import { Component, useCallback, useEffect, useRef, useState, type ReactNode, type PointerEvent } from 'react';
 import type { Locale } from '@/types/content';
 import { dragPose } from './inspection';
 import { ProductFallback } from './ProductFallback';
@@ -25,23 +25,37 @@ export function ProductViewer(props: ProductViewerProps) {
  const [readyProduct, setReadyProduct] = useState<string | null>(null), [failed, setFailed] = useState(false);
  const ready = readyProduct === product.id;
  const drag = useRef<{ id: number; x: number; y: number; yaw: number; pitch: number; locked: boolean } | null>(null);
+ const viewer = useRef<HTMLDivElement>(null);
+ useEffect(() => {
+  const cancel = () => {
+   const element = viewer.current, id = drag.current?.id;
+   drag.current = null;
+   if (element) { delete element.dataset.dragging; if (id !== undefined && element.hasPointerCapture(id)) element.releasePointerCapture(id); }
+   controller.setPointer({ x: 0, y: 0 });
+  };
+  const hidden = () => { if (document.hidden) cancel(); };
+  window.addEventListener('blur', cancel); document.addEventListener('visibilitychange', hidden);
+  return () => { cancel(); window.removeEventListener('blur', cancel); document.removeEventListener('visibilitychange', hidden); };
+ }, [controller, product.id]);
  const handleReady = useCallback(() => { setReadyProduct(product.id); onAvailability(true); }, [onAvailability, product.id]);
  const handleFailure = useCallback(() => { setReadyProduct(null); setFailed(true); onAvailability(false); onView('front'); }, [onAvailability, onView]);
  function release(event: PointerEvent<HTMLDivElement>) {
   if (drag.current && event.currentTarget.hasPointerCapture(drag.current.id)) event.currentTarget.releasePointerCapture(drag.current.id);
   drag.current = null; delete event.currentTarget.dataset.dragging;
  }
- return <div className="drop-viewer" data-viewer-mode={failed ? '2d' : ready ? 'webgl' : 'loading'} data-inspection={view}
-  role="img" aria-label={locale === 'fr' ? 'Prototype interactif. Utilisez les commandes Face, Dos et Rotation.' : 'Interactive prototype. Use the Front, Back and Rotate controls.'}
-  tabIndex={failed ? -1 : 0} aria-describedby="drop-inspection-help" data-owned-interaction data-cursor={view === 'rotate' && !failed ? 'drag' : 'view'}
+ return <div ref={viewer} className="drop-viewer" data-viewer-mode={failed ? '2d' : ready ? 'webgl' : 'loading'} data-inspection={view}
+  role="group" aria-label={locale === 'fr' ? 'Prototype interactif. Glissez pour tourner, ou utilisez les flèches.' : 'Interactive prototype. Drag to rotate, or use the arrow keys.'}
+  tabIndex={failed ? -1 : 0} aria-describedby="drop-inspection-help" data-owned-interaction data-cursor={!failed ? 'drag' : 'view'}
   onKeyDown={event => {
    if (event.key === 'Home') { event.preventDefault(); onView('front'); }
-   if (!failed && view === 'rotate' && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
-    event.preventDefault(); event.stopPropagation(); const pose = controller.getPose(); controller.setPose({ ...pose, yaw: pose.yaw + (event.key === 'ArrowLeft' ? -.24 : .24) });
+   if (!failed && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+    event.preventDefault(); event.stopPropagation(); controller.beginInteraction(); onView('rotate');
+    const pose = controller.getPose(); controller.setPose({ ...pose, yaw: pose.yaw + (event.key === 'ArrowLeft' ? -.24 : .24) });
    }
   }}
   onPointerDown={event => {
-   if (failed || view !== 'rotate' || !event.isPrimary || event.button !== 0) return;
+   if (failed || !event.isPrimary || event.button !== 0) return;
+   controller.beginInteraction();
    const pose = controller.getPose(); drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, yaw: pose.yaw, pitch: pose.pitch, locked: false };
   }}
   onPointerMove={event => {
@@ -49,7 +63,7 @@ export function ProductViewer(props: ProductViewerProps) {
    if (current && current.id === event.pointerId) {
     const dx = event.clientX - current.x, dy = event.clientY - current.y;
     if (!current.locked && Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) {
-     current.locked = true; event.currentTarget.setPointerCapture(event.pointerId); event.currentTarget.dataset.dragging = 'true';
+     current.locked = true; onView('rotate'); event.currentTarget.setPointerCapture(event.pointerId); event.currentTarget.dataset.dragging = 'true';
     }
     if (current.locked) { event.preventDefault(); controller.setPose(dragPose(current.yaw, current.pitch, dx, dy, bounds.width)); }
    } else if (event.pointerType === 'mouse' && motion) {

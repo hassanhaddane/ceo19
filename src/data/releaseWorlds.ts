@@ -14,6 +14,7 @@ export interface ReleaseWorldConfig {
  backgroundOverlay: string; backgroundGradient: string; backgroundParallax: ParallaxLayer;
  backgroundEffects: WorldMotion; foregroundColor: string;
  backgroundGraphic: string; backgroundGraphicPosition: string;
+ ambient: { imagePeriod: number; detailPeriod: number };
 }
 
 /** Current filesystem sources, inspected at native dimensions. The PNG stills are
@@ -82,6 +83,12 @@ const directions: Record<string, { mood: Localized; motion: WorldMotion; depth: 
  'machi-batel': { mood:{en:'Melancholy / distance',fr:'Mélancolie / distance'}, motion:'split',depth:14,light:25,position:'50% 50%' },
  'bcp-dargent': { mood:{en:'Ambition / street',fr:'Ambition / rue'}, motion:'paper',depth:78,light:0,position:'68% 40%' },
 };
+/** Independent ambient clocks. All source framing and sampled palette data remain authoritative. */
+const ambientClocks: Record<WorldMotion, ReleaseWorldConfig['ambient']> = {
+ signal:{imagePeriod:24,detailPeriod:8}, impact:{imagePeriod:22,detailPeriod:9},
+ haze:{imagePeriod:32,detailPeriod:26}, crew:{imagePeriod:28,detailPeriod:34},
+ split:{imagePeriod:30,detailPeriod:24}, paper:{imagePeriod:26,detailPeriod:18},
+};
 export const releaseWorlds: readonly ReleaseWorldConfig[] = releases.map(release => {
  const direction = directions[release.id], sample = releasePaletteSamples[release.id as keyof typeof releasePaletteSamples].color;
  const genius = geniusEntry(release.id);
@@ -92,7 +99,7 @@ export const releaseWorlds: readonly ReleaseWorldConfig[] = releases.map(release
   releaseId:release.id, title:release.title, artists:['CEO1.9',...(release.featuredArtist?[release.featuredArtist]:[])], cover:release.artwork,
   ...environment, backgroundColor, accentColor, textColor:environment.foregroundColor,
   ambientGradient:`radial-gradient(ellipse at ${direction.position},color-mix(in srgb,${accentColor} ${release.id==='fantastique'?12:22}%,transparent),transparent 65%),linear-gradient(125deg,var(--ceo-black),transparent 85%)`,
-  mood:direction.mood, motionPreset:direction.motion, lyricFragments:lyricFragments[release.id]??[],
+  mood:direction.mood, motionPreset:direction.motion, ambient:ambientClocks[direction.motion], lyricFragments:lyricFragments[release.id]??[],
   spotifyUrl:release.spotifyUrl??null, youtubeUrl:release.youtubeUrl??null, geniusId:genius?.songId??null, geniusUrl:genius?.url??null,
  };
 });

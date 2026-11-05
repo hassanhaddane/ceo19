@@ -4,7 +4,8 @@ import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { DataTexture, MathUtils, Path, RGBAFormat, Shape, SRGBColorSpace, TextureLoader, type Group, type Texture } from 'three';
 import type { ProductViewerProps } from './ProductViewer';
 import type { PresentationAsset, ProductPresentation } from './types';
-import { fitCameraDistance } from './inspection';
+import { fitCameraDistance, idleInspectionPose } from './inspection';
+import { initialInspectionPose } from './InspectionController';
 
 type StageProps = ProductViewerProps & { onReady: () => void; onFailure: () => void };
 function useAsset(asset: PresentationAsset): Texture {
@@ -81,7 +82,7 @@ function ContactShadow() {
  return <mesh position={[0, -2.19, -.35]}><planeGeometry args={[5.2, .85]}/><meshBasicMaterial map={texture} transparent opacity={.65} depthWrite={false} toneMapped={false}/></mesh>;
 }
 function StudioObject(props: StageProps) {
- const group = useRef<Group>(null), budget = useRef({ frames: 0, time: 0, reduced: false });
+ const group = useRef<Group>(null), budget = useRef({ frames: 0, time: 0, reduced: false }), idleTime = useRef(0), resetVersion = useRef(-1);
  const { invalidate, setDpr, gl } = useThree();
  const { product, motion, active, controller, onReady, onFailure } = props;
  useEffect(() => { const detach = controller.attach(invalidate); onReady(); return detach; }, [invalidate, controller, onReady]);
@@ -91,13 +92,18 @@ function StudioObject(props: StageProps) {
   return () => gl.domElement.removeEventListener('webglcontextlost', lost);
  }, [gl, onFailure]);
  useEffect(() => { if (active) invalidate(); }, [active, motion, product, props.spread, invalidate]);
- useFrame(({ clock, camera, size }, dt) => {
+ useFrame(({ camera, size }, dt) => {
   if (!group.current || !active) return;
   const delta = Math.min(dt, .05), value = group.current;
-  const { yaw, pitch } = controller.getPose(), pointer = controller.getPointer();
+  if (resetVersion.current !== controller.getResetVersion()) { resetVersion.current = controller.getResetVersion(); idleTime.current = 0; }
+  const idle = motion && controller.isIdle();
+  if (idle) idleTime.current += delta;
+  const { yaw, pitch } = idle ? idleInspectionPose(controller.getPose(), product.previewType, idleTime.current) : controller.getPose(), pointer = controller.getPointer();
   value.rotation.y = motion ? MathUtils.damp(value.rotation.y, yaw, 11, delta) : yaw;
   value.rotation.x = motion ? MathUtils.damp(value.rotation.x, pitch, 11, delta) : pitch;
-  value.position.y = motion ? Math.sin(clock.elapsedTime * .75) * .045 : 0;
+  const float = idle ? Math.sin(idleTime.current * .6) * .025 : 0;
+  value.position.y = motion ? MathUtils.damp(value.position.y, float, 11, delta) : 0;
+  controller.present({ yaw: value.rotation.y, pitch: value.rotation.x });
   const minimum = product.previewType === 'sticker-stack' ? 8.15 : product.previewType === 'keychain-3d' ? 7.25 : 7.15;
   const objectWidth = product.previewType === 'sticker-stack' ? props.spread ? 6.15 : 4.5 : product.previewType === 'keychain-3d' ? 2.7 : 4.4;
   const z = fitCameraDistance(size.width, size.height, objectWidth, minimum);
@@ -112,9 +118,11 @@ function StudioObject(props: StageProps) {
    sample.time += dt;
    if (sample.frames === 45 && sample.time / sample.frames > .032) { sample.reduced = true; setDpr(1); }
   }
-  if (motion) invalidate();
+  const unsettled = Math.abs(value.rotation.y - yaw) + Math.abs(value.rotation.x - pitch) + Math.abs(value.position.y - float)
+   + Math.abs(camera.position.z - z) + Math.abs(camera.position.x - pointer.x * .16) + Math.abs(camera.position.y - (.05 + pointer.y * .08)) > .001;
+  if (motion && (idle || unsettled)) invalidate();
  });
- return <group ref={group} key={product.id}>
+ return <group ref={group} key={product.id} rotation={[initialInspectionPose.pitch, initialInspectionPose.yaw, 0]}>
   {product.previewType === 'apparel-2.5d' ? <Apparel product={product}/> : product.previewType === 'sticker-stack' ? <StickerStack product={product} spread={props.spread} motion={motion}/> : <Keychain product={product}/>}
  </group>;
 }

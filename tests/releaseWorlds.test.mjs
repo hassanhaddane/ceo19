@@ -12,6 +12,7 @@ import { youtubeId, spotifyEntity } from '../src/components/music/musicSources.t
 test('release worlds preserve real media and artists with six distinct declarative treatments', () => {
  assert.equal(releaseWorlds.length, 6);
  assert.equal(new Set(releaseWorlds.map(world => world.motionPreset)).size, 6);
+ assert.equal(new Set(releaseWorlds.map(world => `${world.ambient.imagePeriod}/${world.ambient.detailPeriod}`)).size,6);
  for (const world of releaseWorlds) {
   const release = releases.find(release => release.id === world.releaseId);
   assert.equal(world.cover, release.artwork);
@@ -19,6 +20,7 @@ test('release worlds preserve real media and artists with six distinct declarati
   assert.equal(world.youtubeUrl, release.youtubeUrl);
   assert.ok(youtubeId(world.youtubeUrl)); assert.ok(spotifyEntity(world.spotifyUrl));
   assert.deepEqual(world.artists, ['CEO1.9', ...(release.featuredArtist ? [release.featuredArtist] : [])]);
+  assert.ok(world.ambient.imagePeriod>=20&&world.ambient.detailPeriod>=8);
  }
  assert.deepEqual(releaseWorlds.find(world => world.releaseId === 'original').lyricFragments, ['Original Vocodo', 'Soduko', 'PAS DE RESEAU']);
  assert.deepEqual(releaseWorlds.find(world => world.releaseId === 'fantastique').lyricFragments, ['KMAYA FANTASTIQUE', 'ROULE MOI UN JOINT MAGIQUE']);

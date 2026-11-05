@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { stat } from 'node:fs/promises';
 import { demoCatalogue } from '../src/data/demoCatalogue.ts';
-import { dragPose, fitCameraDistance, nextProduct, snapYaw } from '../src/features/shop/presentation/inspection.ts';
-import { InspectionController } from '../src/features/shop/presentation/InspectionController.ts';
+import { dragPose, fitCameraDistance, idleInspectionPose, nextProduct, snapYaw } from '../src/features/shop/presentation/inspection.ts';
+import { InspectionController, initialInspectionPose } from '../src/features/shop/presentation/InspectionController.ts';
 
 test('all four exhibition concepts are demo-only and expose no commerce input', async () => {
  assert.equal(demoCatalogue.length, 4);
@@ -44,8 +44,28 @@ test('viewer input redraws imperatively; stale cleanup cannot disconnect a repla
  controller.setPose({ yaw: 1, pitch: .2 }); assert.equal(first, 1);
  const detachSecond = controller.attach(() => second++); detachFirst();
  controller.setPointer({ x: .1, y: .2 }); assert.equal(second, 1);
- controller.reset(); assert.deepEqual(controller.getPose(), { yaw: 0, pitch: 0 }); assert.equal(second, 2);
+ controller.reset(); assert.deepEqual(controller.getPose(), initialInspectionPose); assert.equal(second, 2);
  detachSecond(); controller.reset(); assert.equal(second, 2);
+});
+test('manual input takes the displayed angle without a jump and never competes with idle rotation', () => {
+ const controller = new InspectionController();
+ assert.equal(controller.isIdle(), true);
+ controller.present({yaw:.34,pitch:.06});controller.beginInteraction();
+ assert.deepEqual(controller.getPose(),{yaw:.34,pitch:.06});assert.equal(controller.isIdle(),false);
+ controller.setPose({yaw:Math.PI,pitch:0});assert.equal(controller.isIdle(),false);
+ controller.reset();assert.equal(controller.isIdle(),true);assert.deepEqual(controller.getPose(),initialInspectionPose);
+ const version=controller.getResetVersion();controller.present({yaw:Math.PI*2+.1,pitch:.2});controller.reset(true);
+ assert.equal(controller.getResetVersion(),version+1);
+ assert.ok(Math.abs(controller.getPose().yaw-(Math.PI*2+initialInspectionPose.yaw))<1e-10);
+ controller.reset();assert.deepEqual(controller.getDisplayedPose(),initialInspectionPose);
+});
+test('2.5D idle motion stays facing the visitor; the solid accessory turns slowly', () => {
+ for(const seconds of [0,1,10,30,120,360]) {
+  const pose=idleInspectionPose(initialInspectionPose,'apparel-2.5d',seconds);
+  assert.ok(Math.abs(pose.yaw-initialInspectionPose.yaw)<=.14);
+  assert.ok(Math.abs(pose.pitch-initialInspectionPose.pitch)<=.015);
+ }
+ assert.ok(idleInspectionPose(initialInspectionPose,'keychain-3d',60).yaw>Math.PI-1);
 });
 test('camera framing fits expanded stickers and apparel inside tall mobile viewports', () => {
  for (const [width, height, objectWidth, minimum] of [[312, 382, 4.4, 7.15], [363, 382, 6.15, 8.15], [940, 700, 6.15, 8.15]]) {

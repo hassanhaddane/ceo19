@@ -99,25 +99,12 @@ body:has(.persistent-player[data-engaged='true']) .release-world { padding-botto
 .release-environment[data-effects='paper'] .release-graphic-texture { background:repeating-linear-gradient(0deg,transparent 0 3px,#eae5d608 3px 4px); }
 .release-environment[data-effects='paper'] .release-grain { opacity:.1; }
 .release-world[data-treatment='paper'] .release-fragments { mix-blend-mode:screen; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='signal'] .release-graphic-crop { animation:release-signal-cut 650ms steps(2,end) both; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='impact'] .release-graphic-crop { animation:release-impact-cut 420ms cubic-bezier(.1,.8,.2,1) both; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='haze'] .release-graphic-texture { animation:release-haze-drift 18s ease-in-out both; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='haze'] .release-graphic-crop { animation:release-fluid-drift 16s ease-in-out both; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='crew'] .release-background-crop { animation:release-crew-drift 14s ease-out both; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='split'] .release-graphic-crop { animation:release-dual-drift 18s ease-in-out both; }
-.release-world[data-active='true'][data-motion='true'] .release-environment[data-effects='paper'] .release-graphic-crop { animation:release-print-reveal 900ms steps(5,end) both; }
-@keyframes release-signal-cut { 0% { translate:24px 0; opacity:0; } 25% { translate:-16px 0; opacity:1; } 60% { translate:8px 0; } 100% { translate:0 0; opacity:1; } }
-@keyframes release-impact-cut { from { translate:60px 0; } to { translate:0 0; } }
-@keyframes release-fluid-drift { from { translate:-1% 1%; filter:blur(2px); } to { translate:1% -1%; filter:blur(5px); } }
-@keyframes release-crew-drift { from { translate:0 1%; } to { translate:0 -1%; } }
-@keyframes release-dual-drift { from { translate:1.5% 0; } to { translate:-1.5% 0; } }
-@keyframes release-print-reveal { from { clip-path:inset(0 100% 0 0); } to { clip-path:inset(0); } }
 @keyframes lyric-print { 0%,12% { opacity:0; clip-path:inset(0 100% 0 0); } 35%,64% { opacity:var(--release-fragment-strength); clip-path:inset(0); } 100% { opacity:0; clip-path:inset(0); } }
 @keyframes lyric-signal { 0% { opacity:0; translate:40px 0; clip-path:inset(20% 0 65%); } 22% { opacity:var(--release-fragment-strength); translate:-16px 0; clip-path:inset(0 0 35%); } 40%,70% { opacity:var(--release-fragment-strength); translate:0 0; clip-path:inset(0); } 100% { opacity:0; translate:-30px 0; clip-path:inset(45% 0); } }
 @keyframes lyric-impact { 0%,12% { opacity:0; scale:1.08; } 24%,68% { opacity:var(--release-fragment-strength); scale:1; } 100% { opacity:0; scale:.98; } }
 @keyframes lyric-haze { 0% { opacity:0; filter:blur(12px); translate:0 24px; } 38%,65% { opacity:var(--release-fragment-strength); filter:blur(0); } 100% { opacity:0; filter:blur(8px); translate:0 -12px; } }
 @keyframes lyric-split { 0% { opacity:0; letter-spacing:.12em; translate:-30px 0; } 35%,65% { opacity:var(--release-fragment-strength); letter-spacing:0; translate:0 0; } 100% { opacity:0; translate:30px 0; } }
-@keyframes release-haze-drift { from { transform:translate(-2%,-2%) scale(1); } to { transform:translate(3%,4%) scale(1.08); } }
+
 
 @media(max-width:767px) {
  .release-world { --carousel-art-size:min(82vw,calc(100svh - 350px),440px); --carousel-spread:calc(var(--carousel-art-size) * .8); padding-top:calc(var(--scene-top) + 18px); padding-bottom:22px; }
@@ -193,3 +180,64 @@ html[data-motion-preference='reduced'] .release-world * { animation:none!importa
 .lyrics-fallback { padding:var(--space-4); }
 .genius-external { border-color:color-mix(in srgb,var(--lyrics-text) 22%,transparent); color:var(--lyrics-accent); }
 .lyrics-soon > span { color:var(--lyrics-accent); }
+
+/* V5.3 / living prints. Ambient transforms sit inside the shared parallax crops.
+   Only the current, visible, uncovered world advances these compositor clocks. */
+.release-environment-layer[data-layer='current'] { --world-exchange:var(--release-progress); --world-vector:calc(var(--release-direction) * -1); }
+.release-environment-layer[data-layer='incoming'] { --world-exchange:calc(1 - var(--release-progress)); --world-vector:var(--release-direction); }
+.release-environment[data-effects='signal'] { transform:translateX(calc(var(--world-exchange) * var(--world-vector) * 65px)) skewX(calc(var(--world-exchange) * -2deg)); }
+.release-environment[data-effects='impact'] { transform:translateX(calc(var(--world-exchange) * var(--world-vector) * 90px)) scale(calc(1 + var(--world-exchange) * .06)); }
+.release-environment[data-effects='haze'] { transform:scale(calc(1 + var(--world-exchange) * .12)) rotate(calc(var(--world-exchange) * var(--world-vector) * 1deg)); }
+.release-environment[data-effects='crew'] { transform:perspective(1200px) rotateY(calc(var(--world-exchange) * var(--world-vector) * 5deg)) translateX(calc(var(--world-exchange) * var(--world-vector) * 35px)); }
+.release-environment[data-effects='split'] { transform:scale(calc(1 + var(--world-exchange) * .055)); }
+.release-environment[data-effects='paper'] { transform:translateY(calc(var(--world-exchange) * 35px)) rotate(calc(var(--world-exchange) * var(--world-vector) * 2deg)); }
+.release-ambient-image { animation:world-signal-photo var(--world-image-period) ease-in-out infinite alternate both; }
+.release-ambient-detail { animation:world-signal-slices var(--world-detail-period) ease-in-out infinite alternate both; }
+.release-environment[data-effects='impact'] .release-ambient-image { animation-name:world-impact-photo; }
+.release-environment[data-effects='impact'] .release-ambient-detail { animation-name:world-impact-offset; }
+.release-environment[data-effects='haze'] .release-ambient-image { animation-name:world-blue-drift; }
+.release-environment[data-effects='haze'] .release-ambient-detail { animation-name:world-haze-depth; }
+.release-environment[data-effects='crew'] .release-ambient-image { animation-name:world-crew-perspective; }
+.release-environment[data-effects='crew'] .release-ambient-detail { animation-name:world-crew-depth; }
+.release-environment[data-effects='split'] .release-ambient-image { animation-name:world-dual-left; }
+.release-environment[data-effects='split'] .release-ambient-detail { animation-name:world-dual-right; }
+.release-environment[data-effects='paper'] .release-ambient-image { animation-name:world-poster-drift; }
+.release-environment[data-effects='paper'] .release-ambient-detail { animation-name:world-paper-register; }
+.release-environment[data-effects='signal'] .release-graphic-plane { animation:world-signal-mask 8s ease-in-out infinite alternate both; }
+.release-environment[data-effects='impact'] .release-graphic-plane { animation:world-impact-mask 9s ease-in-out infinite alternate both; }
+.release-environment[data-effects='haze'] .release-graphic-texture { animation:world-haze-field 22s ease-in-out infinite alternate both; }
+.release-environment[data-effects='crew'] .release-graphic-texture { background:linear-gradient(105deg,transparent 25%,#080a0c55 42%,transparent 70%); animation:world-shadow 20s ease-in-out infinite alternate both; }
+.release-environment[data-effects='split'] .release-graphic-texture { animation:world-seam 24s ease-in-out infinite alternate both; }
+.release-environment[data-effects='paper'] .release-graphic-plane { opacity:.2; }
+.release-environment[data-effects='paper'] .release-graphic-texture { animation:world-paper-grain 3s steps(5,end) infinite; }
+.release-environment .release-grain { position:absolute; inset:-4%; background:url('/images/grain.svg'); opacity:.065; animation:world-paper-grain 2.8s steps(6,end) infinite; }
+.release-fragments > span { animation-duration:calc(24s / var(--fragment-count)); animation-delay:calc(24s / var(--fragment-count) * var(--fragment-index)); animation-iteration-count:infinite; --release-fragment-strength:.3; }
+.release-environment :is(.release-ambient-image,.release-ambient-detail,.release-graphic-plane,.release-graphic-texture,.release-grain),.release-fragments > span { animation-play-state:paused; }
+.release-world[data-ambient='true'] .release-environment-layer[data-layer='current'] :is(.release-ambient-image,.release-ambient-detail,.release-graphic-plane,.release-graphic-texture,.release-grain),.release-world[data-ambient='true'] .release-fragments > span { animation-play-state:running; }
+.release-world[data-motion='false'] :is(.release-ambient-image,.release-ambient-detail,.release-graphic-plane,.release-graphic-texture,.release-grain,.release-fragments > span) { animation:none; }
+.release-world[data-motion='false'] .release-environment { transform:none; }
+@keyframes world-signal-photo { from { transform:translate3d(-1.6%,.5%,0) rotate(-.25deg); } to { transform:translate3d(1.6%,-.7%,0) rotate(.25deg); } }
+@keyframes world-signal-slices { 0%,15% { transform:translate3d(-18px,0,0); } 22%,48% { transform:translate3d(12px,-5px,0); } 55%,76% { transform:translate3d(-8px,3px,0); } 85%,100% { transform:translate3d(22px,0,0); } }
+@keyframes world-signal-mask { from { clip-path:polygon(0 20%,100% 20%,100% 27%,0 27%,0 64%,100% 64%,100% 72%,0 72%); } to { clip-path:polygon(0 29%,100% 29%,100% 35%,0 35%,0 56%,100% 56%,100% 61%,0 61%); } }
+@keyframes world-impact-photo { from { transform:translate3d(1.4%,0,0) rotate(.35deg); } to { transform:translate3d(-1.4%,-1.2%,0) rotate(-.35deg); } }
+@keyframes world-impact-offset { 0%,40% { transform:translate3d(18px,0,0); } 46%,52% { transform:translate3d(-24px,8px,0); } 62%,100% { transform:translate3d(6px,-10px,0); } }
+@keyframes world-impact-mask { 0%,35% { clip-path:polygon(62% 0,77% 0,59% 100%,44% 100%); } 50%,100% { clip-path:polygon(68% 0,85% 0,67% 100%,50% 100%); } }
+@keyframes world-blue-drift { from { transform:translate3d(-1.8%,1.2%,0) rotate(-.5deg); } to { transform:translate3d(1.8%,-1.2%,0) rotate(.5deg); } }
+@keyframes world-haze-depth { from { transform:translate3d(2%,-1.5%,0) scale(1.04) skewX(-1deg); } to { transform:translate3d(-2%,2%,0) scale(1.09) skewX(1deg); } }
+@keyframes world-haze-field { from { transform:translate3d(-4%,-2%,0) rotate(-6deg); } to { transform:translate3d(4%,3%,0) rotate(6deg); } }
+@keyframes world-crew-perspective { from { transform:perspective(1400px) translate3d(-1.4%,.6%,0) rotateY(-.8deg); } to { transform:perspective(1400px) translate3d(1.4%,-.6%,0) rotateY(.8deg); } }
+@keyframes world-crew-depth { from { transform:translate3d(0,2%,0) scale(1.03); } to { transform:translate3d(-2%,-2%,0) scale(1.08); } }
+@keyframes world-shadow { from { transform:translateX(-12%) skewX(-6deg); } to { transform:translateX(12%) skewX(4deg); } }
+@keyframes world-dual-left { from { transform:translate3d(-2.4%,.5%,0); } to { transform:translate3d(.8%,-.5%,0); } }
+@keyframes world-dual-right { from { transform:translate3d(2.4%,-.7%,0); } to { transform:translate3d(-.8%,.7%,0); } }
+@keyframes world-seam { from { transform:translateX(-1%); } to { transform:translateX(1%); } }
+@keyframes world-poster-drift { from { transform:translate3d(-1.4%,1%,0) skewX(-.5deg); } to { transform:translate3d(1.4%,-1%,0) skewX(.5deg); } }
+@keyframes world-paper-register { 0%,25% { transform:translate3d(-12px,8px,0) rotate(-.6deg); } 55%,100% { transform:translate3d(16px,-10px,0) rotate(.6deg); } }
+@keyframes world-paper-grain { 0%,100% { translate:0 0; } 25% { translate:-1.2% .7%; } 50% { translate:.9% -.8%; } 75% { translate:-.6% -1%; } }
+@media(max-width:767px) {
+ .release-environment[data-effects='haze'] .release-graphic-plane { filter:blur(4px); }
+ .release-environment[data-effects='haze'] .release-graphic-texture { filter:blur(10px); }
+ .release-environment .release-grain { animation:none; }
+ .release-world[data-ambient='true'] .release-environment-layer[data-layer='current'] :is(.release-ambient-image,.release-ambient-detail) { animation-duration:calc(var(--world-image-period) * 1.2); }
+ .release-fragments > span { --release-fragment-strength:.22; }
+}
