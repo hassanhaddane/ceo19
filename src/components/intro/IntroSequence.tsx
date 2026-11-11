@@ -150,7 +150,7 @@ export function IntroSequence({ locale, onStart, onReveal, onComplete }: {
     </div>
     <p className="intro-presenter">HKZ GANGSTATION PRESENTS</p>
    </div>
-   <Image className="intro-ceo-signature" src={assetUrl(assets.introLogo)} alt="CEO1.9" width={256} height={256} unoptimized loading="eager" />
+   <Image className="intro-ceo-signature" src={assetUrl(assets.introLogo)} alt="CEO1.9" width={256} height={256} unoptimized preload />
    <div className="intro-choices">
     <AudioChoice className="intro-enter-sound" disabled={!hydrated || choice !== null} mode="sound" locale={locale} onClick={() => choose(true)} />
     <AudioChoice disabled={!hydrated || choice !== null} mode="silent" locale={locale} onClick={() => choose(false)} />
@@ -158,6 +158,6 @@ export function IntroSequence({ locale, onStart, onReveal, onComplete }: {
   </div>
   <UtilityButton className="intro-skip" disabled={!hydrated} cursor="close" aria-label={fr ? 'Passer l’intro' : 'Skip intro'} onClick={() => done('skip')}>{fr ? 'PASSER' : 'SKIP'}</UtilityButton>
   {choice !== null && <div className="intro-live-sound-control"><SoundSettings locale={locale}/></div>}
-  <noscript><style>{'.intro-sequence{display:none}'}</style></noscript>
+  <noscript><style>{'.intro-sequence{display:none}.visual-site-shell[data-intro-state]{visibility:visible}'}</style></noscript>
  </section>;
 }

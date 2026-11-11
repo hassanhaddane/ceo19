@@ -122,7 +122,7 @@
 .intro-skip,.intro-live-sound-control { position:fixed; z-index:6; top:max(10px,env(safe-area-inset-top)); }
 .intro-skip { right:var(--gutter); min-height:44px; padding-inline:12px; }
 .intro-live-sound-control { left:var(--gutter); }
-.visual-site-shell[data-intro-state='running'] .site-header { opacity:0; }
+.visual-site-shell[data-intro-state='running'] { visibility:hidden; }
 
 @media(max-width:767px) {
  .intro-matte--left { transform:translate3d(calc(var(--intro-exit) * -66%),calc(var(--intro-exit) * 10%),0); }

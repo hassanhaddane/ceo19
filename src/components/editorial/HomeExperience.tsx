@@ -41,7 +41,7 @@ export function HomeExperience({ locale }: { locale: Locale }) {
   <div className="home-poster">
    <div className="home-portrait-cut" aria-hidden="true">
     <ParallaxLayer preset="photograph" className="home-portrait">
-     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 69vw" loading="eager" fetchPriority="high" />
+     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 69vw" loading="eager" />
     </ParallaxLayer>
    </div>
    <div className="home-rift-edge" aria-hidden="true" />
