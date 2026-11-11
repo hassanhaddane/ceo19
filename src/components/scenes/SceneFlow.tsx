@@ -1,13 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Locale } from '@/types/content';
 import { legacyProfessionalDestination } from '@/lib/experienceRoutes';
 import { isSignalMotionEnabled, subscribeSignalMotion } from '@/lib/signalMotion';
 import { publishScene, sceneNavigateEvent, sceneSettledEvent } from '@/lib/sceneNavigation';
 import { chapterFromHash, sceneChapterOrder, sceneScrollTarget, type SceneChapter } from '@/lib/sceneTargets';
 import type { createSceneMotion } from './sceneMotion';
+import { ArtistLogo } from '../design/ArtistLogo';
+import { EntityLayer } from '../entity/EntityLayer';
+import { createEntitySignal } from '../entity/entitySignal';
+import '../entity/entity.css';
 
 type NavigationRequest = { chapter: SceneChapter; focus: HTMLElement | null };
 type HistoryMode = 'push' | 'replace' | 'restore';
@@ -15,6 +19,7 @@ type HistoryMode = 'push' | 'replace' | 'restore';
 export function SceneFlow({ children, locale }: { children: ReactNode; locale: Locale }) {
  const root = useRef<HTMLElement>(null);
  const router = useRouter();
+ const [entity] = useState(createEntitySignal);
  useEffect(() => {
   const main = root.current;
   if (!main) return;
@@ -160,7 +165,7 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
    }
    if (cinematic) return;
    void import('./sceneMotion').then(({ createSceneMotion }) => {
-    if (ownsPage() && ticket === motionTicket) cinematic = createSceneMotion(main, chapters);
+    if (ownsPage() && ticket === motionTicket) cinematic = createSceneMotion(main, chapters, entity);
    }).catch(() => { /* Reading and navigation remain native if the animation chunk cannot load. */ });
   };
 
@@ -208,6 +213,15 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
    history.scrollRestoration = oldRestoration;
    publishScene({ enabled: false });
   };
- }, [locale, router]);
- return <main ref={root} id="main" className="signal-page v3-page scene-flow" tabIndex={-1}>{children}</main>;
+ }, [entity, locale, router]);
+ return <main ref={root} id="main" className="signal-page v3-page scene-flow" tabIndex={-1}>
+  <div className="scene-spine" aria-hidden="true">
+   <div className="scene-spine-camera">
+    <div className="scene-spine-cut" />
+    <ArtistLogo className="scene-spine-logo" sizes="200px" />
+    <EntityLayer signal={entity} />
+   </div>
+  </div>
+  {children}
+ </main>;
 }

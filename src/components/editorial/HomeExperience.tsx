@@ -10,6 +10,7 @@ import { UtilityLink } from '../interactive/UtilityAction';
 import { ActionLabel, ActionMark } from '../interactive/ActionButton';
 import { ParallaxLayer } from '../design/ScenePrimitives';
 import { PlatformIcon } from '../music/PlatformIcon';
+import { ArtistLogo } from '../design/ArtistLogo';
 
 function StreamingLinks({ locale }: { locale: Locale }) {
  return <nav className="home-platforms" aria-label={locale === 'fr' ? 'Plateformes de CEO1.9' : 'CEO1.9 streaming platforms'}>
@@ -40,10 +41,11 @@ export function HomeExperience({ locale }: { locale: Locale }) {
   <div className="home-poster">
    <div className="home-portrait-cut" aria-hidden="true">
     <ParallaxLayer preset="photograph" className="home-portrait">
-     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 65vw" fetchPriority="high" />
+     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 65vw" loading="eager" fetchPriority="high" />
     </ParallaxLayer>
    </div>
    <div className="home-rift-edge" aria-hidden="true" />
+   <div className="entity-print" aria-hidden="true"><ArtistLogo sizes="(max-width:767px) 64vw, 38vw" /></div>
    <div className="home-poster-type">
     <p className="metadata home-origin">{artist.name} <span aria-hidden="true">/</span> {sceneCopy[locale].origin}</p>
     <h1 id="home-title" lang="en"><span>THE BLUE</span><span>RIFT</span><span className="sr-only"> — {artist.name}</span></h1>

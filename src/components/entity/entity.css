@@ -1,0 +1,25 @@
+.entity-stage { position:absolute; inset:0; z-index:2; pointer-events:none; }
+.entity-stage :is(div,canvas) { pointer-events:none!important; }
+.entity-stage canvas { display:block; }
+.scene-spine:has(.entity-stage[data-entity='ready'] canvas[data-entity-ready]) .scene-spine-logo { visibility:hidden; }
+.entity-print {
+ position:absolute;
+ z-index:1;
+ top:16%;
+ right:7%;
+ width:min(38vw,64svh);
+ pointer-events:none;
+ filter:drop-shadow(0 10px 0 #090f18) drop-shadow(0 1px 1px #79bbeb);
+ transition:opacity 280ms var(--ease);
+}
+.entity-print .logo-mark {
+ width:100%;
+ opacity:.88;
+ filter:brightness(.88) sepia(.24) hue-rotate(165deg) saturate(1.5);
+}
+.scene-flow:has(.entity-stage[data-entity='ready'] canvas[data-entity-ready]) .entity-print { opacity:0; }
+.home-portrait { opacity:.43; transition:opacity 340ms var(--ease); }
+.scene-flow:has(.entity-stage[data-entity='ready'] canvas[data-entity-ready]) .home-portrait { opacity:.24; }
+@media(max-width:767px) {
+ .entity-print { top:13%; right:6%; width:min(62vw,30svh); }
+}
