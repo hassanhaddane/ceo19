@@ -6,81 +6,18 @@
  isolation:isolate;
 }
 .home-poster {
- --portrait-width:64%;
  position:relative;
  isolation:isolate;
  overflow:hidden;
- display:flex;
- flex:1;
- flex-direction:column;
- justify-content:center;
- min-height:max(490px,calc(100svh - 124px));
- padding:calc(var(--header-height) + 24px) var(--gutter) 70px;
-}
-.home-poster::before {
- content:'';
- position:absolute;
- inset:0;
- z-index:-3;
- background:var(--ceo-black);
- opacity:.8;
+ flex:none;
+ height:var(--home-film-height,100svh);
 }
 .home-poster::after {
  content:'';
  position:absolute;
  inset:0;
- z-index:1;
  pointer-events:none;
- background:url('/images/grain.svg');
- opacity:.13;
- mix-blend-mode:soft-light;
-}
-.home-portrait-cut,.home-rift-edge {
- position:absolute;
- inset:var(--header-height) 0 0 auto;
- width:var(--portrait-width);
- clip-path:var(--rift-cut);
- pointer-events:none;
-}
-.home-portrait-cut {
- z-index:-1;
- isolation:isolate;
- background:var(--ceo-blue);
-}
-.home-portrait {
- position:absolute;
- inset:-4%;
- mix-blend-mode:luminosity;
-}
-.home-portrait img {
- object-fit:cover;
- object-position:50% 35%;
- filter:grayscale(1) contrast(1.18) brightness(.85);
-}
-.home-rift-edge {
- z-index:-2;
- translate:-1.1vw 0;
- background:var(--ceo-blue-light);
-}
-.home-poster-type {
- position:relative;
- align-self:flex-start;
- z-index:2;
-}
-.home-origin {
- color:var(--ceo-blue-light);
- margin-bottom:clamp(16px,2vh,28px);
-}
-.home-origin span { margin-inline:.55em; }
-.home-poster h1 {
- font:400 clamp(98px,min(13.6vw,23svh),260px)/.97 var(--font-poster);
- letter-spacing:-.05em;
- transform:skewX(-5deg);
- transform-origin:left bottom;
-}
-.home-poster h1 > span:not(.sr-only) { display:block; }
-.home-poster h1 > span:nth-child(2) {
- margin-left:.12em;
+ background:linear-gradient(180deg,#05070c73,transparent 26%,transparent 75%,#05070cba);
 }
 .home-poster .home-scene-link {
  position:absolute;
@@ -121,6 +58,7 @@
 .home-primary-actions .home-play::after { display:none; }
 .home-platforms { flex-wrap:wrap; gap:0 8px; }
 .home-platforms .ceo-action { font:600 11px/1.3 var(--font-editorial); }
+.home-platforms :is(.home-mobile-social,.ceo-action-mark) { display:none; }
 .home-platforms .music-platform-icon,.home-primary-actions .music-platform-icon { width:15px; height:15px; }
 .home-primary-actions .ceo-action-mark { width:15px; height:15px; }
 .home-catalogue { display:none; }
@@ -131,24 +69,22 @@
  .home-platforms { justify-content:flex-end; }
 }
 @media (max-width:767px) {
- .home-poster {
-  --portrait-width:88%;
-  flex:none;
-  min-height:clamp(430px,66svh,680px);
-  justify-content:flex-end;
-  padding-bottom:75px;
- }
- .home-portrait-cut,.home-rift-edge { inset-block:var(--header-height) 24%; }
- .home-portrait img { object-position:52% 37%; }
- .home-poster-type { width:100%; }
- .home-origin { width:fit-content; padding:3px 5px; margin:0 0 12px; background:var(--ceo-black); }
- .home-poster h1 { font-size:clamp(56px,17.2vw,124px); text-shadow:2px 2px var(--ceo-black); }
  .home-poster .home-scene-link { bottom:12px; font-size:15px; }
  .home-release-strip { display:flex; flex-direction:column; align-items:stretch; gap:10px; padding-block:16px 5px; }
  .home-latest-artwork { width:64px; }
- .home-primary-actions > .ceo-action { flex:1; font-size:15px; padding-inline:8px; gap:6px; }
- .home-platforms { justify-content:space-between; }
- .home-platforms .ceo-action { padding-inline:6px; }
+ .home-featured { margin-bottom:4px; }
+ .home-primary-actions,.home-platforms { display:grid; gap:6px; }
+ .home-platforms :is(.home-mobile-social,.ceo-action-mark) { display:inline-flex; }
+ .home-primary-actions > .ceo-action,.home-platforms > .ceo-action {
+  justify-content:flex-start;
+  gap:12px;
+  min-height:48px;
+  padding-inline:14px;
+  border:1px solid var(--rift-rule);
+  background:#0b131f;
+  font-size:15px;
+ }
+ .home-primary-actions .ceo-action-mark,.home-platforms .ceo-action-mark { margin-left:auto; width:15px; height:15px; }
  .home-catalogue { display:block; background:var(--ceo-black); padding:28px var(--gutter) 36px; }
  .home-catalogue-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
  .home-catalogue-heading h2 { font:var(--weight-display) clamp(38px,10vw,64px)/1 var(--font-display); text-transform:uppercase; }

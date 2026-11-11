@@ -89,6 +89,11 @@ export function IntroSequence({ locale, onStart, onReveal, onComplete }: {
    element.style.setProperty('--intro-origin-x', `${origin.x}px`);
    element.style.setProperty('--intro-origin-y', `${origin.y}px`);
   }
+  const destination = () => {
+   const home = ['', '#home', '#main'].includes(location.hash);
+   return (home ? position('.home-entity-anchor') : undefined)
+    ?? position('.site-header .brand-link .logo-mark');
+  };
   let renderer: ReturnType<typeof createBrandMorph> | null = null;
   let rendererAttempted = false, revealed = false;
   setChoice(withSound);
@@ -101,7 +106,7 @@ export function IntroSequence({ locale, onStart, onReveal, onComplete }: {
     if (!rendererAttempted && brandImages.current && progress < .52) {
      rendererAttempted = true;
      try {
-      renderer = createBrandMorph(surface, brandImages.current, profile, origin, () => position('.site-header .brand-link .logo-mark'));
+      renderer = createBrandMorph(surface, brandImages.current, profile, origin, destination);
       element.dataset.render = 'canvas';
      } catch { /* The CSS logo masks stay visible when Canvas2D is unavailable. */ }
     }
@@ -136,6 +141,9 @@ export function IntroSequence({ locale, onStart, onReveal, onComplete }: {
  return <section ref={root} className="intro-sequence" data-state={choice === null ? 'choice' : 'running'} role="dialog" aria-modal="true" aria-labelledby="intro-title" onKeyDown={keyboard}>
   <h2 id="intro-title" className="sr-only">CEO1.9</h2>
   <IntroMask />
+  <div className="intro-depth" aria-hidden="true">
+   <i /><i /><i /><i /><i /><i />
+  </div>
   <div className="intro-light-strike" aria-hidden="true" />
   <BrandMorph canvasRef={canvas} />
   <div className="intro-morph-fallback" aria-hidden="true">

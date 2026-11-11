@@ -1,7 +1,7 @@
 /* Persistent cinematic environment. The native dialog supplies accessibility, not its visual design. */
 .cinema-dialog { position: fixed; inset: 0; width: 100%; height: 100svh; max-height: none; max-width: none; margin: 0; padding: 0; overflow: hidden; background: var(--ceo-black); color: var(--ceo-cream); border: 0; }
 .cinema-dialog::backdrop { background: var(--ceo-black); }
-.cinema-world { --cinema-screen-width:min(90vw,calc((100svh - 240px)*16/9)); position: absolute; inset: 0; isolation: isolate; overflow: hidden; background: var(--cinema-bg); transition: background-color 650ms ease; color: var(--ceo-cream); }
+.cinema-world { position: absolute; inset: 0; isolation: isolate; overflow: hidden; background: var(--cinema-bg); transition: background-color 650ms ease; color: var(--ceo-cream); }
 .cinema-header { position: absolute; top: 0; left: 0; right: 0; z-index: 12; padding: 22px var(--gutter); display: flex; align-items: center; gap: 30px; background: linear-gradient(var(--ceo-black),transparent); }
 .cinema-signature { display: flex; align-items: center; gap: 14px; }
 .cinema-signature .logo-mark { width: 40px; }
@@ -15,11 +15,7 @@
 .cinema-ambient img { object-fit: cover; }
 .cinema-atmosphere { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 55% 48%,transparent 20%,var(--cinema-bg) 80%),linear-gradient(145deg,color-mix(in srgb,var(--cinema-accent) 20%,transparent),transparent 55%); }
 .cinema-world::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url('/images/grain.svg'); opacity: .035; }
-.cinema-aperture { position: absolute; width:var(--cinema-screen-width); aspect-ratio: 16/9; left: 50%; top: 50%; translate: -50% -50%; z-index: 4; background: var(--ceo-black); }
-.cinema-screen-poster { object-fit:cover; opacity:.64; }
-.film-player-host { position:absolute; inset:0; transition:opacity 240ms ease; }
-.cinema-world:is([data-stage='opening'],[data-stage='changing'],[data-stage='loading']) .film-player-host { opacity:0; pointer-events:none; }
-.cinema-world[data-motion='false'] .film-player-host { transition:none; }
+.cinema-aperture { position: absolute; width: min(90vw,calc((100svh - 240px)*16/9)); aspect-ratio: 16/9; left: 50%; top: 50%; translate: -50% -50%; z-index: 4; background: var(--ceo-black); }
 .cinema-aperture iframe,.film-player-host { width: 100%; height: 100%; border: 0; display: block; }
 .film-player-fallback { position: absolute; bottom: 12px; right: 12px; z-index: 2; padding: 12px 18px; font-size: 11px; background: var(--ceo-black); color: var(--ceo-cream); }
 .cinema-takeover { position: absolute; inset: 0; z-index: 5; background: var(--cinema-accent); pointer-events: none; opacity: 0; }
@@ -56,7 +52,7 @@ html[data-cinema-phase]:not([data-cinema-phase='closing']) .visual-site-shell > 
 @keyframes cinema-fragment { 0%,20% { opacity:0; translate:0 18px; } 38%,52% { opacity:1; translate:0 0; } 75%,100% { opacity:0; translate:0 -18px; } }
 @keyframes cinema-frame-open { 0%,35% { clip-path: inset(49% 40%); } 100% { clip-path: inset(0); } }
 @keyframes cinema-frame-close { to { clip-path: inset(50% 30%); } }
-@keyframes cinema-cover-return { 0% { opacity:0; transform:scale(1.35); } 38% { opacity:1; } 100% { opacity:0; transform:translate(var(--return-x,var(--origin-x)),var(--return-y,var(--origin-y))) scale(var(--return-scale,var(--origin-scale))); } }
+@keyframes cinema-cover-return { 0% { opacity:0; transform:scale(1.35); } 38% { opacity:1; } 100% { opacity:0; transform:translate(var(--origin-x),var(--origin-y)) scale(var(--origin-scale)); } }
 @media(max-width:767px) {
  .cinema-header { padding: 16px 20px; gap: 16px; }
  .cinema-signature .logo-mark { width: 32px; }
@@ -64,12 +60,12 @@ html[data-cinema-phase]:not([data-cinema-phase='closing']) .visual-site-shell > 
  .cinema-channel { display:block; }
  .cinema-channel h2 { font-size:24px; margin-top:5px; }
  .cinema-channel small { display:block; }
- .cinema-world { --cinema-screen-width:min(100vw,calc((100svh - 200px)*16/9)); }
- .cinema-load-label { bottom:auto; top:calc(50% + var(--cinema-screen-width) * .28125 + 20px); }
+ .cinema-aperture { width:100%; }
  .cinema-footer { bottom: max(20px,env(safe-area-inset-bottom)); left:20px; right:20px; flex-direction:column; align-items:stretch; gap:12px; }
  .cinema-footer nav { justify-content:space-between; gap:12px; }
+ .cinema-load-label { bottom:150px; }
 }
-@media(max-height:500px) and (min-width:768px) { .cinema-world { --cinema-screen-width:min(74vw,calc((100svh - 130px)*16/9)); } .cinema-header { padding-block:10px; } .cinema-footer { bottom:10px; } .cinema-load-label { bottom:63px; } }
+@media(max-height:500px) and (min-width:768px) { .cinema-aperture { width:min(74vw,calc((100svh - 130px)*16/9)); } .cinema-header { padding-block:10px; } .cinema-footer { bottom:10px; } .cinema-load-label { bottom:63px; } }
 /* The film remains above every decorative layer once its aperture has opened. */
 .cinema-world { color:var(--cinema-fg); }
 .cinema-atmosphere { background:var(--cinema-ambient); }
@@ -82,20 +78,3 @@ html[data-cinema-phase]:not([data-cinema-phase='closing']) .visual-site-shell > 
 .cinema-world:is([data-stage='opening'],[data-stage='changing'])[data-treatment='haze'][data-motion='true'] .cinema-poster { animation-name:cinema-haze-cover; }
 @keyframes cinema-split-takeover { 0% { opacity:0; clip-path:inset(0 50%); } 35% { opacity:.75; clip-path:inset(0); } 78%,100% { opacity:0; clip-path:inset(0); } }
 @keyframes cinema-haze-cover { 0% { opacity:1; filter:blur(0); transform:translate(var(--origin-x),var(--origin-y)) scale(var(--origin-scale)); } 42% { opacity:1; filter:blur(0); transform:scale(1.12); } 100% { opacity:0; filter:blur(12px); transform:scale(1.35); } }
-
-
-.cinema-portal-frame {
- position:absolute; z-index:3; left:50%; top:50%; translate:-50% -50%; width:min(100%,calc(var(--cinema-screen-width) + 52px)); aspect-ratio:16 / 9; pointer-events:none; background:var(--cinema-accent);
- clip-path:polygon(8% 0,100% 0,100% 89%,94% 100%,0 100%,0 16%,8% 0,9% .5%,.7% 16%,.7% 99%,93.7% 99%,99.4% 89%,99.4% .5%,9% .5%);
- opacity:.4;
-}
-.cinema-world[data-stage='playing'] .cinema-portal-frame { opacity:.16; }
-.cinema-world:is([data-stage='opening'],[data-stage='changing'])[data-motion='true'] .cinema-portal-frame {
- animation:cinema-portal-fold var(--cinema-entry) var(--ease) both;
-}
-@keyframes cinema-portal-fold {
- from { opacity:0; transform:perspective(1000px) rotateY(-28deg) scale(.44); }
- 60% { opacity:.78; }
- to { opacity:.4; transform:perspective(1000px) rotateY(0) scale(1); }
-}
-@media(max-width:767px) { .cinema-portal-frame { aspect-ratio:auto; height:calc(var(--cinema-screen-width) * .5625 + 40px); } }

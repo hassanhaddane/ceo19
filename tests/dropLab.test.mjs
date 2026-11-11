@@ -60,13 +60,16 @@ test('manual input takes the displayed angle without a jump and never competes w
  assert.ok(Math.abs(controller.getPose().yaw-(Math.PI*2+initialInspectionPose.yaw))<1e-10);
  controller.reset();assert.deepEqual(controller.getDisplayedPose(),initialInspectionPose);
 });
-test('textile idle motion stays facing the visitor; the solid accessory turns slowly', () => {
- for(const seconds of [0,1,10,30,120,360]) {
-  const pose=idleInspectionPose(initialInspectionPose,'apparel-shell',seconds);
-  assert.ok(Math.abs(pose.yaw-initialInspectionPose.yaw)<=.14);
-  assert.ok(Math.abs(pose.pitch-initialInspectionPose.pitch)<=.015);
- }
- assert.ok(idleInspectionPose(initialInspectionPose,'keychain-3d',60).yaw>Math.PI-1);
+test('all specimens can turn fully and hover does not cancel automatic inspection', () => {
+ const fullTurn = idleInspectionPose(initialInspectionPose, Math.PI * 2 / .40);
+ assert.ok(Math.abs(fullTurn.yaw - initialInspectionPose.yaw - Math.PI * 2) < .0001);
+ const controller = new InspectionController();
+ controller.setHoverPaused(true);
+ assert.equal(controller.isHoverPaused(), true);
+ assert.equal(controller.isIdle(), true);
+ controller.setHoverPaused(false);
+ assert.equal(controller.isHoverPaused(), false);
+ assert.equal(controller.isIdle(), true);
 });
 test('camera framing fits expanded stickers and apparel inside tall mobile viewports', () => {
  for (const [width, height, objectWidth, minimum] of [[312, 382, 4.4, 7.15], [363, 382, 6.15, 8.15], [940, 700, 6.15, 8.15]]) {

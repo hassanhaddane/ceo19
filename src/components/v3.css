@@ -11,8 +11,7 @@ body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 .scene-heading h2 { font-family: var(--font-display); font-size: clamp(78px, 11vw, 176px); font-weight:var(--weight-display); text-transform: uppercase; line-height: 1.12; letter-spacing: -.035em; }
 .scene-heading .metadata { font-size: 10px; }
 .legacy-anchor { position: absolute; top: 0; scroll-margin-top: var(--header-height); }
-.music-scene, .scene-archive { background: var(--ceo-cream); color: var(--ceo-black); --text-primary: var(--ceo-black); --text-muted: var(--ceo-blue-deep); --color-border: var(--border-light); }
-.scene-archive { border-top: 1px solid var(--border-light); }
+.music-scene { background: var(--ceo-cream); color: var(--ceo-black); --text-primary: var(--ceo-black); --text-muted: var(--ceo-blue-deep); --color-border: var(--border-light); }
 .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 28px; padding: 28px var(--gutter); background: var(--ceo-black); }
 .site-footer .logo-mark { width: 90px; background: black; }
 .site-footer .metadata { font-size: 9px; }

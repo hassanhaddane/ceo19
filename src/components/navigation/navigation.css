@@ -46,7 +46,7 @@
 .floating-navigation .desktop-nav > a::before { display:none; }
 .floating-navigation .desktop-nav > a:is(:hover,:focus-visible,[aria-current]) { color:var(--navigation-accent); }
 .navigation-number { color:var(--navigation-accent); font:400 10px/1 var(--font-index); }
-.navigation-label { font:600 18px/1 var(--font-editorial); }
+.navigation-label { font:600 16px/1 var(--font-editorial); letter-spacing:.085em; }
 .navigation-marker {
  position:absolute;
  bottom:0;
@@ -128,7 +128,7 @@
 .architectural-menu .menu-links > a[data-emphasized='true'] { translate:5px 0; }
 .architectural-menu .menu-links[data-preview='true'] > a:not([data-emphasized='true']) { opacity:.66!important; }
 .architectural-menu .menu-links .metadata { min-width:24px; color:var(--ceo-blue-light); }
-.architectural-menu .menu-links > a > .ceo-action-label,.architectural-menu .menu-links .shop-navigation-action { font:400 clamp(36px,8.6svh,114px)/1 var(--font-poster); letter-spacing:-.02em; }
+.architectural-menu .menu-links > a > .ceo-action-label,.architectural-menu .menu-links .shop-navigation-action { font:600 clamp(36px,8.6svh,114px)/1 var(--font-editorial); letter-spacing:.025em; }
 .architectural-menu .menu-links .shop-navigation-action { width:100%; padding-left:calc(24px + clamp(16px,2vw,32px)); }
 .architectural-menu .shop-navigation-action .ceo-action-visual { width:auto; }
 .architectural-menu .shop-navigation-action .ceo-action-mark { width:25px; height:25px; color:var(--ceo-blue-light); }

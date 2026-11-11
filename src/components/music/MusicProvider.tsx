@@ -3,21 +3,19 @@ import dynamic from 'next/dynamic';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useSoundManager } from '@/features/audio/SoundProvider';
 import { track } from '@/lib/analytics';
-import { featuredRelease, releases } from '@/data/releases';
+import { featuredRelease } from '@/data/releases';
 import type { Locale, Release } from '@/types/content';
 import type { EmbedControls, PlaybackUpdate } from './embedApi';
 import { playableSources, type MusicSource } from './musicSources';
-import { createReleaseBlend, type ReleaseBlend } from './releaseBlend';
 import { PersistentPlayer } from './PersistentPlayer';
 const EmbedPlayer=dynamic(()=>import('./EmbedPlayer'),{ssr:false});
 type Status='idle'|'loading'|'ready'|'error';
-interface MusicContextValue { releaseBlend:ReleaseBlend; selectedRelease:Release; selectRelease:(release:Release)=>void; activeTrack:Release; isPlaying:boolean; progress:number|null; duration:number|null; status:Status; source:MusicSource|null; expanded:boolean; setExpanded:(expanded:boolean)=>void; openPlayer:(release:Release)=>void; listen:(release:Release,source?:MusicSource)=>void; toggle:()=>void; stop:()=>void; seek:(seconds:number)=>void; }
+interface MusicContextValue { selectedRelease:Release; selectRelease:(release:Release)=>void; activeTrack:Release; isPlaying:boolean; progress:number|null; duration:number|null; status:Status; source:MusicSource|null; expanded:boolean; setExpanded:(expanded:boolean)=>void; listen:(release:Release,source?:MusicSource)=>void; toggle:()=>void; stop:()=>void; seek:(seconds:number)=>void; }
 const MusicContext=createContext<MusicContextValue|null>(null);
 export function useMusic(){const context=useContext(MusicContext);if(!context) throw new Error('MusicProvider is required');return context;}
 export function MusicProvider({children,locale}: {children:ReactNode;locale:Locale}) {
  const sound = useSoundManager();
  const [selectedRelease,selectRelease]=useState(featuredRelease);
- const [releaseBlend]=useState(()=>createReleaseBlend(releases.indexOf(featuredRelease)));
  const [activeTrack,setActiveTrack]=useState(featuredRelease);
  const [source,setSource]=useState<MusicSource|null>(null);
  const [session,setSession]=useState(0);
@@ -53,10 +51,6 @@ export function MusicProvider({children,locale}: {children:ReactNode;locale:Loca
   if(audio.current){audio.current.removeAttribute('src');audio.current.load();}
   setSource(null);setStatus('idle');setPlayback({isPlaying:false,position:null,duration:null});
  },[]);
- const openPlayer=useCallback((release:Release)=>{
-  if(release.id!==activeTrack.id){stop();setActiveTrack(release);}
-  changeExpanded(true);
- },[activeTrack.id,stop]);
  useEffect(()=>{
   window.addEventListener('ceo:intro-start',stop);
   return()=>window.removeEventListener('ceo:intro-start',stop);
@@ -72,7 +66,7 @@ export function MusicProvider({children,locale}: {children:ReactNode;locale:Loca
  },[source,activeTrack,listen,status,playback.isPlaying,playback.position,playback.duration]);
  const seek=useCallback((seconds:number)=>{if(source?.kind==='preview'&&audio.current&&Number.isFinite(audio.current.duration))audio.current.currentTime=Math.max(0,Math.min(seconds,audio.current.duration));},[source]);
  const updateAudio=()=>{const element=audio.current;if(element)setPlayback({isPlaying:!element.paused&&!element.ended,position:element.currentTime,duration:Number.isFinite(element.duration)?element.duration:null});};
- const value=useMemo(()=>({releaseBlend,selectedRelease,selectRelease,activeTrack,isPlaying:playback.isPlaying,progress:playback.position,duration:playback.duration,status,source,expanded,setExpanded,openPlayer,listen,toggle,stop,seek}),[releaseBlend,selectedRelease,activeTrack,playback,status,source,expanded,setExpanded,openPlayer,listen,toggle,stop,seek]);
+ const value=useMemo(()=>({selectedRelease,selectRelease,activeTrack,isPlaying:playback.isPlaying,progress:playback.position,duration:playback.duration,status,source,expanded,setExpanded,listen,toggle,stop,seek}),[selectedRelease,activeTrack,playback,status,source,expanded,setExpanded,listen,toggle,stop,seek]);
  return <MusicContext.Provider value={value}>{children}
  <audio ref={audio} preload="none" onPlay={()=>{setStatus('ready');updateAudio();}} onPause={updateAudio} onEnded={updateAudio} onTimeUpdate={updateAudio} onLoadedMetadata={()=>{setStatus('ready');updateAudio();}} onWaiting={()=>setPlayback(p=>({...p,isPlaying:false}))} onPlaying={updateAudio} onError={()=>{setStatus('error');setPlayback({isPlaying:false,position:null,duration:null});}} />
  <PersistentPlayer locale={locale} embed={source && source.kind!=='preview' ? <EmbedPlayer key={session} source={source} title={activeTrack.title} onControls={onControls} onUpdate={onUpdate} onStatus={onStatus} /> : null} />

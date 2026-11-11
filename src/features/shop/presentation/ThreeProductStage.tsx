@@ -116,11 +116,14 @@ function StudioObject(props: StageProps) {
   const delta = Math.min(dt, .05), value = group.current;
   if (resetVersion.current !== controller.getResetVersion()) { resetVersion.current = controller.getResetVersion(); idleTime.current = 0; }
   const idle = motion && controller.isIdle();
-  if (idle) idleTime.current += delta;
-  const { yaw, pitch } = idle ? idleInspectionPose(controller.getPose(), product.previewType, idleTime.current) : controller.getPose(), pointer = controller.getPointer();
+  const paused = idle && controller.isHoverPaused();
+  if (idle && !paused) idleTime.current += delta;
+  const pose = idle ? idleInspectionPose(controller.getPose(), idleTime.current) : controller.getPose();
+  const { yaw, pitch } = paused ? controller.getDisplayedPose() : pose;
+  const pointer = controller.getPointer();
   value.rotation.y = motion ? MathUtils.damp(value.rotation.y, yaw, 11, delta) : yaw;
   value.rotation.x = motion ? MathUtils.damp(value.rotation.x, pitch, 11, delta) : pitch;
-  const float = idle ? Math.sin(idleTime.current * .6) * .025 : 0;
+  const float = paused ? value.position.y : idle ? Math.sin(idleTime.current * .6) * .025 : 0;
   value.position.y = motion ? MathUtils.damp(value.position.y, float, 11, delta) : 0;
   controller.present({ yaw: value.rotation.y, pitch: value.rotation.x });
   const minimum = product.previewType === 'sticker-stack' ? 8.15 : product.previewType === 'keychain-3d' ? 7.25 : 7.15;
@@ -139,7 +142,7 @@ function StudioObject(props: StageProps) {
   }
   const unsettled = Math.abs(value.rotation.y - yaw) + Math.abs(value.rotation.x - pitch) + Math.abs(value.position.y - float)
    + Math.abs(camera.position.z - z) + Math.abs(camera.position.x - pointer.x * .16) + Math.abs(camera.position.y - (.05 + pointer.y * .08)) > .001;
-  if (motion && (idle || unsettled)) invalidate();
+  if (motion && ((idle && !paused) || unsettled)) invalidate();
  });
  return <group ref={group} key={product.id} rotation={[initialInspectionPose.pitch, initialInspectionPose.yaw, 0]}>
   {product.previewType === 'apparel-shell' ? <Apparel product={product}/> : product.previewType === 'sticker-stack' ? <StickerStack product={product} spread={props.spread} motion={motion}/> : <Keychain product={product}/>}

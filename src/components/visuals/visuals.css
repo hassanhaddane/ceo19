@@ -14,3 +14,13 @@ body:has(.global-visual-background) { isolation: isolate; }
 }
 html[data-motion-preference='reduced'] .global-visual-background { transform:none; transition:none; }
 html[data-motion-preference='reduced'] .global-visual-background video { display:none; }
+
+.global-visual-background[data-scene='home'] {
+ height:var(--home-film-height,100svh);
+ bottom:auto;
+ transform:none;
+}
+.global-visual-background[data-scene='home'] .global-visual-shade { opacity:.12; }
+@media(max-width:767px) {
+ :root { --home-film-height:clamp(360px,64svh,560px); }
+}

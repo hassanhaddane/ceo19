@@ -2,7 +2,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import type { SceneChapter } from '@/lib/sceneNavigation';
 
-import type { EntitySignal } from '../entity/entitySignal';
+import type { EntityAnchor, EntitySignal } from '../entity/entitySignal';
 
 type Chapter = { id: SceneChapter; element: HTMLElement };
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
@@ -16,15 +16,22 @@ export function createSceneMotion(main: HTMLElement, chapters: Chapter[], entity
  gsap.registerPlugin(ScrollTrigger);
  const pointer = matchMedia('(hover:hover) and (pointer:fine)');
  const sizes = chapters.map(chapter => ({ ...chapter, top: 0, bottom: 0 }));
- const poster = main.querySelector('.home-poster');
- let posterBottom = 0;
+ const homeMarker = main.querySelector('[data-entity-anchor="home"]');
+ const contactMarker = main.querySelector('[data-entity-anchor="contact"]');
+ let homeAnchor: EntityAnchor | null = null, contactAnchor: EntityAnchor | null = null;
+ const measureAnchor = (element: Element | null): EntityAnchor | null => {
+  if (!element) return null;
+  const rect = element.getBoundingClientRect();
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 + scrollY, span: Math.min(rect.width, rect.height) };
+ };
  let height = 0, documentEnd = 0, mobile = false, refreshFrame = 0;
  const read = () => {
   height = document.documentElement.clientHeight;
   documentEnd = Math.max(0, document.documentElement.scrollHeight - height);
   mobile = main.clientWidth < 768;
   const y = scrollY;
-  posterBottom = (poster?.getBoundingClientRect().bottom ?? height) + y;
+  homeAnchor = measureAnchor(homeMarker);
+  contactAnchor = measureAnchor(contactMarker);
   for (const chapter of sizes) {
    const rect = chapter.element.getBoundingClientRect();
    chapter.top = rect.top + y;
@@ -55,7 +62,14 @@ export function createSceneMotion(main: HTMLElement, chapters: Chapter[], entity
   entity.update({
    progress: travel + (Math.max(0, sizes.length - 1) - travel) * (1 - tail),
    seam,
-   homeVisibility: smooth((posterBottom - y) / (height * .68)),
+   scrollAngle: y / Math.max(1, height) * Math.PI * 3.6,
+   homeVisibility: 1 - smooth((y / height - .20) / .69),
+   contactVisibility: contactAnchor
+    ? smooth((height * .90 - (contactAnchor.y - y)) / (height * .34)) *
+      smooth(((contactAnchor.y - y) - height * .09) / (height * .17))
+    : 0,
+   homeAnchor,
+   contactAnchor: contactAnchor && { ...contactAnchor, y: contactAnchor.y - y },
   });
  };
  read();
@@ -108,6 +122,8 @@ export function createSceneMotion(main: HTMLElement, chapters: Chapter[], entity
   });
  });
  observer.observe(main);
+ if (homeMarker) observer.observe(homeMarker);
+ if (contactMarker) observer.observe(contactMarker);
  for (const chapter of sizes) observer.observe(chapter.element);
  draw(scrollY);
  main.dataset.cinematic = 'true';

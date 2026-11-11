@@ -5,12 +5,20 @@ export class InspectionController {
  private pose: ViewerPose = { ...initialInspectionPose };
  private displayed: ViewerPose = { ...initialInspectionPose };
  private idle = true;
+ private hoverPaused = false;
  private resetVersion = 0;
  private pointer = { x: 0, y: 0 };
  private draw: () => void = () => {};
  getPose() { return this.pose; }
  getDisplayedPose() { return this.displayed; }
  isIdle() { return this.idle; }
+ isHoverPaused() { return this.hoverPaused; }
+ setHoverPaused(value: boolean) {
+  if (this.hoverPaused === value) return;
+  this.hoverPaused = value;
+  if (value) this.pointer = { x: 0, y: 0 };
+  this.draw();
+ }
  getResetVersion() { return this.resetVersion; }
  present(pose: ViewerPose) { this.displayed = pose; }
  beginInteraction() { this.idle = false; this.pose = { ...this.displayed }; this.pointer = { x: 0, y: 0 }; this.draw(); }

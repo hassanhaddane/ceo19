@@ -5,7 +5,6 @@ import { isSignalMotionEnabled, subscribeSignalMotion } from '@/lib/signalMotion
 import { publishScene, sceneNavigateEvent, sceneSettledEvent } from '@/lib/sceneNavigation';
 import { chapterFromHash, contactResourceAnchor, sceneChapterOrder, sceneScrollTarget, type SceneChapter } from '@/lib/sceneTargets';
 import type { createSceneMotion } from './sceneMotion';
-import { ArtistLogo } from '../design/ArtistLogo';
 import { EntityLayer } from '../entity/EntityLayer';
 import { createEntitySignal } from '../entity/entitySignal';
 import '../entity/entity.css';
@@ -209,7 +208,6 @@ export function SceneFlow({ children }: { children: ReactNode }) {
   <div className="scene-spine" aria-hidden="true">
    <div className="scene-spine-camera">
     <div className="scene-spine-cut" />
-    <ArtistLogo className="scene-spine-logo" sizes="(max-width:767px) 23vw, 200px" />
     <EntityLayer signal={entity} />
    </div>
   </div>

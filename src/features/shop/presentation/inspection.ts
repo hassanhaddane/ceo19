@@ -1,7 +1,8 @@
-import type { ProductPresentation, ViewerPose } from './types.ts';
-/** Pure interaction math, independent of Three.js and commerce. */
-export function idleInspectionPose(base: ViewerPose, type: ProductPresentation['previewType'], seconds: number): ViewerPose {
- return { yaw: base.yaw + (type === 'keychain-3d' ? seconds * .055 : Math.sin(seconds * .22) * .14), pitch: base.pitch + Math.sin(seconds * .17) * .015 };
+import type { ViewerPose } from './types.ts';
+
+/** Full turn in about sixteen seconds. */
+export function idleInspectionPose(base: ViewerPose, seconds: number): ViewerPose {
+ return { yaw: base.yaw + seconds * .40, pitch: base.pitch + Math.sin(seconds * .55) * .04 };
 }
 export function nextProduct(index: number, direction: number, count: number) {
  return count > 0 ? ((index + direction) % count + count) % count : 0;

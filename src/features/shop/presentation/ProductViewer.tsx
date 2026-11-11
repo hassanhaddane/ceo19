@@ -44,6 +44,7 @@ export function ProductViewer(props: ProductViewerProps) {
   window.addEventListener('blur', cancel); document.addEventListener('visibilitychange', hidden);
   return () => { cancel(); window.removeEventListener('blur', cancel); document.removeEventListener('visibilitychange', hidden); };
  }, [controller, product.id]);
+ useEffect(() => () => controller.setHoverPaused(false), [controller]);
  const handleReady = useCallback(() => { setReadyProduct(product.id); onAvailability(true); }, [onAvailability, product.id]);
  const handleFailure = useCallback(() => { setReadyProduct(null); setFailed(true); onAvailability(false); onView('front'); }, [onAvailability, onView]);
  useEffect(() => { if (failed) onAvailability(false); }, [failed, onAvailability]);
@@ -67,6 +68,7 @@ export function ProductViewer(props: ProductViewerProps) {
     const pose = controller.getPose(); controller.setPose({ ...pose, yaw: pose.yaw + (event.key === 'ArrowLeft' ? -.24 : .24) });
    }
   }}
+  onPointerEnter={event => { if (event.pointerType === 'mouse') controller.setHoverPaused(true); }}
   onPointerDown={event => {
    if (failed || event.button !== 0) return;
    if (event.pointerType === 'touch') {
@@ -96,10 +98,10 @@ export function ProductViewer(props: ProductViewerProps) {
      current.locked = true; onView('rotate'); event.currentTarget.setPointerCapture(event.pointerId); event.currentTarget.dataset.dragging = 'true';
     }
     if (current.locked) { event.preventDefault(); controller.setPose(dragPose(current.yaw, current.pitch, dx, dy, bounds.width)); }
-   } else if (event.pointerType === 'mouse' && motion) {
+   } else if (event.pointerType === 'mouse' && motion && !controller.isHoverPaused()) {
     controller.setPointer({ x: (event.clientX - bounds.left) / bounds.width - .5, y: (event.clientY - bounds.top) / bounds.height - .5 });
    }
-  }} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onPointerLeave={() => controller.setPointer({ x: 0, y: 0 })}>
+  }} onPointerUp={release} onPointerCancel={release} onLostPointerCapture={release} onPointerLeave={() => { controller.setHoverPaused(false); controller.setPointer({ x: 0, y: 0 }); }}>
   <ProductFallback product={product} back={view === 'back'} spread={props.spread} hidden={ready && !failed}/>
   {!failed && <ViewerBoundary onFailure={handleFailure}><ThreeProductStage {...props} onReady={handleReady} onFailure={handleFailure}/></ViewerBoundary>}
   {failed && <span className="drop-viewer-fallback-note">{locale === 'fr' ? 'Aperçu 2D · 3D indisponible sur cet appareil' : '2D preview · 3D unavailable on this device'}</span>}

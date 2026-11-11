@@ -11,9 +11,17 @@ export function VideoBackground({ intro }: { intro: boolean }) {
  const video = useRef<HTMLVideoElement>(null);
  const motion = useSignalMotion();
  const { active: scene, menuOpen } = useSceneState();
+ const [heroVisible, setHeroVisible] = useState(true);
+ useEffect(() => {
+  const hero = document.querySelector('.home-poster');
+  if (!hero) return;
+  const observer = new IntersectionObserver(([entry]) => setHeroVisible(entry.isIntersecting));
+  observer.observe(hero);
+  return () => observer.disconnect();
+ }, []);
  // Covered scenes keep the same element, source and playhead, without decoding
  // an invisible background behind an explicitly opened music provider.
- const suspended = intro || (!menuOpen && scene !== 'home');
+ const suspended = intro || (!menuOpen && (scene !== 'home' || !heroVisible));
  const [playing, setPlaying] = useState(false);
  useEffect(() => {
   const media = video.current;
@@ -40,7 +48,7 @@ export function VideoBackground({ intro }: { intro: boolean }) {
   backgroundImage: `url("${assetUrl(assets.videoPoster)}")`,
  } as CSSProperties;
  return <div className="global-visual-background" data-scene={active} style={style} aria-hidden="true">
-  <video ref={video} muted loop playsInline controls={false} preload="none" tabIndex={-1} disablePictureInPicture data-playing={playing && motion} />
+  <video ref={video} poster={assetUrl(assets.videoPoster)} muted loop playsInline controls={false} preload="none" tabIndex={-1} disablePictureInPicture data-playing={playing && motion} />
   <div className="global-visual-shade" />
  </div>;
 }

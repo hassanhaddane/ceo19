@@ -17,7 +17,7 @@ export function PersistentPlayer({locale,embed}: {locale:Locale;embed:ReactNode}
  const music=useMusic(), copy=musicCopy[locale];
  const scene=useSceneState();
  const expandButton=useRef<HTMLButtonElement>(null);
- const minimize=()=>{music.setExpanded(false); if(scene.enabled&&!music.source) (document.querySelector<HTMLElement>('#'+scene.active+' .music-player-open')??document.getElementById(scene.active))?.focus({preventScroll:true}); else expandButton.current?.focus();};
+ const minimize=()=>{music.setExpanded(false); if(scene.enabled&&!music.source) document.getElementById(scene.active)?.focus({preventScroll:true}); else expandButton.current?.focus();};
  const sources=playableSources(music.activeTrack);
  const label=`${music.isPlaying?copy.pause:copy.play}: ${music.activeTrack.title}`;
  const progress=music.progress!==null&&music.duration ? Math.min(100,music.progress/music.duration*100):0;

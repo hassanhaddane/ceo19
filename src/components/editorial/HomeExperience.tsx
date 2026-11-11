@@ -1,6 +1,7 @@
 import Image from 'next/image';
-import { assets, assetUrl } from '@/data/assets';
+import { assetUrl } from '@/data/assets';
 import { artist, sceneCopy } from '@/data/artist';
+import { socials } from '@/data/socials';
 import { featuredRelease, homeReleases } from '@/data/releases';
 import { releaseAccess, streamingProfiles } from '@/lib/releaseAccess';
 import type { Locale, Release } from '@/types/content';
@@ -8,13 +9,13 @@ import { MusicAction } from '../interactive/MusicAction';
 import { NavigationAction } from '../interactive/NavigationAction';
 import { UtilityLink } from '../interactive/UtilityAction';
 import { ActionLabel, ActionMark } from '../interactive/ActionButton';
-import { ParallaxLayer } from '../design/ScenePrimitives';
+import { ChromeTrigger } from '../entity/ChromeTrigger';
 import { PlatformIcon } from '../music/PlatformIcon';
-import { ArtistLogo } from '../design/ArtistLogo';
 
 function StreamingLinks({ locale }: { locale: Locale }) {
  return <nav className="home-platforms" aria-label={locale === 'fr' ? 'Plateformes de CEO1.9' : 'CEO1.9 streaming platforms'}>
-  {streamingProfiles.map(profile => <MusicAction key={profile.id} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={`${artist.name} — ${profile.platform}`}><PlatformIcon platform={profile.platform} /><ActionLabel>{profile.platform}</ActionLabel></MusicAction>)}
+  {streamingProfiles.map(profile => <MusicAction key={profile.id} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={`${artist.name} — ${profile.platform}`}><PlatformIcon platform={profile.platform} /><ActionLabel>{profile.platform}</ActionLabel><ActionMark/></MusicAction>)}
+  {socials.filter(profile => profile.platform === 'Instagram' || profile.platform === 'TikTok').map(profile => <MusicAction className="home-mobile-social" key={profile.id} href={profile.url} target="_blank" rel="noopener noreferrer"><PlatformIcon platform={profile.platform} /><ActionLabel>{profile.platform}</ActionLabel><ActionMark/></MusicAction>)}
  </nav>;
 }
 
@@ -32,24 +33,15 @@ function ReleaseRow({ release, locale }: { release: Release; locale: Locale }) {
  </li>;
 }
 
-/** The photographic plane and release strip share one composition across viewports. */
+/** The opening film stays behind the masthead. On phones the links follow as a vertical list. */
 export function HomeExperience({ locale }: { locale: Locale }) {
  const fr = locale === 'fr', access = releaseAccess(featuredRelease);
  const playLabel = access.playIsArtist ? (fr ? 'SPOTIFY ARTISTE' : 'ARTIST SPOTIFY') : (fr ? 'ÉCOUTER' : 'PLAY NOW');
  const watchLabel = fr ? 'VOIR LE CLIP' : 'WATCH NOW';
  return <section tabIndex={-1} id="home" className="v3-scene v4-home" aria-labelledby="home-title" data-scene-number="01">
   <div className="home-poster">
-   <div className="home-portrait-cut" aria-hidden="true">
-    <ParallaxLayer preset="photograph" className="home-portrait">
-     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 69vw" loading="eager" />
-    </ParallaxLayer>
-   </div>
-   <div className="home-rift-edge" aria-hidden="true" />
-   <div className="entity-print" aria-hidden="true"><ArtistLogo sizes="(max-width:767px) min(62vw, 30svh), min(38vw, 64svh)" /></div>
-   <div className="home-poster-type">
-    <p className="metadata home-origin">{artist.name} <span aria-hidden="true">/</span> {sceneCopy[locale].origin}</p>
-    <h1 id="home-title" lang="en"><span>THE BLUE</span><span>RIFT</span><span className="sr-only"> — {artist.name}</span></h1>
-   </div>
+   <ChromeTrigger locale={locale} />
+   <h1 id="home-title" className="sr-only">{artist.name}</h1>
    <NavigationAction className="home-scene-link" href="#music"><ActionLabel>{sceneCopy[locale].music}</ActionLabel><ActionMark/></NavigationAction>
   </div>
   <div className="home-release-strip">

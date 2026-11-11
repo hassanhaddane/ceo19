@@ -6,18 +6,8 @@ import { carouselPose, carouselSlot, carouselTravel } from '@/lib/carouselGeomet
 import { acquireSceneGesture } from '@/lib/sceneNavigation';
 import { useSignalMotion } from '@/lib/signalMotion';
 import type { Release } from '@/types/content';
-import type { ReleaseBlend } from './releaseBlend';
-import { releaseWorld } from '@/data/releaseWorlds';
 import { preloadReleaseBackground } from './releasePreload';
 
-const travelProfiles = {
- signal: { seconds: .66, ease: 'power2.inOut' },
- impact: { seconds: .62, ease: 'power4.inOut' },
- haze: { seconds: .9, ease: 'sine.inOut' },
- crew: { seconds: .77, ease: 'power2.inOut' },
- split: { seconds: .72, ease: 'power3.inOut' },
- paper: { seconds: .81, ease: 'power3.inOut' },
-} as const;
 type Intent = ({ step: number } | { index: number }) & { focus?: boolean; dragOffset?: number };
 type Transition = { center: number; target: number | null; travel: number; run: number };
 const wrap = (index: number) => (index % releases.length + releases.length) % releases.length;
@@ -25,11 +15,11 @@ const wrap = (index: number) => (index % releases.length + releases.length) % re
 /** One scalar and one timeline own every sleeve and the environment mix.
  * While moving, keep only the latest extra intent. The committed release changes
  * after its artwork reaches the center, so its actions cannot point at another sleeve. */
-export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCommit: (release: Release, originHash: string) => void, onIntent: () => void) {
+export function useReleaseCarousel(selected: Release, onCommit: (release: Release) => void, onIntent: () => void) {
  const motion = useSignalMotion();
  const initial = releases.indexOf(selected);
  const [view, setView] = useState<Transition>({ center: initial, target: null, travel: 0, run: 0 });
- const transport = useRef({ center: initial, target: null as number | null, pending: null as Intent | null, focus: false, run: 0, origin: initial, destination: initial, dragOffset: 0, originHash: '' });
+ const transport = useRef({ center: initial, target: null as number | null, pending: null as Intent | null, focus: false, run: 0, origin: initial, destination: initial, dragOffset: 0 });
  const position = useRef({ value: initial });
  const stageRef = useRef<HTMLDivElement>(null), worldRef = useRef<HTMLDivElement>(null);
  const geometry = useRef({ size: 0, spread: 0, slides: [] as HTMLElement[] });
@@ -42,9 +32,7 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
   const { size, spread, slides } = geometry.current;
   for (const [index, element] of slides.entries()) {
    const slot = carouselSlot(index, position.current.value, releases.length), pose = carouselPose(slot, size, spread);
-   const distance = Math.min(Math.abs(slot), 2);
-   element.style.transform = `translate3d(${pose.x}px,${pose.y}px,${-distance * size * .15}px) rotateY(${pose.rotation}deg) scale(${pose.scale})`;
-   element.style.setProperty('--sleeve-distance', String(distance));
+   element.style.transform = `translate3d(${pose.x}px,${pose.y}px,0) rotateY(${pose.rotation}deg) scale(${pose.scale})`;
    element.style.opacity = String(pose.opacity);
    element.style.zIndex = String(pose.zIndex);
    element.style.visibility = pose.opacity > .001 ? 'visible' : 'hidden';
@@ -65,10 +53,13 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
   const travel = 'step' in intent ? Math.sign(intent.step) : carouselTravel(state.center, intent.index, releases.length);
   if (!travel) return;
   state.origin = position.current.value; state.destination = state.origin + travel; state.dragOffset = intent.dragOffset ?? 0;
-  state.originHash = location.hash;
   state.target = wrap(state.center + travel); state.focus = !!intent.focus; state.run++;
   setView({ center: state.center, target: state.target, travel, run: state.run });
  }, []);
+ useEffect(() => {
+  void preloadReleaseBackground(releases[wrap(view.center-1)].id);
+  void preloadReleaseBackground(releases[wrap(view.center+1)].id);
+ }, [view.center]);
  // Externally selected releases (Home/player) use the same transport, never a second position owner.
  useEffect(() => {
   const index = releases.indexOf(selected), state = transport.current;
@@ -87,15 +78,7 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
  }, [draw]);
  useLayoutEffect(() => {
   const state = transport.current, root = worldRef.current;
-  if (view.target === null) {
-   root?.style.setProperty('--release-progress', '0');
-   blend.write(view.center, view.center, 0, 1);
-   draw(); return;
-  }
-  const from = view.center, to = view.target, direction = Math.sign(view.travel);
-  void preloadReleaseBackground(releases[to].id);
-  const treatment = travelProfiles[releaseWorld(releases[to].id).motionPreset];
-  blend.write(from, to, 0, direction);
+  if (view.target === null) { root?.style.setProperty('--release-progress', '0'); draw(); return; }
   const destination = state.destination;
   const complete = () => {
    position.current.value = destination; draw();
@@ -103,7 +86,7 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
    if (stageRef.current) stageRef.current.dataset.dragging = 'false';
    const center = view.target!;
    state.center = center; state.target = null;
-   callbacks.current.onCommit(releases[center], state.originHash);
+   callbacks.current.onCommit(releases[center]);
    setView({ center, target: null, travel: 0, run: view.run });
    if (state.focus) geometry.current.slides[center]?.querySelector('button')?.focus({ preventScroll: true });
    const pending = state.pending; state.pending = null;
@@ -112,15 +95,14 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
   let disposed = false;
   let timeline: gsap.core.Timeline | null = null;
   const begin = () => {
-   if (disposed || timeline) return;
+   if (disposed) return;
    timeline = gsap.timeline({ onComplete: complete });
    timeline.to(position.current, {
-   value: destination, duration: motion ? treatment.seconds : 0, ease: treatment.ease,
+   value: destination, duration: motion ? .84 : 0, ease: 'power3.inOut',
    onUpdate: () => {
     draw();
     const progress = Math.min(1, Math.abs((position.current.value - state.origin) / view.travel));
     root?.style.setProperty('--release-progress', String(progress));
-    blend.write(from, to, progress, direction);
     stageRef.current?.style.setProperty('--carousel-drag', `${state.dragOffset * (1 - progress)}px`);
    },
    });
@@ -128,21 +110,16 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
   const images = Array.from(root?.querySelectorAll<HTMLImageElement>('[data-layer="incoming"] img') ?? []);
   const cover = geometry.current.slides[view.target]?.querySelector('img');
   if (cover) images.push(cover);
-  // The photo warmup can improve the cut, but a slow derivative cannot lock the selector.
-  let deadline: ReturnType<typeof setTimeout> | undefined;
-  if (images.every(image => image.complete && image.naturalWidth > 0) || !motion) begin();
-  else {
-   deadline = setTimeout(begin, 180);
-   void Promise.allSettled(images.map(image => image.decode())).then(() => { clearTimeout(deadline); begin(); });
-  }
-  return () => { disposed = true; clearTimeout(deadline); timeline?.kill(); };
- }, [view.run, view.center, view.target, view.travel, motion, draw, request, blend]);
+  if (images.every(image => image.complete && image.naturalWidth > 0)) begin();
+  else void Promise.all(images.map(image => image.decode().catch(() => {}))).then(begin);
+  return () => { disposed = true; timeline?.kill(); };
+ }, [view.run, view.target, view.travel, motion, draw, request]);
  const move = useCallback((step: number, focus = false) => request({ step, focus }), [request]);
  const select = useCallback((release: Release, focus = false) => request({ index: releases.indexOf(release), focus }), [request]);
  useEffect(() => {
   const stage = stageRef.current; if (!stage) return;
   const horizontal = (event: WheelEvent) => {
-   if (event.ctrlKey || Math.abs(event.deltaX) <= Math.abs(event.deltaY) * 1.2) return;
+   if (event.ctrlKey || Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
    event.preventDefault(); event.stopPropagation();
    const now = performance.now(), input = wheel.current;
    if (now - input.last > 230) { input.amount = 0; input.locked = false; }
@@ -189,8 +166,8 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
   const rect = stage.getBoundingClientRect(), size = geometry.current.size;
   const x = Math.max(-1, Math.min(1, (event.clientX - rect.left - rect.width / 2) / size));
   const y = Math.max(-1, Math.min(1, (event.clientY - rect.top - size / 2) / size));
-  stage.style.setProperty('--carousel-tilt-x', `${-y * 5.5}deg`);
-  stage.style.setProperty('--carousel-tilt-y', `${x * 8}deg`);
+  stage.style.setProperty('--carousel-tilt-x', `${-y * 2}deg`);
+  stage.style.setProperty('--carousel-tilt-y', `${x * 3}deg`);
  }
  function onPointerUp(event: PointerEvent<HTMLDivElement>) {
   const start = gesture.current;

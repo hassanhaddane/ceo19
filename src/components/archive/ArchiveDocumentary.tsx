@@ -27,7 +27,7 @@ export function ArchiveDocumentary({ paused = false }: { paused?: boolean }) {
   controller.current = playback;
   return () => { playback.dispose(); controller.current = null; };
  }, [active, enabled, menuOpen, motion, entered]);
- return <div ref={stage} className="archive-documentary" data-state="poster" data-parallax="archiveFilm" style={{ backgroundImage: `url("${assetUrl(archiveClips[0]?.poster ?? assets.videoPoster)}")` }} aria-hidden="true">
+ return <div ref={stage} className="archive-documentary" data-state="poster" style={{ backgroundImage: `url("${assetUrl(archiveClips[0]?.poster ?? assets.videoPoster)}")` }} aria-hidden="true">
   <video ref={front} muted playsInline preload="none" data-front="false" tabIndex={-1} disablePictureInPicture />
   <video ref={back} muted playsInline preload="none" data-front="false" tabIndex={-1} disablePictureInPicture />
   <div className="archive-film-treatment"/>
