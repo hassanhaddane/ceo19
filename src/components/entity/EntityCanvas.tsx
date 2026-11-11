@@ -23,10 +23,13 @@ const desktop: ViewportPose[] = [
 ];
 const mobile: ViewportPose[] = [
  { x: .13, y: .335, height: .33, dolly: 7.9, orbit: .13, roll: -.06 },
- { x: 0, y: .075, height: .37, dolly: 6.8, orbit: -.09, roll: .025 },
+ { x: 0, y: .13, height: .33, dolly: 6.8, orbit: -.09, roll: .025 },
  { x: .01, y: .002, height: .39, dolly: 8.9, orbit: .18, roll: -.035 },
  { x: .18, y: .074, height: .29, dolly: 7.9, orbit: -.11, roll: .04 },
 ];
+const tablet: ViewportPose[] = desktop.map((pose, index) =>
+ index === 1 ? { ...pose, x: .19, y: .035, height: .48 } : pose,
+);
 const portalProfiles = [
  { fold: -.19, skew: .24, depth: .42, flare: .16 },
  { fold: .23, skew: -.26, depth: .24, flare: .32 },
@@ -125,7 +128,7 @@ function EntityRig({ signal, active, atlas, releaseBlend, maxDpr, sound, onReady
    frame.bass = damp(frame.bass, entityBass(radio.current, sound.getSnapshot()), 19, dt);
   }
   const compact = state.size.width < 768;
-  const path = compact ? mobile : desktop;
+  const path = compact ? mobile : state.size.width < 1024 ? tablet : desktop;
   const chapter = Math.min(2, Math.floor(frame.p));
   const progress = unit(frame.p - chapter);
   const from = path[chapter], to = path[chapter + 1];
@@ -245,7 +248,9 @@ const CanvasHost = memo(function CanvasHost(props: StageProps & { releaseBlend: 
  const [atlas, setAtlas] = useState<HTMLImageElement | null>(null);
  const [device] = useState(() => {
   const small = matchMedia('(max-width:767px)').matches;
-  const constrained = small || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
+  const device = navigator as Navigator & { connection?: { saveData?: boolean }; deviceMemory?: number };
+  const constrained = small || device.connection?.saveData || (device.deviceMemory !== undefined && device.deviceMemory <= 4) ||
+   (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
   return { maxDpr: Math.max(.8, Math.min(devicePixelRatio, constrained ? 1.08 : 1.55)), antialias: !constrained };
  });
  const { onFailure } = props;

@@ -1,6 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import { Component, useCallback, useEffect, useRef, useState, type ReactNode, type PointerEvent } from 'react';
+import { supportsWebGL2 } from '@/lib/webglSupport';
 import type { Locale } from '@/types/content';
 import { clampInspectionZoom, dragPose, inspectionZoom } from './inspection';
 import { ProductFallback } from './ProductFallback';
@@ -22,7 +23,7 @@ class ViewerBoundary extends Component<{ children: ReactNode; onFailure: () => v
 /** Input and fallback remain outside WebGL. A renderer failure cannot break navigation. */
 export function ProductViewer(props: ProductViewerProps) {
  const { product, view, controller, motion, locale, onView, onAvailability, zoom, onZoom } = props;
- const [readyProduct, setReadyProduct] = useState<string | null>(null), [failed, setFailed] = useState(false);
+ const [readyProduct, setReadyProduct] = useState<string | null>(null), [failed, setFailed] = useState(() => !supportsWebGL2());
  const ready = readyProduct === product.id;
  const drag = useRef<{ id: number; x: number; y: number; yaw: number; pitch: number; locked: boolean } | null>(null);
  const touches = useRef(new Map<number, { x: number; y: number }>());
@@ -45,6 +46,7 @@ export function ProductViewer(props: ProductViewerProps) {
  }, [controller, product.id]);
  const handleReady = useCallback(() => { setReadyProduct(product.id); onAvailability(true); }, [onAvailability, product.id]);
  const handleFailure = useCallback(() => { setReadyProduct(null); setFailed(true); onAvailability(false); onView('front'); }, [onAvailability, onView]);
+ useEffect(() => { if (failed) onAvailability(false); }, [failed, onAvailability]);
  function release(event: PointerEvent<HTMLDivElement>) {
   touches.current.delete(event.pointerId);
   if (touches.current.size < 2) pinch.current = null;

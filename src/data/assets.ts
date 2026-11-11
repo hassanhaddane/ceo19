@@ -2,7 +2,7 @@
 export interface PublicAsset {
  readonly path: string;
  readonly kind: 'image' | 'video' | 'font' | 'document' | 'audio';
- readonly role: 'photograph' | 'release-artwork' | 'visual-reference' | 'neighborhood-map' | 'primary-logo' | 'secondary-logo' | 'logo-variant' | 'legacy-generated' | 'texture' | 'platform-icon' | 'license' | 'font' | 'production-logo' | 'artist-video' | 'social-image' | 'audio-preview';
+ readonly role: 'photograph' | 'release-artwork' | 'visual-reference' | 'neighborhood-map' | 'primary-logo' | 'secondary-logo' | 'logo-variant' | 'legacy-generated' | 'texture' | 'platform-icon' | 'license' | 'font' | 'production-logo' | 'artist-video' | 'social-image' | 'audio-preview' | 'provenance';
  readonly width: number | null;
  readonly height: number | null;
  readonly bytes: number;
@@ -40,6 +40,16 @@ export const assets = {
 
 /** Includes inactive legacy assets for provenance; inventory does not imply publication. */
 export const publicAssets = [
+ { path: '/CEO19/audio/Ceo 1.mp3', kind: 'audio', role: 'audio-preview', width: null, height: null, bytes: 6731277 },
+ { path: '/fonts/BARLOW-CONDENSED-LICENSE.txt', kind: 'document', role: 'license', width: null, height: null, bytes: 4377 },
+ { path: '/fonts/barlow-condensed-latin-600-normal.woff2', kind: 'font', role: 'font', width: null, height: null, bytes: 22308 },
+ { path: '/fonts/barlow-condensed-latin-800-normal.woff2', kind: 'font', role: 'font', width: null, height: null, bytes: 14764 },
+ { path: '/fonts/barlow-condensed-latin-ext-600-normal.woff2', kind: 'font', role: 'font', width: null, height: null, bytes: 14516 },
+ { path: '/fonts/barlow-condensed-latin-ext-800-normal.woff2', kind: 'font', role: 'font', width: null, height: null, bytes: 9228 },
+ { path: '/media/drop-lab/ASSETS.md', kind: 'document', role: 'provenance', width: null, height: null, bytes: 3859 },
+ { path: '/media/drop-lab/hoodie-study.webp', kind: 'image', role: 'visual-reference', width: 1536, height: 1024, bytes: 167082 },
+ { path: '/media/drop-lab/tshirt-study.webp', kind: 'image', role: 'visual-reference', width: 1536, height: 1024, bytes: 116168 },
+ { path: '/media/entity/imprints.webp', kind: 'image', role: 'texture', width: 1024, height: 768, bytes: 103590 },
  {
   "path": "/CEO19/Original/portrait.webp",
   "kind": "image",

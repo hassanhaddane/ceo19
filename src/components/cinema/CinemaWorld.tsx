@@ -63,6 +63,7 @@ export function CinemaWorld({video,release,locale,closing,origin,returnOrigin,on
   <div key={`phrase-${video.id}-${entry.run}`} className="cinema-punchline" aria-hidden="true">{world.lyricFragments[0]}</div>
   <div key={`poster-${video.id}-${entry.run}`} className="cinema-poster" aria-hidden="true">{sleeve&&<Image src={assetUrl(sleeve)} alt="" fill sizes="(max-width:767px) 60vw, 55vh"/>}</div>
   <div className="cinema-aperture" data-cursor="play" aria-busy={phase==='loading'}>
+   {poster&&<Image className="cinema-screen-poster" src={assetUrl(poster)} alt="" fill sizes="(max-width:767px) 100vw, 90vw" />}
    {visible&&<FilmPlayer video={video} title={`${video.title} — ${copy.official}`} suspended={closing} onStatus={status} onPlayback={playback}/>}
   </div>
   <div className="cinema-load-label" role="status" aria-live="polite">{phase==='opening'||phase==='changing'?'':phase==='loading'?copy.loading:phase==='error'?copy.failed:phase==='playing'?(locale==='fr'?'Lecture':'Playing'):phase==='paused'?(locale==='fr'?'En pause':'Paused'):copy.ready}</div>

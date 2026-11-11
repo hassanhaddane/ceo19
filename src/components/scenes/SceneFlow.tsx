@@ -209,7 +209,7 @@ export function SceneFlow({ children }: { children: ReactNode }) {
   <div className="scene-spine" aria-hidden="true">
    <div className="scene-spine-camera">
     <div className="scene-spine-cut" />
-    <ArtistLogo className="scene-spine-logo" sizes="200px" />
+    <ArtistLogo className="scene-spine-logo" sizes="(max-width:767px) 23vw, 200px" />
     <EntityLayer signal={entity} />
    </div>
   </div>

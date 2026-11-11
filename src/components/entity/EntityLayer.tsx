@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { supportsWebGL2 } from '@/lib/webglSupport';
 import { useSignalMotion } from '@/lib/signalMotion';
 import { useEntryExperience } from '../visuals/VisualExperience';
 import type { EntitySignal } from './entitySignal';
@@ -26,13 +27,15 @@ export function EntityLayer({ signal }: { signal: EntitySignal }) {
 
  useEffect(() => {
   const element = host.current;
-  if (!motion || !element) return;
+  if (!motion || !entered || !element) return;
   const visibility = () => setUncovered(!document.hidden && !document.querySelector('dialog[open]'));
   const dialogs = new MutationObserver(visibility);
   dialogs.observe(document.body, { attributes: true, attributeFilter: ['open'], subtree: true });
   const viewport = new IntersectionObserver(([entry]) => {
    setInView(entry.isIntersecting);
-   if (entry.isIntersecting) setLoad(true);
+   if (!entry.isIntersecting) return;
+   if (supportsWebGL2()) setLoad(true);
+   else setStatus('fallback');
   });
   viewport.observe(element);
   document.addEventListener('visibilitychange', visibility);
@@ -42,12 +45,12 @@ export function EntityLayer({ signal }: { signal: EntitySignal }) {
    dialogs.disconnect();
    viewport.disconnect();
   };
- }, [motion]);
+ }, [entered, motion]);
 
  const ready = useCallback(() => setStatus('ready'), []);
  const fail = useCallback(() => setStatus('fallback'), []);
  return <div ref={host} className="entity-stage" data-entity={motion && load ? status : 'fallback'} aria-hidden="true">
-  {motion && load && status !== 'fallback' && <EntityBoundary onFailure={fail}>
+  {entered && motion && load && status !== 'fallback' && <EntityBoundary onFailure={fail}>
    <EntityCanvas signal={signal} active={inView && uncovered && entered} onReady={ready} onFailure={fail} />
   </EntityBoundary>}
  </div>;

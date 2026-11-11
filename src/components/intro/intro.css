@@ -97,6 +97,7 @@
 .audio-choice-label { display:grid; overflow:clip; line-height:1.2; }
 .audio-choice-label > span { grid-area:1/1; transition:translate 260ms var(--ease); }
 .audio-choice-label > span:last-child { translate:0 115%; }
+.audio-choice-label > [data-echo]::before { content:attr(data-echo); }
 .audio-choice:is(:hover,:focus-visible) .audio-choice-label > span:first-child { translate:0 -115%; }
 .audio-choice:is(:hover,:focus-visible) .audio-choice-label > span:last-child { translate:0 0; }
 .intro-brand-canvas,.intro-morph-fallback { position:absolute; inset:0; z-index:4; width:100%; height:100%; pointer-events:none; }

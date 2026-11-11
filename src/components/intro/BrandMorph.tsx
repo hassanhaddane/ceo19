@@ -77,17 +77,20 @@ export function createBrandMorph(canvas: HTMLCanvasElement, brands: Brands, prof
   to: target.points[Math.floor(seed(index + 8021) * target.points.length)],
   x: seed(index + 2001) - .5, y: seed(index + 5001) - .5,
   z: seed(index + 3001), size: .55 + seed(index + 4001) * 1.6,
- }));
+ })).sort((a, b) => a.z - b.z);
+ const particleSplit = particles.findIndex(particle => particle.z > .56);
  let width = 0, height = 0, logoSize = 0, disposed = false, landing: Placement | undefined;
  const resize = () => {
   width = canvas.clientWidth; height = canvas.clientHeight;
-  const dpr = Math.min(devicePixelRatio || 1, introSettings.maxDpr);
+  const dpr = Math.min(devicePixelRatio || 1, profile.slices <= 7 ? 1.15 : introSettings.maxDpr);
   canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
   context.setTransform(dpr, 0, 0, dpr, 0, 0);
   logoSize = Math.min(introSettings.maxLogoSize, Math.min(width, height) * introSettings.logoViewportRatio);
   landing = destination?.();
  };
  resize();
+ const observer = new ResizeObserver(resize);
+ observer.observe(canvas);
  const image = (art: HTMLCanvasElement, at: Placement, opacity: number) => {
   if (opacity <= 0) return;
   context.globalAlpha = opacity;
@@ -122,7 +125,6 @@ export function createBrandMorph(canvas: HTMLCanvasElement, brands: Brands, prof
  return {
   draw(progress: number) {
    if (disposed) return;
-   if (width !== canvas.clientWidth || height !== canvas.clientHeight) resize();
    context.clearRect(0, 0, width, height);
    const { morph, exit, reveal } = introFrame(progress);
    const center = { x: width / 2, y: height * .46, size: logoSize };
@@ -139,12 +141,12 @@ export function createBrandMorph(canvas: HTMLCanvasElement, brands: Brands, prof
    const arc = Math.sin(morph * Math.PI);
    context.globalCompositeOperation = 'screen';
    context.globalAlpha = smooth(0, .16, morph) * (1 - assembly) * .84;
-   for (const particle of particles) {
+   for (const [index, particle] of particles.entries()) {
+    if (index === 0 || index === particleSplit) context.fillStyle = index === 0 ? '#edf5ff' : '#76b9ef';
     const lens = project(arc * particle.z * profile.depth);
     const x = ((particle.from.x * (1 - morph) + particle.to.x * morph) * logoSize + particle.x * arc * profile.depth) * lens;
     const y = ((particle.from.y * (1 - morph) + particle.to.y * morph) * logoSize + particle.y * arc * profile.depth * .55) * lens;
     const size = particle.size * lens;
-    context.fillStyle = particle.z > .56 ? '#76b9ef' : '#edf5ff';
     context.fillRect(center.x + x, center.y + y, size * (1 + arc * particle.z * 1.7), size);
    }
    context.globalAlpha = 1;
@@ -153,6 +155,7 @@ export function createBrandMorph(canvas: HTMLCanvasElement, brands: Brands, prof
   dispose() {
    if (disposed) return;
    disposed = true;
+   observer.disconnect();
    context.clearRect(0, 0, width, height);
    canvas.width = canvas.height = source.canvas.width = source.canvas.height = target.canvas.width = target.canvas.height = 1;
   },

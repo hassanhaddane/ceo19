@@ -69,10 +69,6 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
   state.target = wrap(state.center + travel); state.focus = !!intent.focus; state.run++;
   setView({ center: state.center, target: state.target, travel, run: state.run });
  }, []);
- useEffect(() => {
-  void preloadReleaseBackground(releases[wrap(view.center-1)].id);
-  void preloadReleaseBackground(releases[wrap(view.center+1)].id);
- }, [view.center]);
  // Externally selected releases (Home/player) use the same transport, never a second position owner.
  useEffect(() => {
   const index = releases.indexOf(selected), state = transport.current;
@@ -97,6 +93,7 @@ export function useReleaseCarousel(selected: Release, blend: ReleaseBlend, onCom
    draw(); return;
   }
   const from = view.center, to = view.target, direction = Math.sign(view.travel);
+  void preloadReleaseBackground(releases[to].id);
   const treatment = travelProfiles[releaseWorld(releases[to].id).motionPreset];
   blend.write(from, to, 0, direction);
   const destination = state.destination;

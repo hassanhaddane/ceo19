@@ -8,6 +8,7 @@ const root = new URL('../public/', import.meta.url);
 const walk = async (directory, prefix = '') => {
  const result = [];
  for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
+  if (entry.name.startsWith('.')) continue;
   const path = `${prefix}${entry.name}`;
   if (entry.isDirectory()) result.push(...await walk(new URL(`${encodeURIComponent(entry.name)}/`, directory), `${path}/`));
   else if (entry.isFile()) result.push(path);
@@ -40,15 +41,18 @@ function videoMetadata(buffer) {
  return { tracks, fastStart: moov.start < (boxes(buffer).find(box => box.type === 'mdat')?.start ?? Infinity) };
 }
 const inventory = [];
+const pending = new Map(publicAssets.map(asset => [asset.path, asset]));
+if (pending.size !== publicAssets.length) throw new Error('Duplicate public asset path');
 for (const path of await walk(root)) {
  const bytes = await fs.readFile(new URL(path.split('/').map(encodeURIComponent).join('/'), root));
- const known = publicAssets.find(asset => asset.path === `/${path}`);
- const ignored = path.split('/').some(segment => segment.startsWith('.'));
- if (!known && !ignored) throw new Error(`Unclassified public asset: ${path}`);
- if (known && known.bytes !== bytes.length) throw new Error(`Stale byte count: ${path}`);
- const metadata = known?.kind === 'image' ? await sharp(bytes).metadata() : null;
- inventory.push({ path: `/${path}`, bytes: bytes.length, sha256: crypto.createHash('sha256').update(bytes).digest('hex'), role: known?.role ?? 'filesystem-metadata', kind: known?.kind ?? 'metadata', dimensions: metadata ? { width: metadata.autoOrient?.width ?? metadata.width, height: metadata.autoOrient?.height ?? metadata.height, format: metadata.format, alpha: metadata.hasAlpha } : null, ...(known?.kind === 'video' ? { video: videoMetadata(bytes) } : {}) });
+ const known = pending.get(`/${path}`);
+ if (!known) throw new Error(`Unclassified public asset: ${path}`);
+ pending.delete(known.path);
+ if (known.bytes !== bytes.length) throw new Error(`Stale byte count: ${path}`);
+ const metadata = known.kind === 'image' ? await sharp(bytes).metadata() : null;
+ inventory.push({ path: `/${path}`, bytes: bytes.length, sha256: crypto.createHash('sha256').update(bytes).digest('hex'), role: known.role, kind: known.kind, dimensions: metadata ? { width: metadata.autoOrient?.width ?? metadata.width, height: metadata.autoOrient?.height ?? metadata.height, format: metadata.format, alpha: metadata.hasAlpha } : null, ...(known.kind === 'video' ? { video: videoMetadata(bytes) } : {}) });
 }
+if (pending.size) throw new Error(`Missing classified assets: ${[...pending.keys()].join(', ')}`);
 const roi = { left: 150, top: 100, width: 550, height: 600 };
 const sample = await sharp(await fs.readFile(new URL(`../public${assets.blueReference}`, import.meta.url))).extract(roi).removeAlpha().raw().toBuffer({ resolveWithObject: true });
 const channels = [[], [], []];

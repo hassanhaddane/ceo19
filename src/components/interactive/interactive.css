@@ -178,3 +178,8 @@ html[data-motion-preference='reduced'] :is(.ceo-action,.ceo-action-visual,.ceo-a
 .ceo-leaf-cursor[data-state='view'] > svg { rotate:14deg; scale:1.22; }
 .ceo-leaf-cursor[data-state='close'] > svg { rotate:38deg; scale:.82; }
 .ceo-leaf-cursor[data-state='shop'] > svg { rotate:-14deg; scale:1.18; }
+
+@media (hover:none) {
+ .ceo-action:is(:hover,:focus-visible) .ceo-label-original { translate:none; }
+ .ceo-label-echo { visibility:hidden; }
+}

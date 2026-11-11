@@ -24,3 +24,20 @@
  .entity-print { top:13%; right:6%; width:min(62vw,30svh); }
 }
 .scene-flow[data-scene='connect']:has(.contact-dossier[open]) .entity-stage { opacity:.12; }
+
+/* Keep the portal over the record while the editorial column stays readable. */
+@property --entity-mask { syntax:'<number>'; inherits:false; initial-value:0; }
+.entity-stage {
+ --entity-mask:0;
+ --entity-foot:82%;
+ mask-image:
+  linear-gradient(to right,transparent calc(-26% + var(--entity-mask) * 44%),#000 calc(var(--entity-mask) * 44%)),
+  linear-gradient(to bottom,#000 calc(100% - var(--entity-mask) * (110% - var(--entity-foot))),transparent calc(100% - var(--entity-mask) * (100% - var(--entity-foot))));
+ mask-composite:intersect;
+ transition:--entity-mask 340ms var(--ease),opacity 260ms var(--ease);
+}
+.scene-flow[data-scene='music'] .entity-stage { --entity-mask:1; }
+@media(min-width:768px) and (max-width:1023px) { .entity-stage { --entity-foot:69%; } }
+@media(max-width:767px) {
+ .entity-stage { mask-image:linear-gradient(to bottom,#000 calc(100% - var(--entity-mask) * 57%),transparent calc(118% - var(--entity-mask) * 58%)); }
+}

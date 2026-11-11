@@ -13,15 +13,21 @@ export function VideoBackground({ intro }: { intro: boolean }) {
  const { active: scene, menuOpen } = useSceneState();
  // Covered scenes keep the same element, source and playhead, without decoding
  // an invisible background behind an explicitly opened music provider.
- const suspended = !intro && !menuOpen && scene !== 'home';
+ const suspended = intro || (!menuOpen && scene !== 'home');
  const [playing, setPlaying] = useState(false);
  useEffect(() => {
   const media = video.current;
   if (!media) return;
-  const dispose = attachBackgroundPlayback(media, {
-   enabled: motion, suspended, onPlaying: setPlaying,
-  });
-  return dispose;
+  if (!motion) {
+   if (media.hasAttribute('src')) {
+    media.removeAttribute('src');
+    media.load();
+   }
+   return;
+  }
+  if (suspended && !media.hasAttribute('src')) return;
+  if (!media.hasAttribute('src')) media.src = assetUrl(assets.backgroundVideo);
+  return attachBackgroundPlayback(media, { enabled: true, suspended, onPlaying: setPlaying });
  }, [motion, suspended]);
  const active = intro ? 'intro' : menuOpen ? 'menu' : scene;
  const presentation = backgroundPresentation[active];
@@ -34,9 +40,7 @@ export function VideoBackground({ intro }: { intro: boolean }) {
   backgroundImage: `url("${assetUrl(assets.videoPoster)}")`,
  } as CSSProperties;
  return <div className="global-visual-background" data-scene={active} style={style} aria-hidden="true">
-  <video ref={video} src={motion ? assetUrl(assets.backgroundVideo) : undefined} poster={assetUrl(assets.videoPoster)} autoPlay={motion && !suspended} muted loop playsInline controls={false} preload={motion ? suspended ? 'metadata' : 'auto' : 'none'} tabIndex={-1} disablePictureInPicture data-playing={playing && motion} />
+  <video ref={video} muted loop playsInline controls={false} preload="none" tabIndex={-1} disablePictureInPicture data-playing={playing && motion} />
   <div className="global-visual-shade" />
  </div>;
 }
-
-export { VideoBackground as GlobalVisualBackground };

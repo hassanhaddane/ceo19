@@ -50,22 +50,6 @@
   ],
   "inventory": [
     {
-      "path": "/.DS_Store",
-      "bytes": 14340,
-      "sha256": "83fa5188102b96297f7c871b0826adfbec6a9a090cfd5b0093d3d5ba9f371ea1",
-      "role": "filesystem-metadata",
-      "kind": "metadata",
-      "dimensions": null
-    },
-    {
-      "path": "/CEO19/.DS_Store",
-      "bytes": 14340,
-      "sha256": "6108e797f5a7c89b49f724b614c7bee37e962c830ac591dd829df163cd2b819d",
-      "role": "filesystem-metadata",
-      "kind": "metadata",
-      "dimensions": null
-    },
-    {
       "path": "/CEO19/BCP D'ARGENT art/IMG_7192.PNG",
       "bytes": 5680719,
       "sha256": "9918c678f62c2ac6d74d05bee7056e7711c5c144017d013f6b8783b1b03a5f3f",
@@ -256,14 +240,6 @@
       }
     },
     {
-      "path": "/CEO19/Logo/.DS_Store",
-      "bytes": 6148,
-      "sha256": "392d12c4d4f6c0fe59e0aa398c6f2410a48af119d2355a3b01d17ed91cbbae5b",
-      "role": "filesystem-metadata",
-      "kind": "metadata",
-      "dimensions": null
-    },
-    {
       "path": "/CEO19/Logo/LOGO CEO OFFICIEL Blanc.png",
       "bytes": 856402,
       "sha256": "b78d77e12d745a1759be7ae40cb0f88599d2ea02f964c8688756239e20f4752a",
@@ -330,27 +306,23 @@
     },
     {
       "path": "/CEO19/SHOW/CEO DOCCCCC.mp4",
-      "bytes": 409256910,
-      "sha256": "042e62175384043fc5eddd1c8cd473394ae451a02d8e35a73ca83036b5f20126",
+      "bytes": 26308238,
+      "sha256": "73187810873e27d70c8ecd3e1feb98b40ec214c5fc3afdb419e4bb8cac9fca56",
       "role": "artist-video",
       "kind": "video",
       "dimensions": null,
       "video": {
         "tracks": [
           {
-            "kind": "vide",
-            "durationSeconds": 206.60481770833334
-          },
-          {
             "kind": "soun",
-            "durationSeconds": 206.60483333333335
+            "durationSeconds": 4.341333333333333
           },
           {
-            "kind": "tmcd",
-            "durationSeconds": 502.2083333333333
+            "kind": "vide",
+            "durationSeconds": 4.333333333333333
           }
         ],
-        "fastStart": false
+        "fastStart": true
       }
     },
     {
@@ -549,14 +521,6 @@
       }
     },
     {
-      "path": "/CEO19/WORLD/.gitkeep",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "role": "filesystem-metadata",
-      "kind": "metadata",
-      "dimensions": null
-    },
-    {
       "path": "/CEO19/WORLD/GPS HKZPROD.png",
       "bytes": 678749,
       "sha256": "3615bb6145dd8b86d36d1dfeac9b094de70d976ba5d359d9e11d6b325872ac72",
@@ -570,11 +534,11 @@
       }
     },
     {
-      "path": "/CEO19/audio/.gitkeep",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "role": "filesystem-metadata",
-      "kind": "metadata",
+      "path": "/CEO19/audio/Ceo 1.mp3",
+      "bytes": 6731277,
+      "sha256": "451a28c51dc69175800c10104b70658406d821da83b8bdfec4edeb155d33db85",
+      "role": "audio-preview",
+      "kind": "audio",
       "dimensions": null
     },
     {
@@ -612,6 +576,14 @@
       "dimensions": null
     },
     {
+      "path": "/fonts/BARLOW-CONDENSED-LICENSE.txt",
+      "bytes": 4377,
+      "sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+      "role": "license",
+      "kind": "document",
+      "dimensions": null
+    },
+    {
       "path": "/fonts/DM-SANS-LICENSE.txt",
       "bytes": 4502,
       "sha256": "6fbd040a29c2037a765dfb9f2561e9965b5c95c6dcb5dce516089d63d5f17af7",
@@ -623,6 +595,38 @@
       "path": "/fonts/anton-latin-400-normal.woff2",
       "bytes": 18612,
       "sha256": "d0fa07ff63dd60cbc0e2f58e29c802dca2a5ae0276c999f59c6111ab7bbaec3b",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/barlow-condensed-latin-600-normal.woff2",
+      "bytes": 22308,
+      "sha256": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/barlow-condensed-latin-800-normal.woff2",
+      "bytes": 14764,
+      "sha256": "89eec21b1a1d6fd579d3e3c518901c5a6e3579e0e7a4f8b2f17b1473117bc30d",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/barlow-condensed-latin-ext-600-normal.woff2",
+      "bytes": 14516,
+      "sha256": "aef7edf54f79a5329fbca9c065b56dcec3852c680d58cf89a9ef2db6940ca4b3",
+      "role": "font",
+      "kind": "font",
+      "dimensions": null
+    },
+    {
+      "path": "/fonts/barlow-condensed-latin-ext-800-normal.woff2",
+      "bytes": 9228,
+      "sha256": "14480fbcd1bfa4ccfa6849f37004c1e985487034e9816c0157645cccdda53836",
       "role": "font",
       "kind": "font",
       "dimensions": null
@@ -728,14 +732,6 @@
         "format": "svg",
         "alpha": true
       }
-    },
-    {
-      "path": "/images/.DS_Store",
-      "bytes": 12292,
-      "sha256": "5686f43592f6fc4dcb86823e4fcecb7aa13429b6470c3a7f5436259ac4ab538f",
-      "role": "filesystem-metadata",
-      "kind": "metadata",
-      "dimensions": null
     },
     {
       "path": "/images/Pasted 2026-10-06 at 2.59.00 PM.png",
@@ -1375,6 +1371,53 @@
         "width": 1600,
         "height": 900,
         "format": "jpeg",
+        "alpha": false
+      }
+    },
+    {
+      "path": "/media/drop-lab/ASSETS.md",
+      "bytes": 3859,
+      "sha256": "cd65d1f117d4e2f1ab71278ecde35b923395b47e7b18ffbf3cf32153d14193ff",
+      "role": "provenance",
+      "kind": "document",
+      "dimensions": null
+    },
+    {
+      "path": "/media/drop-lab/hoodie-study.webp",
+      "bytes": 167082,
+      "sha256": "cca50e4434fd177560c42bfbe28c92b2e2403954297f7e019d42069251c816d1",
+      "role": "visual-reference",
+      "kind": "image",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024,
+        "format": "webp",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/media/drop-lab/tshirt-study.webp",
+      "bytes": 116168,
+      "sha256": "b55bcc84188214e4bcfc677e6762308c1d6d5b840f8abf1ada8718fb0cadd95a",
+      "role": "visual-reference",
+      "kind": "image",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024,
+        "format": "webp",
+        "alpha": true
+      }
+    },
+    {
+      "path": "/media/entity/imprints.webp",
+      "bytes": 103590,
+      "sha256": "e00278d1596c051ff63ffdbe3d0cec3772e65c745d7b1b5b7d0c987cc4c5e8e1",
+      "role": "texture",
+      "kind": "image",
+      "dimensions": {
+        "width": 1024,
+        "height": 768,
+        "format": "webp",
         "alpha": false
       }
     },

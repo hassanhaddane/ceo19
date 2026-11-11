@@ -41,11 +41,11 @@ export function HomeExperience({ locale }: { locale: Locale }) {
   <div className="home-poster">
    <div className="home-portrait-cut" aria-hidden="true">
     <ParallaxLayer preset="photograph" className="home-portrait">
-     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 65vw" loading="eager" fetchPriority="high" />
+     <Image src={assetUrl(assets.hero)} alt="" fill sizes="(max-width:767px) 100vw, 69vw" loading="eager" fetchPriority="high" />
     </ParallaxLayer>
    </div>
    <div className="home-rift-edge" aria-hidden="true" />
-   <div className="entity-print" aria-hidden="true"><ArtistLogo sizes="(max-width:767px) 64vw, 38vw" /></div>
+   <div className="entity-print" aria-hidden="true"><ArtistLogo sizes="(max-width:767px) min(62vw, 30svh), min(38vw, 64svh)" /></div>
    <div className="home-poster-type">
     <p className="metadata home-origin">{artist.name} <span aria-hidden="true">/</span> {sceneCopy[locale].origin}</p>
     <h1 id="home-title" lang="en"><span>THE BLUE</span><span>RIFT</span><span className="sr-only"> — {artist.name}</span></h1>

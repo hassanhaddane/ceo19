@@ -128,7 +128,9 @@ body:has(.persistent-player[data-engaged='true']) .release-world { --carousel-ar
  .music-release-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 12px; margin-top:8px; }
  .music-release-actions > :is(a,button) { border-top:1px solid var(--rift-rule); font-size:15px; }
  .release-selector { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:10px; }
- .release-selector > button { min-height:44px; gap:5px; padding-inline:4px; }
+ .release-selector > button { min-height:44px; gap:4px; padding-inline:5px; }
+ .release-selector button > .ceo-action-label { font-size:clamp(10px,3.05vw,13px); white-space:nowrap; }
+ .release-selector button > .metadata { flex:none; font-size:7px; }
  .release-selector > button:nth-child(n+4) { border-top:1px solid var(--rift-rule); }
  .release-selector > button:nth-child(4) { border-left:0; }
  .release-fragments > span { top:calc(var(--header-height) + 55px); right:var(--gutter); max-width:13ch; text-align:right; }
