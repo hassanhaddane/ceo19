@@ -1,12 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import type { Locale } from '@/types/content';
-import { legacyProfessionalDestination } from '@/lib/experienceRoutes';
 import { isSignalMotionEnabled, subscribeSignalMotion } from '@/lib/signalMotion';
 import { publishScene, sceneNavigateEvent, sceneSettledEvent } from '@/lib/sceneNavigation';
-import { chapterFromHash, sceneChapterOrder, sceneScrollTarget, type SceneChapter } from '@/lib/sceneTargets';
+import { chapterFromHash, contactResourceAnchor, sceneChapterOrder, sceneScrollTarget, type SceneChapter } from '@/lib/sceneTargets';
 import type { createSceneMotion } from './sceneMotion';
 import { ArtistLogo } from '../design/ArtistLogo';
 import { EntityLayer } from '../entity/EntityLayer';
@@ -16,9 +13,8 @@ import '../entity/entity.css';
 type NavigationRequest = { chapter: SceneChapter; focus: HTMLElement | null };
 type HistoryMode = 'push' | 'replace' | 'restore';
 /** Native scrolling owns position. This effect coordinates anchors, history and the cinematic layer. */
-export function SceneFlow({ children, locale }: { children: ReactNode; locale: Locale }) {
+export function SceneFlow({ children }: { children: ReactNode }) {
  const root = useRef<HTMLElement>(null);
- const router = useRouter();
  const [entity] = useState(createEntitySignal);
  useEffect(() => {
   const main = root.current;
@@ -29,7 +25,7 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
   });
   const publicPath = location.pathname;
   const oldRestoration = history.scrollRestoration;
-  let disposed = false, leaving = false, frame = 0, motionTicket = 0;
+  let disposed = false, frame = 0, motionTicket = 0;
   let settleTimer: ReturnType<typeof setTimeout> | undefined;
   let cinematic: ReturnType<typeof createSceneMotion> | undefined;
   let committed = chapterFromHash(location.hash) ?? 'home';
@@ -37,17 +33,8 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
   let observedURL = location.href;
   let viewportWidth = innerWidth;
   let ready = false;
-  const ownsPage = () => !disposed && !leaving && location.pathname === publicPath;
+  const ownsPage = () => !disposed && location.pathname === publicPath;
   const isCovered = () => !!document.querySelector('dialog[open],.intro-sequence');
-  const redirectLegacy = () => {
-   const destination = legacyProfessionalDestination(locale, location.hash);
-   if (!destination) return false;
-   leaving = true;
-   router.replace(destination);
-   return true;
-  };
-  if (redirectLegacy()) return;
-
   function currentChapter() {
    const line = innerHeight * .5;
    if (Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 1) return 'connect';
@@ -95,11 +82,16 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
    const destination = chapters.find(item => item.id === chapter)?.element;
    if (!ownsPage() || !destination) return;
    if (mode !== 'restore') writeHash(hash, mode);
-   request = { chapter, focus: focus ?? null };
+   const resourceId = chapter === 'connect' ? contactResourceAnchor(hash) : null;
+   const resource = resourceId ? destination.querySelector<HTMLElement>(`#${resourceId}`) : null;
+   const dossier = resource?.closest('details');
+   if (dossier) dossier.open = true;
+   request = { chapter, focus: resource ?? focus ?? null };
    const top = destination.getBoundingClientRect().top + scrollY;
    const header = document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0;
    const start = chapter === 'connect' ? top - header : top;
-   const target = sceneScrollTarget(start, null, innerHeight, document.documentElement.scrollHeight);
+   const target = sceneScrollTarget(start, resource ? resource.getBoundingClientRect().top + scrollY : null,
+    innerHeight, document.documentElement.scrollHeight, header + 18);
    window.scrollTo({ top: target, behavior: !instant && isSignalMotionEnabled() ? 'smooth' : 'instant' });
    schedule();
   }
@@ -107,7 +99,6 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
   const onHistory = () => {
    if (!ownsPage() || observedURL === location.href) return;
    observedURL = location.href;
-   if (redirectLegacy()) return;
    const chapter = chapterFromHash(location.hash);
    if (chapter) go(chapter, 'restore', location.hash);
   };
@@ -213,7 +204,7 @@ export function SceneFlow({ children, locale }: { children: ReactNode; locale: L
    history.scrollRestoration = oldRestoration;
    publishScene({ enabled: false });
   };
- }, [entity, locale, router]);
+ }, [entity]);
  return <main ref={root} id="main" className="signal-page v3-page scene-flow" tabIndex={-1}>
   <div className="scene-spine" aria-hidden="true">
    <div className="scene-spine-camera">

@@ -17,6 +17,7 @@ import { ReleaseCarousel } from './ReleaseCarousel';
 import { useReleaseCarousel } from './useReleaseCarousel';
 import { HkzMark } from '../interaction/HkzMark';
 import { PlatformIcon } from './PlatformIcon';
+import { playableSources } from './musicSources';
 import type { CinemaOrigin } from '../cinema/CinemaWorld';
 
 const GeniusLyricsPanel = dynamic(() => import('./GeniusLyricsPanel'), {ssr:false});
@@ -30,16 +31,17 @@ export function MusicExperience({locale}:{locale:Locale}) {
  const lyricsOpener=useRef<HTMLElement|null>(null),cinemaOpener=useRef<HTMLElement|null>(null);
  const closeLyrics=useCallback(()=>setLyricsOpen(false),[]);
  const select=music.selectRelease;
- const commit=useCallback((release:Release)=>{
+ const commit=useCallback((release:Release,originHash:string)=>{
   select(release);
   const hash=`#release-${release.id}`;
   // Preserve scene navigation that happened while an artwork was still travelling.
-  if(window.location.hash.startsWith('#release-')||window.location.hash.startsWith('#film-')||window.location.hash==='#music'){
+  if(window.location.hash===originHash&&(originHash.startsWith('#release-')||originHash.startsWith('#film-')||originHash==='#music')){
    if(window.location.hash!==hash)window.history.pushState(null,'',hash);
   }
  },[select]);
- const carousel=useReleaseCarousel(music.selectedRelease,commit,closeLyrics);
+ const carousel=useReleaseCarousel(music.selectedRelease,music.releaseBlend,commit,closeLyrics);
  const {activeRelease,incomingRelease,select:selectCarouselRelease}=carousel;
+ const coverOrigin=()=>carousel.stageRef.current?.querySelector('.carousel-cover[aria-current="true"]')?.getBoundingClientRect()??null;
  const world=releaseWorld(activeRelease.id),access=releaseAccess(activeRelease);
  const [lyricsReleaseId,setLyricsReleaseId]=useState(activeRelease.id);
  if(lyricsReleaseId!==activeRelease.id){setLyricsReleaseId(activeRelease.id);setLyricsOpen(false);}
@@ -50,7 +52,7 @@ export function MusicExperience({locale}:{locale:Locale}) {
  },[selectCarouselRelease]);
  function watch(opener:HTMLElement) {
   sound.pauseRadio();
-  cinemaOpener.current=opener;const rect=carousel.stageRef.current?.querySelector('[data-position="center"] .carousel-cover')?.getBoundingClientRect();
+  cinemaOpener.current=opener;const rect=coverOrigin();
   setOrigin(rect?{left:rect.left,top:rect.top,width:rect.width,height:rect.height}:null);
   music.stop();music.setExpanded(false);setCinemaRelease(activeRelease);setCinemaMounted(true);setCinemaOpen(true);
  }
@@ -68,11 +70,12 @@ export function MusicExperience({locale}:{locale:Locale}) {
    <div id="release-panel" className="music-release-stage">
     <ReleaseCarousel {...carousel} locale={locale}/>
     <div className="music-release-copy">
-     <div key={activeRelease.id} className="music-release-identity"><h3>{activeRelease.title}</h3><div className="music-release-metadata"><span>CEO1.9{activeRelease.featuredArtist&&` / ${activeRelease.featuredArtist}`}</span>{activeRelease.date&&<time dateTime={activeRelease.date}>{dateLabel(activeRelease.date)}</time>}</div></div>
+     <div key={activeRelease.id} className="music-release-identity"><h3>{activeRelease.title}</h3><p className="music-world-tone metadata">{world.mood[locale]}</p><div className="music-release-metadata"><span>CEO1.9{activeRelease.featuredArtist&&` / ${activeRelease.featuredArtist}`}</span>{activeRelease.date&&<time dateTime={activeRelease.date}>{dateLabel(activeRelease.date)}</time>}</div></div>
      <div className="music-release-actions" inert={carousel.busy}>
       {access.play&&<MusicAction className="music-play" href={access.play} target="_blank" rel="noopener noreferrer" aria-label={`${playLabel}: ${access.playIsArtist?'CEO1.9':activeRelease.title} — Spotify`} onClick={()=>{music.stop();music.setExpanded(false);}}><ActionLabel>{playLabel}</ActionLabel><PlatformIcon platform="Spotify"/></MusicAction>}
       {access.watch&&<MusicAction className="music-watch" aria-label={`${copy.watch}: ${activeRelease.title}`} onClick={event=>watch(event.currentTarget)}><ActionLabel>{copy.watch}</ActionLabel><ActionMark/></MusicAction>}
       <MusicAction className="music-lyrics" cursor="view" aria-label={`${lyricsLabel}: ${activeRelease.title}`} onClick={event=>{lyricsOpener.current=event.currentTarget;setLyricsOpen(true);}}><ActionLabel>{lyricsLabel}</ActionLabel>{world.geniusId?<ActionMark/>:<small>SOON</small>}</MusicAction>
+      {playableSources(activeRelease).length>0&&<MusicAction className="music-player-open" aria-controls="music-player-expanded" aria-expanded={music.expanded&&music.activeTrack.id===activeRelease.id} onClick={()=>music.openPlayer(activeRelease)}><ActionLabel>{fr?'Lecteur':'Player'}</ActionLabel><ActionMark/></MusicAction>}
       </div>
    </div>
    </div>
@@ -82,7 +85,7 @@ export function MusicExperience({locale}:{locale:Locale}) {
    <footer className="release-production"><HkzMark/><span className="metadata">HKZ PROD</span></footer>
   </ReleaseWorld>
   {lyricsOpen&&<GeniusLyricsPanel key={world.releaseId} world={world} locale={locale} opener={lyricsOpener} onClose={closeLyrics}/>}
-  {cinemaMounted&&<MusicCinema open={cinemaOpen} release={cinemaRelease} locale={locale} opener={cinemaOpener} origin={origin} onClose={()=>setCinemaOpen(false)} onMove={moveFilm}/>}
+  {cinemaMounted&&<MusicCinema open={cinemaOpen} release={cinemaRelease} locale={locale} opener={cinemaOpener} origin={origin} getReturnOrigin={coverOrigin} onClose={()=>setCinemaOpen(false)} onMove={moveFilm}/>}
   <p className="sr-only">{copy.hint}</p><p className="sr-only" role="status">{activeRelease.title}{activeRelease.featuredArtist&&` feat. ${activeRelease.featuredArtist}`}</p>
  </section>;
 }

@@ -8,7 +8,7 @@ import { ActionLabel } from '@/components/interactive/ActionButton';
 import type { Locale } from '@/types/content';
 import { ProductNavigation } from './presentation/ProductNavigation';
 import { ProductViewer } from './presentation/ProductViewer';
-import { nextProduct, snapYaw } from './presentation/inspection';
+import { clampInspectionZoom, inspectionZoom, nextProduct, snapYaw } from './presentation/inspection';
 import type { InspectionView } from './presentation/types';
 import { InspectionController } from './presentation/InspectionController';
 import './drop-lab.css';
@@ -17,7 +17,7 @@ import './drop-lab.css';
 export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: ReactNode }) {
  const fr = locale === 'fr', motion = useSignalMotion(), entry = useEntryExperience();
  const [index, setIndex] = useState(0), [phase, setPhase] = useState<'stable' | 'out' | 'in'>('stable');
- const [view, setView] = useState<InspectionView>('rotate'), [spread, setSpread] = useState(false);
+ const [view, setView] = useState<InspectionView>('rotate'), [spread, setSpread] = useState(false), [zoom, setZoom] = useState(1);
  const [available, setAvailable] = useState(true), [visible, setVisible] = useState(true), [blocked, setBlocked] = useState(true);
  const [mountedViewer, setMountedViewer] = useState(false);
  const region = useRef<HTMLElement>(null), requested = useRef(0), committed = useRef(0), exchanging = useRef(false), timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -45,7 +45,7 @@ export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: 
   if (motion || !exchanging.current) return;
   timers.current.forEach(clearTimeout); timers.current = []; exchanging.current = false;
   committed.current = requested.current; controller.reset();
-  setIndex(requested.current); setView('rotate'); setSpread(false); setPhase('stable');
+  setIndex(requested.current); setView('rotate'); setSpread(false); setZoom(1); setPhase('stable');
  }, [motion, controller]);
  function select(next: number) {
   if (next === requested.current) return;
@@ -53,7 +53,7 @@ export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: 
   requested.current = next; timers.current.forEach(clearTimeout); timers.current = [];
   const commit = () => {
    controller.reset();
-   committed.current = next; setIndex(next); setView('rotate'); setSpread(false); setPhase(motion ? 'in' : 'stable');
+   committed.current = next; setIndex(next); setView('rotate'); setSpread(false); setZoom(1); setPhase(motion ? 'in' : 'stable');
    if (motion) timers.current.push(setTimeout(() => { exchanging.current = false; setPhase('stable'); }, 560));
   };
   if (!motion) { commit(); return; }
@@ -65,12 +65,12 @@ export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: 
   style={{ '--drop-accent': product.accent, '--exchange-direction': direction } as CSSProperties} aria-labelledby="drop-lab-title">
   <div className="drop-exhibition">
    <div className="drop-atmosphere" aria-hidden="true"/>
-   <header className="drop-heading"><div><h1 id="drop-lab-title">DROP LAB</h1><p className="drop-demo-label"><span/>{fr ? 'DÉMO / PAS À VENDRE' : 'DEMO / NOT FOR SALE'}</p></div>
+   <header className="drop-heading"><div><h1 id="drop-lab-title">DROP LAB</h1><p className="drop-demo-label"><span/>{fr ? 'DÉMO / PAS À VENDRE' : 'DEMO / NOT FOR SALE'} <b>SOON</b></p></div>
     <p className="drop-statement">{fr ? 'Une étude d’objets à venir.' : 'A study in future objects.'}<span>{fr ? 'Quatre concepts. Rien à vendre.' : 'Four concepts. Nothing for sale.'}</span></p>
    </header>
    <div className="drop-specimen-number" aria-hidden="true">0{index + 1}</div>
    <div className="drop-stage-area" data-phase={phase}>
-    {mountedViewer ? <ProductViewer product={product} view={view} controller={controller} spread={spread} motion={motion} active={!blocked && visible} locale={locale} onView={setInspection} onAvailability={setAvailable}/>
+    {mountedViewer ? <ProductViewer product={product} view={view} controller={controller} spread={spread} zoom={zoom} onZoom={setZoom} motion={motion} active={!blocked && visible} locale={locale} onView={setInspection} onAvailability={setAvailable}/>
      : <div className="drop-viewer-pending" aria-hidden="true"/>}
    </div>
    <div className="drop-product-details" aria-live="polite" aria-atomic="true">
@@ -82,10 +82,15 @@ export function DropLab({ locale, earlyAccess }: { locale: Locale; earlyAccess: 
    <div className="drop-inspection">
     <div className="drop-view-controls" role="group" aria-label={fr ? 'Vues du prototype' : 'Prototype views'}>
      {(['front', 'back'] as const).map(item => <UtilityButton key={item} className="drop-view-button" aria-pressed={view === item} onClick={() => setInspection(item)}><ActionLabel>{fr ? item === 'front' ? 'FACE' : 'DOS' : item.toUpperCase()}</ActionLabel></UtilityButton>)}
-     <UtilityButton className="drop-reset" onClick={() => { controller.reset(true); setView('rotate'); setSpread(false); }} aria-label={fr ? 'Réinitialiser la vue' : 'Reset product view'}>RESET<span aria-hidden="true" className="drop-reset-mark"/></UtilityButton>
+     <UtilityButton className="drop-reset" onClick={() => { controller.reset(true); setView('rotate'); setSpread(false); setZoom(1); }} aria-label={fr ? 'Réinitialiser la vue' : 'Reset product view'}>RESET<span aria-hidden="true" className="drop-reset-mark"/></UtilityButton>
      {product.previewType === 'sticker-stack' && <UtilityButton className="drop-fan" aria-pressed={spread} onClick={() => setSpread(value => !value)}>{fr ? spread ? 'RÉUNIR' : 'DÉPLOYER' : spread ? 'GATHER' : 'FAN OUT'}</UtilityButton>}
     </div>
-    <p id="drop-inspection-help" className="drop-inspection-help">{!available ? fr ? 'Face / Dos : aperçu 2D' : 'Front / Back: 2D preview' : fr ? 'Glissez pour tourner · flèches au clavier' : 'Drag to rotate · arrow keys when focused'}</p>
+    {available && <div className="drop-zoom" role="group" aria-label={fr ? 'Zoom du prototype' : 'Product zoom'}>
+     <UtilityButton disabled={zoom <= inspectionZoom.min} onClick={() => setZoom(value => clampInspectionZoom(value - inspectionZoom.step))} aria-label={fr ? 'Réduire le zoom' : 'Zoom out'}>−</UtilityButton>
+     <output aria-live="polite">{Math.round(zoom * 100)}%</output>
+     <UtilityButton disabled={zoom >= inspectionZoom.max} onClick={() => setZoom(value => clampInspectionZoom(value + inspectionZoom.step))} aria-label={fr ? 'Agrandir le zoom' : 'Zoom in'}>+</UtilityButton>
+    </div>}
+    <p id="drop-inspection-help" className="drop-inspection-help">{!available ? fr ? 'Face / Dos : aperçu 2D' : 'Front / Back: 2D preview' : fr ? 'Glissez pour tourner · pincez pour zoomer' : 'Drag to rotate · pinch to zoom'}</p>
     {view === 'back' && <span className="sr-only">{product.backLabel[locale]}</span>}
    </div>
   </div>

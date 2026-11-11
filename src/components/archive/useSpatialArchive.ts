@@ -55,7 +55,7 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
    const pointed=hover>=0?hover:focusIndex;
    hoverMix+=((pointed>=0?1:0)-hoverMix)*(1-Math.exp(-dt*9));if(pointed>=0)hoverDrawn=pointed;
    let nearest=0,nearestDistance=Infinity;const loaded:number[]=[];
-   const strength=motion&&!mobile&&!economy?visualEffects.parallax.intensity:0;
+   const strength=motion&&!economy?visualEffects.parallax.intensity*(mobile?.3:1):0;
    const sceneTop=element.closest('section')?.getBoundingClientRect().top??0;
    const sceneProgress=Math.max(-1,Math.min(1,-sceneTop/innerHeight));
    for(let index=0;index<planes.length;index++){
@@ -67,7 +67,7 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
     const distance=Math.abs(x-(width*(mobile?.5:.25)));if(distance<nearestDistance){nearest=index;nearestDistance=distance;}
     if(!visible)continue;
     const gain=archiveDepthGain(photo.depth),selected=index===hoverDrawn?hoverMix:0;
-    const depth=motion&&!mobile&&!economy?photo.depth*.23+selected*115-(1-selected)*hoverMix*40:0;
+    const depth=motion&&!economy?(photo.depth*.34+selected*130-(1-selected)*hoverMix*40)*(mobile?.36:1):0;
     const parallaxX=px*(14+gain*54)*strength;
     const drift=Math.sin((x-width*.5)/width*Math.PI)*(gain-.5)*18*strength;
     const yLimit=Math.max(0,height/2-print.height*(1+selected*.08)/2-12);
@@ -75,7 +75,7 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
     const hoverX=hoverDrawn>=0?archiveLoopX(layout.prints[hoverDrawn].center,camera,layout.length,layout.buffer):x;
     const push=(1-selected)*hoverMix*Math.sign(x-hoverX)*8*strength;
     plane.style.width=`${print.width}px`;plane.style.height=`${print.height}px`;
-    plane.style.transform=`translate3d(${(x+parallaxX+drift+push).toFixed(2)}px,${y.toFixed(2)}px,${depth.toFixed(2)}px) rotateY(${(px*(1.3+gain*2.8)*strength-selected*px*2).toFixed(2)}deg) rotateZ(${(motion&&!mobile?photo.roll+px*strength*.5:0).toFixed(2)}deg)`;
+    plane.style.transform=`translate3d(${(x+parallaxX+drift+push).toFixed(2)}px,${y.toFixed(2)}px,${depth.toFixed(2)}px) rotateY(${(px*(1.3+gain*2.8)*strength-selected*px*2 + (x / Math.max(1,width) - .5) * 12 * strength).toFixed(2)}deg) rotateZ(${(motion&&!mobile?photo.roll+px*strength*.5:0).toFixed(2)}deg)`;
     plane.style.zIndex=String(Math.round(10+gain*10+selected*20));
     plane.style.setProperty('--photo-light',String(1-(1-selected)*hoverMix*.24));
     plane.dataset.highlighted=selected>.4?'true':'false';
@@ -94,7 +94,10 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
    const next=wrapArchive(direction===undefined?index:(chosen??notified)+direction,archiveWorld.length);
    const target=layout.prints[next].center-(width*(mobile?.5:.25));
    const delta=shortestArchiveDistance(camera,target,layout.length);
-   velocity=0;autoSpeed=0;chosen=next;navigation={from:camera,to:camera+delta,start:performance.now(),index:next};
+   velocity=0;autoSpeed=0;chosen=next;
+   if (flags.current.blocked || !inView) {
+    camera=target;position.current=target;navigation=null;
+   } else navigation={from:camera,to:camera+delta,start:performance.now(),index:next};
    idleUntil=performance.now()+ARCHIVE_IDLE_DELAY;remember(next);setActive(next);notified=next;wake();
   };
   command.current=go;
@@ -149,6 +152,7 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
   const controlsEnter=(event:PointerEvent)=>{if(event.pointerType==='mouse'){controlsHover=true;autoSpeed=0;wake();}};
   const controlsLeave=()=>{controlsHover=false;idleUntil=performance.now()+500;wake();};
   const resize=()=>{
+   if (!element.clientWidth || !element.clientHeight) return;
    const fraction=camera/layout.length,intended=navigation?.index;
    width=element.clientWidth;height=element.clientHeight;mobile=width<700;
    layout=createArchiveLayout(archiveWorld,width,height,mobile);camera=fraction*layout.length;velocity=0;

@@ -33,3 +33,21 @@ body:has(.persistent-player[data-engaged='true']) .compact-footer.site-footer { 
  .compact-footer .footer-brand { grid-column:2; }
  .compact-footer .footer-socials { grid-column:1 / -1; }
 }
+
+.contact-brief { grid-column:1 / -1; display:grid; gap:16px; margin-block:12px; }
+.contact-mail.ceo-action {
+ justify-self:start; justify-content:space-between; gap:22px;
+ padding:12px 20px; background:var(--ceo-blue-deep);
+ clip-path:var(--rift-corner);
+ font:600 clamp(18px,3vw,28px)/1.1 var(--font-editorial); letter-spacing:.04em;
+}
+.contact-dossier { border-block:1px solid var(--rift-rule); }
+.contact-dossier > summary {
+ display:flex; align-items:center; justify-content:space-between; min-height:52px;
+ list-style:none; cursor:pointer; text-transform:uppercase;
+ font:600 16px/1 var(--font-editorial); letter-spacing:.08em; color:var(--ceo-blue-light);
+}
+.contact-dossier > summary::-webkit-details-marker { display:none; }
+.contact-dossier > summary:focus-visible { outline:2px solid currentColor; outline-offset:3px; }
+.contact-dossier[open] > summary .ceo-action-mark { rotate:90deg; }
+.contact-dossier [id] { scroll-margin-top:calc(var(--header-height) + 18px); }

@@ -1,10 +1,11 @@
 'use client';
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-import { DataTexture, MathUtils, Path, RGBAFormat, Shape, SRGBColorSpace, TextureLoader, type Group, type Texture } from 'three';
+import { CanvasTexture, DataTexture, MathUtils, Path, RGBAFormat, Shape, SRGBColorSpace, TextureLoader, type Group, type Texture } from 'three';
 import type { ProductViewerProps } from './ProductViewer';
 import type { PresentationAsset, ProductPresentation } from './types';
 import { fitCameraDistance, idleInspectionPose } from './inspection';
+import { apparelWidth, apparelHeight, createApparelShell } from './apparelShell';
 import { initialInspectionPose } from './InspectionController';
 
 type StageProps = ProductViewerProps & { onReady: () => void; onFailure: () => void };
@@ -23,14 +24,32 @@ function Graphic({ asset, color, scale, y = 0, z = .1 }: { asset: PresentationAs
  const texture = useAsset(asset);
  return <mesh position={[0, y, z]}><planeGeometry args={[scale, scale]}/><meshBasicMaterial map={texture} color={color} transparent alphaTest={.03} depthWrite={false} toneMapped={false}/></mesh>;
 }
-/** Two distinct photographic sides: intentionally 2.5D, never sold as a garment mesh. */
 function Apparel({ product }: { product: ProductPresentation }) {
- const front = useAsset(product.frontAsset), back = useAsset(product.backAsset!);
- return <>
-  <mesh position={[0, 0, .012]} castShadow><planeGeometry args={[4.1, 4.7]}/><meshStandardMaterial map={front} transparent alphaTest={.035} roughness={1} metalness={0}/></mesh>
-  <mesh position={[0, 0, -.012]} rotation={[0, Math.PI, 0]} castShadow><planeGeometry args={[4.1, 4.7]}/><meshStandardMaterial map={back} transparent alphaTest={.035} roughness={1} metalness={0}/></mesh>
-  <Graphic asset={product.graphicAsset} color={product.graphicColor} scale={product.graphicScale} y={product.graphicOffsetY} z={.03}/>
- </>;
+ const [original, mask] = useLoader(TextureLoader, [product.frontAsset.src, product.graphicAsset.src]);
+ const back = useAsset(product.backAsset!);
+ const isHoodie = product.id === 'demo-hoodie';
+ const geometry = useMemo(() => createApparelShell(isHoodie ? 'hoodie' : 'tshirt'), [isHoodie]);
+ const front = useMemo(() => {
+  const source = original.image as HTMLImageElement, logo = mask.image as HTMLImageElement;
+  const canvas = document.createElement('canvas'), ink = document.createElement('canvas'), size = 512;
+  canvas.width = canvas.height = ink.width = ink.height = size;
+  const ctx = canvas.getContext('2d')!, print = ink.getContext('2d')!, r = product.frontAsset.region!;
+  ctx.drawImage(source, r.x * source.width, (1 - r.y - r.height) * source.height, r.width * source.width, r.height * source.height, 0, 0, size, size);
+  const width = product.graphicScale / apparelWidth * size, height = product.graphicScale / apparelHeight * size;
+  print.drawImage(logo, (size - width) / 2, (size - height) / 2 - product.graphicOffsetY / apparelHeight * size, width, height);
+  print.globalCompositeOperation = 'source-in';
+  print.fillStyle = product.graphicColor; print.fillRect(0, 0, size, size);
+  ctx.globalCompositeOperation = 'source-atop'; ctx.drawImage(ink, 0, 0);
+  const texture = new CanvasTexture(canvas); texture.colorSpace = SRGBColorSpace;
+  return texture;
+ }, [original, mask, product]);
+ useEffect(() => () => geometry.dispose(), [geometry]);
+ useEffect(() => () => front.dispose(), [front]);
+ return <mesh geometry={geometry} castShadow>
+  <meshStandardMaterial attach="material-0" map={front} roughness={.94}/>
+  <meshStandardMaterial attach="material-1" map={back} roughness={.94}/>
+  <meshStandardMaterial attach="material-2" color={isHoodie ? '#282a2c' : '#d7d2c7'} roughness={1}/>
+ </mesh>;
 }
 function cutShape(width: number, height: number, corner = .14) {
  const x = width / 2, y = height / 2;
@@ -91,7 +110,7 @@ function StudioObject(props: StageProps) {
   gl.domElement.addEventListener('webglcontextlost', lost);
   return () => gl.domElement.removeEventListener('webglcontextlost', lost);
  }, [gl, onFailure]);
- useEffect(() => { if (active) invalidate(); }, [active, motion, product, props.spread, invalidate]);
+ useEffect(() => { if (active) invalidate(); }, [active, motion, product, props.spread, props.zoom, invalidate]);
  useFrame(({ camera, size }, dt) => {
   if (!group.current || !active) return;
   const delta = Math.min(dt, .05), value = group.current;
@@ -106,7 +125,7 @@ function StudioObject(props: StageProps) {
   controller.present({ yaw: value.rotation.y, pitch: value.rotation.x });
   const minimum = product.previewType === 'sticker-stack' ? 8.15 : product.previewType === 'keychain-3d' ? 7.25 : 7.15;
   const objectWidth = product.previewType === 'sticker-stack' ? props.spread ? 6.15 : 4.5 : product.previewType === 'keychain-3d' ? 2.7 : 4.4;
-  const z = fitCameraDistance(size.width, size.height, objectWidth, minimum);
+  const z = fitCameraDistance(size.width, size.height, objectWidth, minimum) / props.zoom;
   // Retreat before the fan expands; come closer only after the layers gather.
   camera.position.z = motion ? MathUtils.damp(camera.position.z, z, camera.position.z < z ? 14 : 5, delta) : z;
   camera.position.x = motion ? MathUtils.damp(camera.position.x, pointer.x * .16, 6, delta) : 0;
@@ -123,7 +142,7 @@ function StudioObject(props: StageProps) {
   if (motion && (idle || unsettled)) invalidate();
  });
  return <group ref={group} key={product.id} rotation={[initialInspectionPose.pitch, initialInspectionPose.yaw, 0]}>
-  {product.previewType === 'apparel-2.5d' ? <Apparel product={product}/> : product.previewType === 'sticker-stack' ? <StickerStack product={product} spread={props.spread} motion={motion}/> : <Keychain product={product}/>}
+  {product.previewType === 'apparel-shell' ? <Apparel product={product}/> : product.previewType === 'sticker-stack' ? <StickerStack product={product} spread={props.spread} motion={motion}/> : <Keychain product={product}/>}
  </group>;
 }
 /** Imported only by Shop, after its client viewer mounts. No HDR/model requests. */

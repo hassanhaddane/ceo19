@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic';
 import { Component, useCallback, useEffect, useRef, useState, type ReactNode, type PointerEvent } from 'react';
 import type { Locale } from '@/types/content';
-import { dragPose } from './inspection';
+import { clampInspectionZoom, dragPose, inspectionZoom } from './inspection';
 import { ProductFallback } from './ProductFallback';
 import type { InspectionView, ProductPresentation } from './types';
 import type { InspectionController } from './InspectionController';
@@ -10,7 +10,7 @@ import type { InspectionController } from './InspectionController';
 const ThreeProductStage = dynamic(() => import('./ThreeProductStage'), { ssr: false });
 export interface ProductViewerProps {
  product: ProductPresentation; view: InspectionView; controller: InspectionController;
- spread: boolean; motion: boolean; active: boolean; locale: Locale;
+ spread: boolean; zoom: number; onZoom: (value: number) => void; motion: boolean; active: boolean; locale: Locale;
  onView: (view: InspectionView) => void; onAvailability: (available: boolean) => void;
 }
 class ViewerBoundary extends Component<{ children: ReactNode; onFailure: () => void }, { failed: boolean }> {
@@ -21,15 +21,21 @@ class ViewerBoundary extends Component<{ children: ReactNode; onFailure: () => v
 }
 /** Input and fallback remain outside WebGL. A renderer failure cannot break navigation. */
 export function ProductViewer(props: ProductViewerProps) {
- const { product, view, controller, motion, locale, onView, onAvailability } = props;
+ const { product, view, controller, motion, locale, onView, onAvailability, zoom, onZoom } = props;
  const [readyProduct, setReadyProduct] = useState<string | null>(null), [failed, setFailed] = useState(false);
  const ready = readyProduct === product.id;
  const drag = useRef<{ id: number; x: number; y: number; yaw: number; pitch: number; locked: boolean } | null>(null);
+ const touches = useRef(new Map<number, { x: number; y: number }>());
+ const pinch = useRef<{ distance: number; zoom: number } | null>(null);
+ function touchDistance() {
+  const [a, b] = touches.current.values();
+  return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
+ }
  const viewer = useRef<HTMLDivElement>(null);
  useEffect(() => {
   const cancel = () => {
    const element = viewer.current, id = drag.current?.id;
-   drag.current = null;
+   drag.current = null; touches.current.clear(); pinch.current = null;
    if (element) { delete element.dataset.dragging; if (id !== undefined && element.hasPointerCapture(id)) element.releasePointerCapture(id); }
    controller.setPointer({ x: 0, y: 0 });
   };
@@ -40,25 +46,47 @@ export function ProductViewer(props: ProductViewerProps) {
  const handleReady = useCallback(() => { setReadyProduct(product.id); onAvailability(true); }, [onAvailability, product.id]);
  const handleFailure = useCallback(() => { setReadyProduct(null); setFailed(true); onAvailability(false); onView('front'); }, [onAvailability, onView]);
  function release(event: PointerEvent<HTMLDivElement>) {
-  if (drag.current && event.currentTarget.hasPointerCapture(drag.current.id)) event.currentTarget.releasePointerCapture(drag.current.id);
+  touches.current.delete(event.pointerId);
+  if (touches.current.size < 2) pinch.current = null;
+  if (drag.current?.id !== event.pointerId) return;
   drag.current = null; delete event.currentTarget.dataset.dragging;
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
  }
  return <div ref={viewer} className="drop-viewer" data-viewer-mode={failed ? '2d' : ready ? 'webgl' : 'loading'} data-inspection={view}
   role="group" aria-label={locale === 'fr' ? 'Prototype interactif. Glissez pour tourner, ou utilisez les flèches.' : 'Interactive prototype. Drag to rotate, or use the arrow keys.'}
   tabIndex={failed ? -1 : 0} aria-describedby="drop-inspection-help" data-owned-interaction data-cursor={!failed ? 'drag' : 'view'}
   onKeyDown={event => {
    if (event.key === 'Home') { event.preventDefault(); onView('front'); }
+   if (!failed && ['+', '=', '-', '0'].includes(event.key)) {
+    event.preventDefault(); onZoom(clampInspectionZoom(event.key === '0' ? 1 : zoom + (event.key === '-' ? -1 : 1) * inspectionZoom.step));
+   }
    if (!failed && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
     event.preventDefault(); event.stopPropagation(); controller.beginInteraction(); onView('rotate');
     const pose = controller.getPose(); controller.setPose({ ...pose, yaw: pose.yaw + (event.key === 'ArrowLeft' ? -.24 : .24) });
    }
   }}
   onPointerDown={event => {
-   if (failed || !event.isPrimary || event.button !== 0) return;
+   if (failed || event.button !== 0) return;
+   if (event.pointerType === 'touch') {
+    touches.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (touches.current.size === 2) {
+     pinch.current = { distance: Math.max(1, touchDistance()), zoom };
+     drag.current = null; delete event.currentTarget.dataset.dragging;
+    }
+   }
+   if (!event.isPrimary) return;
    controller.beginInteraction();
    const pose = controller.getPose(); drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, yaw: pose.yaw, pitch: pose.pitch, locked: false };
   }}
   onPointerMove={event => {
+   if (touches.current.has(event.pointerId)) {
+    touches.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pinch.current) {
+     if (event.cancelable) event.preventDefault();
+     onZoom(clampInspectionZoom(pinch.current.zoom * touchDistance() / pinch.current.distance));
+     return;
+    }
+   }
    const bounds = event.currentTarget.getBoundingClientRect(), current = drag.current;
    if (current && current.id === event.pointerId) {
     const dx = event.clientX - current.x, dy = event.clientY - current.y;

@@ -2,13 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { stat } from 'node:fs/promises';
 import { demoCatalogue } from '../src/data/demoCatalogue.ts';
-import { dragPose, fitCameraDistance, idleInspectionPose, nextProduct, snapYaw } from '../src/features/shop/presentation/inspection.ts';
+import { clampInspectionZoom, dragPose, fitCameraDistance, idleInspectionPose, nextProduct, snapYaw } from '../src/features/shop/presentation/inspection.ts';
+import { createApparelShell } from '../src/features/shop/presentation/apparelShell.ts';
 import { InspectionController, initialInspectionPose } from '../src/features/shop/presentation/InspectionController.ts';
 
 test('all four exhibition concepts are demo-only and expose no commerce input', async () => {
  assert.equal(demoCatalogue.length, 4);
  assert.equal(new Set(demoCatalogue.map(item => item.id)).size, 4);
- assert.deepEqual(demoCatalogue.map(item => item.previewType), ['apparel-2.5d', 'apparel-2.5d', 'sticker-stack', 'keychain-3d']);
+ assert.deepEqual(demoCatalogue.map(item => item.previewType), ['apparel-shell', 'apparel-shell', 'sticker-stack', 'keychain-3d']);
  for (const item of demoCatalogue) {
   assert.equal(item.mode, 'demo'); assert.equal(item.model3dAsset, null);
   for (const key of ['price', 'stock', 'availableForSale', 'variantId', 'checkoutUrl', 'releaseDate']) assert.equal(key in item, false);
@@ -16,7 +17,7 @@ test('all four exhibition concepts are demo-only and expose no commerce input', 
  }
 });
 test('apparel has separate, nonoverlapping front/back atlas regions and neutral prototype backs', () => {
- for (const item of demoCatalogue.filter(item => item.previewType === 'apparel-2.5d')) {
+ for (const item of demoCatalogue.filter(item => item.previewType === 'apparel-shell')) {
   assert.notDeepEqual(item.frontAsset.region, item.backAsset.region);
   assert.ok(item.frontAsset.region.x + item.frontAsset.region.width <= item.backAsset.region.x);
   assert.match(item.backLabel.en, /Neutral back.*prototype/);
@@ -59,9 +60,9 @@ test('manual input takes the displayed angle without a jump and never competes w
  assert.ok(Math.abs(controller.getPose().yaw-(Math.PI*2+initialInspectionPose.yaw))<1e-10);
  controller.reset();assert.deepEqual(controller.getDisplayedPose(),initialInspectionPose);
 });
-test('2.5D idle motion stays facing the visitor; the solid accessory turns slowly', () => {
+test('textile idle motion stays facing the visitor; the solid accessory turns slowly', () => {
  for(const seconds of [0,1,10,30,120,360]) {
-  const pose=idleInspectionPose(initialInspectionPose,'apparel-2.5d',seconds);
+  const pose=idleInspectionPose(initialInspectionPose,'apparel-shell',seconds);
   assert.ok(Math.abs(pose.yaw-initialInspectionPose.yaw)<=.14);
   assert.ok(Math.abs(pose.pitch-initialInspectionPose.pitch)<=.015);
  }
@@ -74,4 +75,30 @@ test('camera framing fits expanded stickers and apparel inside tall mobile viewp
   assert.ok(visibleWidth >= objectWidth - 1e-10); assert.ok(distance >= minimum);
  }
  assert.equal(fitCameraDistance(0, 0, 6, 8), 8);
+});
+
+test('both textured textile shells have depth and a closed rim', () => {
+ for (const id of ['hoodie', 'tshirt']) {
+  const shell = createApparelShell(id);
+  const positions = shell.getAttribute('position');
+  const triangles = shell.getIndex().array;
+  const edgeCounts = new Map();
+  for (let i = 0; i < triangles.length; i += 3) {
+   for (let side = 0; side < 3; side++) {
+    const a = triangles[i + side], b = triangles[i + (side + 1) % 3];
+    assert.notEqual(a, b);
+    const key = a < b ? a + ':' + b : b + ':' + a;
+    edgeCounts.set(key, (edgeCounts.get(key) ?? 0) + 1);
+   }
+  }
+  assert.ok([...edgeCounts.values()].every(count => count === 2));
+  assert.ok(shell.groups[2].count > 0);
+  assert.ok(Math.max(...Array.from({ length: positions.count }, (_, i) => positions.getZ(i))) > .22);
+  shell.dispose();
+ }
+});
+test('zoom cannot push the inspection camera beyond its framing limits', () => {
+ assert.equal(clampInspectionZoom(-1), 1);
+ assert.equal(clampInspectionZoom(1.25), 1.25);
+ assert.equal(clampInspectionZoom(4), 1.65);
 });

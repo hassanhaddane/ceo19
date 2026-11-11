@@ -138,10 +138,10 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
  }
  return <>
   <a className="skip-link" href="#main">{copy.skip}</a>
-  <header className="site-header floating-navigation" data-scene={scene.active} data-surface={pathname.endsWith('/epk') ? 'cream' : pathname === `/${locale}` ? scenes.find(item => item.id === scene.active)?.navigationSurface ?? 'dark' : 'dark'}>
+  <header className="site-header floating-navigation" data-scene={scene.active} data-surface={pathname === `/${locale}` ? scenes.find(item => item.id === scene.active)?.navigationSurface ?? 'dark' : 'dark'}>
    <nav ref={nav} aria-label={copy.index} className="desktop-nav">{scenes.map(({ id, number }) => <NavigationAction client href={`/${locale}#${id}`} key={id} onClick={event => {
     if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene(id); }
-   }} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="navigation-number" aria-hidden="true">{number}</span><span className="navigation-label"><ActionLabel>{copy.nav[id]}</ActionLabel></span></NavigationAction>)}<NavigationAction client href={experienceStart(locale,'epk')} aria-label={copy.press} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}><span className="navigation-label"><ActionLabel>EPK</ActionLabel></span></NavigationAction><NavigationAction client href={`/${locale}#connect`} onClick={event => {
+   }} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="navigation-number" aria-hidden="true">{number}</span><span className="navigation-label"><ActionLabel>{copy.nav[id]}</ActionLabel></span></NavigationAction>)}<NavigationAction client href={`/${locale}#connect`} onClick={event => {
     if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene('connect'); }
    }} aria-current={pathname === `/${locale}` && scene.active === 'connect' ? 'location' : undefined}><span className="navigation-label"><ActionLabel>{copy.contact}</ActionLabel></span></NavigationAction><span ref={marker} className="navigation-marker" aria-hidden="true"/></nav>
    <NavigationAction client className="brand-link" data-cursor="enter" href={`/${locale}#home`} onClick={event => {
@@ -160,7 +160,6 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
      {motionPreference !== 'system' && <UtilityButton type="button" className="menu-motion-reset" onClick={resetSignalMotion}>{locale === 'fr' ? 'Suivre le réglage de l’appareil' : 'Use device setting'}</UtilityButton>}
      {entry && <UtilityButton type="button" className="menu-replay" data-cursor="enter" onClick={() => close(entry.replay)}><ActionLabel>{locale === 'fr' ? 'Revoir l’intro' : 'Replay intro'}</ActionLabel><ActionMark/></UtilityButton>}
     </div></details>
-    <NavigationAction client href={experienceStart(locale,'epk')} onClick={event => { if (!event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); close(() => router.push(experienceStart(locale,'epk'))); } }} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}>{copy.press}</NavigationAction>
     <NavigationAction href={`mailto:${professional.email}`}><ActionLabel>{copy.contact}</ActionLabel></NavigationAction>
    </div>
   </dialog>

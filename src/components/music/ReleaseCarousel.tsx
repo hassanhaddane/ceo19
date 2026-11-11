@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { UtilityButton, UtilityGlyph } from '../interactive/UtilityAction';
 import { releases } from '@/data/releases';
 import { assetUrl } from '@/data/assets';
+import { releaseWorld } from '@/data/releaseWorlds';
 import { releaseCopy } from '@/data/releaseCopy';
 import { carouselPose, carouselSlot } from '@/lib/carouselGeometry';
 import type { Locale } from '@/types/content';
@@ -17,9 +18,9 @@ export function ReleaseCarousel({ activeRelease, incomingRelease, busy, stageRef
    {releases.map((release, index) => {
     const slot = carouselSlot(index, current, releases.length), pose = carouselPose(slot, 0, 0);
     const near = Math.abs(slot) <= 1 || Math.abs(carouselSlot(index, incoming, releases.length)) <= 1;
-    return <div key={release.id} className="carousel-slide" data-release={release.id} data-position={slot===0?'center':slot===-1?'previous':slot===1?'next':'moving'} aria-hidden={pose.opacity===0} style={{ transform:`translateX(calc(var(--carousel-spread) * ${slot})) rotateY(${pose.rotation}deg) scale(${pose.scale})`, opacity:pose.opacity, zIndex:pose.zIndex, visibility:pose.opacity===0?'hidden':'visible' }}>
+    return <div key={release.id} className="carousel-slide" data-release={release.id} data-print={releaseWorld(release.id).motionPreset} data-position={slot===0?'center':slot===-1?'previous':slot===1?'next':'moving'} aria-hidden={pose.opacity===0} style={{ transform:`translateX(calc(var(--carousel-spread) * ${slot})) rotateY(${pose.rotation}deg) scale(${pose.scale})`, opacity:pose.opacity, zIndex:pose.zIndex, visibility:pose.opacity===0?'hidden':'visible' }}>
      <button data-ceo-action="utility" data-ceo-motion="cutout" data-cursor="view" className="carousel-cover" type="button" tabIndex={Math.abs(slot)<=1?0:-1} aria-label={`${index===current?(locale==='fr'?'Sortie sélectionnée':'Selected release'):copy.select}: ${release.title}`} aria-current={index===current?'true':undefined} onClick={()=>select(release)}>
-      <span className="carousel-tilt">{release.artwork&&<Image src={assetUrl(release.artwork)} alt="" fill sizes="(max-width:767px) 82vw, (max-height:760px) 420px, 580px" loading={near?'eager':'lazy'} fetchPriority={index===current?'high':'auto'} draggable={false}/>}</span>
+      <span className="carousel-tilt"><i aria-hidden="true" />{release.artwork&&<Image src={assetUrl(release.artwork)} alt="" fill sizes="(max-width:767px) 82vw, (max-height:760px) 420px, 580px" loading={near?'eager':'lazy'} fetchPriority={index===current?'high':'auto'} draggable={false}/>}</span>
      </button>
      <p className="carousel-side-title" aria-hidden="true" style={{opacity:Math.min(1,Math.abs(slot))}}><span>{String(index+1).padStart(2,'0')}</span>{release.title}</p>
     </div>;

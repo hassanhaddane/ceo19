@@ -5,10 +5,16 @@ export const sceneOrder:readonly SectionId[]=scenes.map(scene=>scene.id);
 export type SceneChapter = SectionId | 'connect';
 export const sceneChapterOrder:readonly SceneChapter[] = [...sceneOrder, 'connect'];
 export interface SceneTarget { scene:SectionId; anchor:'connect'|null; }
+const resourceAnchors = ['biography', 'discography', 'videos', 'media', 'milestones', 'press', 'production', 'contact'];
+export function contactResourceAnchor(hash: string) {
+ const id = hash.slice(1);
+ if (['world', 'world-title', 'world-biography-label'].includes(id)) return 'biography';
+ return resourceAnchors.includes(id) ? id : null;
+}
 /** Legacy contact bookmarks land on the compact footer, outside the three scenes. */
 export function resolveSceneTarget(hash:string):SceneTarget|null {
  const id=hash.replace(/^#/,'');
- if(id==='connect'||id==='network')return {scene:'archive',anchor:'connect'};
+ if(id==='connect'||id==='network'||contactResourceAnchor(hash))return {scene:'archive',anchor:'connect'};
  if(sceneOrder.includes(id as SectionId))return {scene:id as SectionId,anchor:null};
  if(/^(release-|film-)/.test(id))return {scene:'music',anchor:null};
  if(id.startsWith('archive-'))return {scene:'archive',anchor:null};

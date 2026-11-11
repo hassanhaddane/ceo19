@@ -167,3 +167,11 @@
  .drop-choice-number { font-size:7px; }
  .drop-early-access .shop-access { min-height:48px; font-size:20px; }
 }
+
+.drop-zoom { display:flex; align-items:center; gap:.45rem; margin-top:.45rem; justify-content:center; }
+.drop-zoom button { min-width:36px; min-height:36px; padding:0; color:inherit; border:1px solid rgb(233 236 242 / 28%); background:rgb(7 10 14 / 60%); }
+.drop-zoom button:disabled { opacity:.4; }
+.drop-zoom output { min-width:3.5em; text-align:center; font:inherit; font-variant-numeric:tabular-nums; }
+.drop-stage-area::after { content:''; position:absolute; z-index:-1; inset:auto 9% 6% 9%; height:16%; pointer-events:none; clip-path:polygon(13% 0,100% 0,87% 100%,0 100%); border-block:1px solid color-mix(in srgb,var(--drop-accent) 48%,transparent); background:color-mix(in srgb,var(--drop-accent) 8%,transparent); }
+.drop-view-controls { flex-wrap:wrap; }
+.drop-demo-label b { padding:.16em .5em; border:1px solid rgb(155 194 220 / 40%); color:var(--ceo-blue-light); font-weight:500; }

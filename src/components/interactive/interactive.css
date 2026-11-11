@@ -6,7 +6,7 @@
 .ceo-action-visual { position:relative; display:inline-flex; align-items:center; justify-content:space-between; gap:24px; width:100%; transform:translate(var(--action-x),var(--action-y)); transition:transform var(--action-settle) var(--action-ease); pointer-events:none; }
 .ceo-action-mark { flex:none; width:18px; height:18px; transition:rotate var(--action-shift) var(--action-ease); }
 .ceo-action:active:not(:disabled) { transform:scale(.975); transition-duration:var(--action-press); }
-:is(.epk-page,.shop-waitlist,.marketing-page,.floating-navigation[data-surface='cream']) { --action-focus:var(--ceo-blue-deep); }
+:is(.contact-resources,.shop-waitlist,.marketing-page,.floating-navigation[data-surface='cream']) { --action-focus:var(--ceo-blue-deep); }
 .ceo-action:focus-visible { outline:2px solid var(--action-focus,var(--ceo-blue-light)); outline-offset:5px; text-decoration:none; }
 .ceo-action:focus-visible::before { opacity:1; }
 .ceo-action:focus-visible { color:var(--ceo-cream); }

@@ -19,3 +19,8 @@ export function fitCameraDistance(width: number, height: number, objectWidth: nu
  if (width <= 0 || height <= 0) return minimum;
  return Math.max(minimum, objectWidth * height / (width * 2 * Math.tan(fov * Math.PI / 360)));
 }
+
+export const inspectionZoom = { min: 1, max: 1.65, step: .15 } as const;
+export function clampInspectionZoom(zoom: number) {
+ return Math.max(inspectionZoom.min, Math.min(inspectionZoom.max, zoom));
+}

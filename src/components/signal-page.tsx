@@ -6,10 +6,10 @@ import { SceneFlow } from './scenes/SceneFlow';
 import { MusicExperience } from './music/MusicExperience';
 import { ArchiveExperience } from './media/ArchiveExperience';
 export function SignalPage({ locale }: { locale: Locale }) {
- return <SceneFlow locale={locale}>
+ return <SceneFlow>
  <HomeExperience locale={locale}/>
  <MusicExperience locale={locale} />
  <ArchiveExperience locale={locale}/>
- <Footer locale={locale} copy={dictionaries[locale]}/>
+ <Footer resources locale={locale} copy={dictionaries[locale]}/>
  </SceneFlow>;
 }

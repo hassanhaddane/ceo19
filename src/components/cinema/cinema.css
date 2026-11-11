@@ -52,7 +52,7 @@ html[data-cinema-phase]:not([data-cinema-phase='closing']) .visual-site-shell > 
 @keyframes cinema-fragment { 0%,20% { opacity:0; translate:0 18px; } 38%,52% { opacity:1; translate:0 0; } 75%,100% { opacity:0; translate:0 -18px; } }
 @keyframes cinema-frame-open { 0%,35% { clip-path: inset(49% 40%); } 100% { clip-path: inset(0); } }
 @keyframes cinema-frame-close { to { clip-path: inset(50% 30%); } }
-@keyframes cinema-cover-return { 0% { opacity:0; transform:scale(1.35); } 38% { opacity:1; } 100% { opacity:0; transform:translate(var(--origin-x),var(--origin-y)) scale(var(--origin-scale)); } }
+@keyframes cinema-cover-return { 0% { opacity:0; transform:scale(1.35); } 38% { opacity:1; } 100% { opacity:0; transform:translate(var(--return-x,var(--origin-x)),var(--return-y,var(--origin-y))) scale(var(--return-scale,var(--origin-scale))); } }
 @media(max-width:767px) {
  .cinema-header { padding: 16px 20px; gap: 16px; }
  .cinema-signature .logo-mark { width: 32px; }
@@ -78,3 +78,20 @@ html[data-cinema-phase]:not([data-cinema-phase='closing']) .visual-site-shell > 
 .cinema-world:is([data-stage='opening'],[data-stage='changing'])[data-treatment='haze'][data-motion='true'] .cinema-poster { animation-name:cinema-haze-cover; }
 @keyframes cinema-split-takeover { 0% { opacity:0; clip-path:inset(0 50%); } 35% { opacity:.75; clip-path:inset(0); } 78%,100% { opacity:0; clip-path:inset(0); } }
 @keyframes cinema-haze-cover { 0% { opacity:1; filter:blur(0); transform:translate(var(--origin-x),var(--origin-y)) scale(var(--origin-scale)); } 42% { opacity:1; filter:blur(0); transform:scale(1.12); } 100% { opacity:0; filter:blur(12px); transform:scale(1.35); } }
+
+
+.cinema-portal-frame {
+ position:absolute; inset:8% 6%; z-index:3; pointer-events:none; background:var(--cinema-accent);
+ clip-path:polygon(8% 0,100% 0,100% 89%,94% 100%,0 100%,0 16%,8% 0,9% .5%,.7% 16%,.7% 99%,93.7% 99%,99.4% 89%,99.4% .5%,9% .5%);
+ opacity:.4;
+}
+.cinema-world[data-stage='playing'] .cinema-portal-frame { opacity:.16; }
+.cinema-world:is([data-stage='opening'],[data-stage='changing'])[data-motion='true'] .cinema-portal-frame {
+ animation:cinema-portal-fold var(--cinema-entry) var(--ease) both;
+}
+@keyframes cinema-portal-fold {
+ from { opacity:0; transform:perspective(1000px) rotateY(-28deg) scale(.44); }
+ 60% { opacity:.78; }
+ to { opacity:.4; transform:perspective(1000px) rotateY(0) scale(1); }
+}
+@media(max-width:767px) { .cinema-portal-frame { inset:16% 3%; } }

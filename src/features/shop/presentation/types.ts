@@ -6,7 +6,7 @@ export interface PresentationAsset {
 }
 export interface ProductPresentation {
  id: string;
- previewType: 'apparel-2.5d' | 'sticker-stack' | 'keychain-3d';
+ previewType: 'apparel-shell' | 'sticker-stack' | 'keychain-3d';
  frontAsset: PresentationAsset;
  backAsset: PresentationAsset | null;
  model3dAsset: string | null;

@@ -9,7 +9,7 @@ function atlasStyle(asset: PresentationAsset): CSSProperties {
 }
 /** Honest 2D fallback and loading poster. Front/back never reuse mirrored artwork. */
 export function ProductFallback({ product, back, spread, hidden = false }: { product: ProductPresentation; back: boolean; spread: boolean; hidden?: boolean }) {
- const apparel = product.previewType === 'apparel-2.5d';
+ const apparel = product.previewType === 'apparel-shell';
  const id = useId(), ring = `drop-ring-${id}`, polymer = `drop-polymer-${id}`;
  return <div className="drop-fallback" data-hidden={hidden} aria-hidden="true">
   {apparel ? <div className="drop-fallback-garment" style={atlasStyle(back && product.backAsset ? product.backAsset : product.frontAsset)}>
