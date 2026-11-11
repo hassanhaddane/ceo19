@@ -1,20 +1,22 @@
 @property --drop-accent { syntax:'<color>'; inherits:true; initial-value:#3572a3; }
-.shop-page.shop-drop-lab { padding:116px var(--gutter) 28px; overflow:clip; }
+.shop-page.shop-drop-lab { padding:calc(var(--header-height) + 28px) var(--gutter) 28px; overflow:clip; }
 .shop-drop-lab::before { display:none; }
 .shop-drop-lab .experience-return { margin-top:14px; opacity:.65; }
 .drop-lab { --drop-accent:var(--ceo-blue); position:relative; max-width:1760px; margin-inline:auto; transition:--drop-accent 650ms ease; }
-.drop-exhibition { position:relative; height:clamp(420px,calc(100svh - 330px),850px); isolation:isolate; perspective:1200px; }
+.drop-exhibition { position:relative; height:clamp(434px,calc(100svh - 320px),850px); isolation:isolate; perspective:1200px; }
 .drop-heading { position:relative; z-index:3; display:flex; align-items:flex-start; justify-content:space-between; gap:32px; pointer-events:none; }
-.drop-heading h1 { margin:0; font:var(--weight-display) clamp(84px,11.2vw,184px)/.9 var(--font-display); letter-spacing:-.025em; }
-.drop-demo-label { display:flex; align-items:center; gap:14px; margin-top:18px; font:500 10px/1.5 var(--font-interface); letter-spacing:.19em; }
+.drop-heading h1 { max-width:3.8ch; margin:0; font:400 clamp(82px,min(9vw,14svh),176px)/.9 var(--font-poster); letter-spacing:-.04em; }
+.drop-heading > div { display:grid; }
+.drop-demo-label { order:-1; display:flex; align-items:center; gap:14px; margin-bottom:12px; font:500 10px/1.5 var(--font-interface); letter-spacing:.19em; }
 .drop-demo-label > span { display:block; width:28px; height:2px; background:var(--ceo-blue); }
 .drop-statement { padding-top:10px; font:400 12px/1.9 var(--font-interface); letter-spacing:.1em; }
 .drop-statement span { display:block; }
-.drop-specimen-number { position:absolute; z-index:-1; top:clamp(175px,21vh,235px); left:-5px; color:transparent; -webkit-text-stroke:1px var(--drop-accent); opacity:.45; font:var(--weight-display) clamp(250px,30vw,470px)/.8 var(--font-display); letter-spacing:-.055em; pointer-events:none; transition:-webkit-text-stroke-color 600ms; }
-.drop-atmosphere { position:absolute; z-index:-2; inset:-60px -4vw -30px; overflow:hidden; pointer-events:none; }
-.drop-atmosphere::before { content:''; position:absolute; inset:-8% -4% -4% 0; background:radial-gradient(ellipse 34% 46% at 60% 47%,color-mix(in srgb,var(--drop-accent) 36%,transparent),transparent 100%),radial-gradient(ellipse 24% 30% at 40% 65%,color-mix(in srgb,var(--drop-accent) 24%,transparent),transparent 100%); transform:rotate(-16deg) skewX(-11deg); filter:blur(32px); transition:background 650ms; }
-.drop-atmosphere::after { content:''; position:absolute; inset:0; background:url('/images/grain.svg'); opacity:.055; mix-blend-mode:screen; mask-image:radial-gradient(ellipse closest-side,#000 20%,transparent 100%); }
-.drop-stage-area { position:absolute; z-index:1; inset:-18px 9% 88px 25%; transform-origin:50% 65%; opacity:1; clip-path:inset(0); transition:opacity 340ms ease,transform 340ms var(--action-ease),clip-path 340ms var(--action-ease); }
+.drop-specimen-number { position:absolute; z-index:-1; top:auto; right:0; bottom:24px; color:transparent; -webkit-text-stroke:1px var(--drop-accent); opacity:.45; font:400 clamp(170px,21vw,300px)/.84 var(--font-poster); letter-spacing:-.055em; pointer-events:none; transition:-webkit-text-stroke-color 600ms; }
+.drop-atmosphere { position:absolute; z-index:-2; inset:0 -3vw 0 25%; overflow:hidden; pointer-events:none; }
+.drop-atmosphere::before,.drop-atmosphere::after { content:''; position:absolute; inset:0; clip-path:var(--rift-cut); }
+.drop-atmosphere::before { background:color-mix(in srgb,var(--ceo-blue-deep) 72%,var(--drop-accent)); }
+.drop-atmosphere::after { background:url('/images/grain.svg'); opacity:.16; }
+.drop-stage-area { position:absolute; z-index:1; inset:4px 5% 58px 30%; transform-origin:50% 65%; opacity:1; clip-path:inset(0); transition:opacity 340ms ease,transform 340ms var(--action-ease),clip-path 340ms var(--action-ease); }
 .drop-stage-area[data-phase='out'] { opacity:0; transform:translate3d(calc(var(--exchange-direction) * -34px),10px,-160px) rotateY(calc(var(--exchange-direction) * -9deg)); clip-path:inset(0 calc(50% + var(--exchange-direction) * 45%) 0 calc(50% - var(--exchange-direction) * 45%)); }
 .drop-stage-area[data-phase='in'] { animation:drop-arrive 560ms var(--action-ease) both; }
 @keyframes drop-arrive { from { opacity:0; transform:translate3d(calc(var(--exchange-direction) * 46px),-8px,-130px) rotateY(calc(var(--exchange-direction) * 9deg)); clip-path:inset(0 calc(50% - var(--exchange-direction) * 45%) 0 calc(50% + var(--exchange-direction) * 45%)); } to { opacity:1; transform:translate3d(0,0,0) rotateY(0); clip-path:inset(0); } }
@@ -54,7 +56,7 @@
 .drop-reset.ceo-action,.drop-fan.ceo-action { font:var(--weight-ui) 12px/1.3 var(--font-editorial); letter-spacing:.07em; padding-inline:6px; }
 .drop-reset-mark { width:10px; height:10px; border:1px solid var(--ceo-blue-light); border-left-color:transparent; border-radius:50%; transform:rotate(-25deg); }
 .drop-inspection-help { min-height:16px; margin-top:10px; font:400 9px/1.5 var(--font-interface); letter-spacing:.12em; color:var(--ceo-blue-light); }
-.drop-lab-footer { position:relative; z-index:5; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:32px; align-items:center; padding-top:12px; border-top:1px solid rgb(234 229 214 / .25); }
+.drop-lab-footer { border-bottom:1px solid var(--rift-rule); position:relative; z-index:5; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:32px; align-items:center; padding-top:12px; border-top:1px solid var(--rift-rule); }
 .drop-product-navigation { display:grid; grid-template-columns:80px minmax(0,1fr) 64px; align-items:center; min-width:0; }
 .drop-selector { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
 .drop-step.ceo-action { font:var(--weight-ui) 13px/1.4 var(--font-editorial); letter-spacing:.08em; justify-self:start; padding-inline:0; }
@@ -81,7 +83,6 @@
 @media(min-width:1800px) { .drop-stage-area { inset:-18px 12% 88px 27%; } }
 @media(min-width:768px) and (max-width:1100px) {
  .shop-page.shop-drop-lab { padding-top:110px; }
- .drop-heading h1 { font-size:12vw; }
  .drop-statement { font-size:9px; letter-spacing:.08em; }
  .drop-stage-area { inset:48px 1% 104px 21%; }
  .drop-product-details { bottom:82px; max-width:34%; }
@@ -98,14 +99,13 @@
  .shop-page.shop-drop-lab { padding:100px 18px 24px; }
  .drop-exhibition { height:auto; display:grid; grid-template-columns:minmax(0,1fr); }
  .drop-heading { display:block; }
- .drop-heading h1 { font-size:clamp(76px,23vw,132px); }
- .drop-demo-label { position:absolute; top:-18px; right:0; margin:0; font-size:9px; letter-spacing:.07em; gap:6px; }
+ .drop-heading h1 { max-width:none; font-size:clamp(54px,16vw,108px); }
+ .drop-demo-label { order:initial; margin:10px 0 0; font-size:9px; letter-spacing:.07em; gap:6px; }
  .drop-demo-label > span { width:12px; }
  .drop-statement { font-size:9px; line-height:1.5; padding-top:0; margin-top:13px; letter-spacing:.03em; }
  .drop-statement span { display:inline; margin-left:5px; }
- .drop-specimen-number { top:168px; left:-3px; font-size:65vw; opacity:.22; }
- .drop-atmosphere { inset:80px -70px 120px; }
- .drop-atmosphere::before { inset:0 -35% 5%; }
+ .drop-specimen-number { top:180px; right:0; font-size:33vw; opacity:.5; }
+ .drop-atmosphere { inset:110px -35px 130px 0; }
  .drop-stage-area { position:relative; inset:auto; height:clamp(250px,38svh,360px); margin:0 -10px; grid-row:2; }
  .drop-product-details { position:relative; bottom:auto; max-width:none; margin-top:6px; }
  .drop-category { font-size:8px; margin-bottom:6px; }
@@ -131,7 +131,6 @@
 }
 @media(max-width:359px) {
  .shop-page.shop-drop-lab { padding-inline:14px; }
- .drop-heading h1 { font-size:22vw; }
  .drop-statement span { display:block; margin-left:0; }
  .drop-view-controls { gap:2px; }
  .drop-view-button.ceo-action { min-width:56px; }
@@ -151,12 +150,9 @@
  .drop-choice-preview { width:62px; height:68px; }
 }
 @media(max-width:767px) {
- .drop-heading h1 { font-size:clamp(60px,18vw,88px); }
- .drop-statement { display:none; }
  .drop-product-details { margin-top:2px; }
  .drop-category { margin-bottom:4px; }
  .drop-product-details h2 { font-size:28px; margin-bottom:0; }
- .drop-description { display:none; }
  .drop-presentation-label { margin-top:5px; }
  .drop-inspection { margin:4px 0 10px; }
  .drop-view-controls { justify-content:center; }

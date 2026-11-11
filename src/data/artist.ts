@@ -9,7 +9,7 @@ export const artist: Artist = {
 export const scenes = [
  { number: '01', navigationSurface: 'dark', id: 'home', label: { en: 'Home', fr: 'Accueil' } },
  { number: '02', navigationSurface: 'dark', id: 'music', label: { en: 'Music', fr: 'Musique' } },
- { number: '03', navigationSurface: 'dark', id: 'archive', label: { en: 'Archive', fr: 'Archives' } },
+ { number: '03', navigationSurface: 'cream', id: 'archive', label: { en: 'Archive', fr: 'Archives' } },
 ] as const satisfies readonly { number: string; navigationSurface: 'dark' | 'cream'; id: SectionId; label: Localized }[];
 
 export const sceneCopy = {

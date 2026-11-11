@@ -67,12 +67,14 @@ export function MusicExperience({locale}:{locale:Locale}) {
    <header className="music-world-heading"><h2 id="music-title">{fr?'MUSIQUE':'MUSIC'}</h2><span className="metadata" aria-label={fr?'Sortie sélectionnée':'Selected release'}>{String(releases.indexOf(activeRelease)+1).padStart(2,'0')} / {String(releases.length).padStart(2,'0')}</span></header>
    <div id="release-panel" className="music-release-stage">
     <ReleaseCarousel {...carousel} locale={locale}/>
-    <div key={activeRelease.id} className="music-release-identity"><h3>{activeRelease.title}</h3><div className="music-release-metadata"><span>CEO1.9{activeRelease.featuredArtist&&` / ${activeRelease.featuredArtist}`}</span>{activeRelease.date&&<time dateTime={activeRelease.date}>{dateLabel(activeRelease.date)}</time>}</div></div>
-    <div className="music-release-actions" inert={carousel.busy}>
-     {access.play&&<MusicAction className="music-play" href={access.play} target="_blank" rel="noopener noreferrer" aria-label={`${playLabel}: ${access.playIsArtist?'CEO1.9':activeRelease.title} — Spotify`} onClick={()=>{music.stop();music.setExpanded(false);}}><ActionLabel>{playLabel}</ActionLabel><PlatformIcon platform="Spotify"/></MusicAction>}
-     {access.watch&&<MusicAction className="music-watch" aria-label={`${copy.watch}: ${activeRelease.title}`} onClick={event=>watch(event.currentTarget)}><ActionLabel>{copy.watch}</ActionLabel><ActionMark/></MusicAction>}
-     <MusicAction className="music-lyrics" cursor="view" aria-label={`${lyricsLabel}: ${activeRelease.title}`} onClick={event=>{lyricsOpener.current=event.currentTarget;setLyricsOpen(true);}}><ActionLabel>{lyricsLabel}</ActionLabel>{world.geniusId?<ActionMark/>:<small>SOON</small>}</MusicAction>
-    </div>
+    <div className="music-release-copy">
+     <div key={activeRelease.id} className="music-release-identity"><h3>{activeRelease.title}</h3><div className="music-release-metadata"><span>CEO1.9{activeRelease.featuredArtist&&` / ${activeRelease.featuredArtist}`}</span>{activeRelease.date&&<time dateTime={activeRelease.date}>{dateLabel(activeRelease.date)}</time>}</div></div>
+     <div className="music-release-actions" inert={carousel.busy}>
+      {access.play&&<MusicAction className="music-play" href={access.play} target="_blank" rel="noopener noreferrer" aria-label={`${playLabel}: ${access.playIsArtist?'CEO1.9':activeRelease.title} — Spotify`} onClick={()=>{music.stop();music.setExpanded(false);}}><ActionLabel>{playLabel}</ActionLabel><PlatformIcon platform="Spotify"/></MusicAction>}
+      {access.watch&&<MusicAction className="music-watch" aria-label={`${copy.watch}: ${activeRelease.title}`} onClick={event=>watch(event.currentTarget)}><ActionLabel>{copy.watch}</ActionLabel><ActionMark/></MusicAction>}
+      <MusicAction className="music-lyrics" cursor="view" aria-label={`${lyricsLabel}: ${activeRelease.title}`} onClick={event=>{lyricsOpener.current=event.currentTarget;setLyricsOpen(true);}}><ActionLabel>{lyricsLabel}</ActionLabel>{world.geniusId?<ActionMark/>:<small>SOON</small>}</MusicAction>
+      </div>
+   </div>
    </div>
    <nav className="release-selector" aria-label={copy.index} onKeyDown={carousel.keyboard}>
     {releases.map((release,index)=><ActionButton family="navigation" id={`release-tab-${release.id}`} aria-controls="release-panel" aria-label={`${copy.select}: ${release.title}`} aria-current={activeRelease.id===release.id?'true':undefined} key={release.id} onClick={()=>carousel.select(release)}><span className="metadata">{String(index+1).padStart(2,'0')}</span><ActionLabel>{release.title}</ActionLabel></ActionButton>)}

@@ -1,13 +1,13 @@
-/* CEO1.9 V5.2. Palette is sampled from supplied artwork; source files remain intact. */
+/* CEO1.9 / The Blue Rift. Palette is sampled from supplied artwork; source files remain intact. */
 :root {
  /* Median blue sampled from IMG_7192.PNG, ROI (150,100)–(700,700).
     Blue pixels: B > 1.25R, B > 1.1G, G > 40; median RGB (53,114,163). */
  --ceo-blue: #3572a3;
  --ceo-blue-deep: #173e60;
  --ceo-blue-light: #a8c7df;
- --ceo-cream: #eae5d6;
- --ceo-white: #faf9f4;
- --ceo-black: #080a0c;
+ --ceo-cream: #f0f1ee;
+ --ceo-white: #fafbf9;
+ --ceo-black: #07090d;
  --font-display: 'Barlow Condensed', Impact, sans-serif;
  --font-interface: 'DM Sans', Arial, sans-serif;
  --font-editorial: 'Barlow Condensed', Impact, sans-serif;
@@ -34,16 +34,13 @@
  --header-height: 72px;
  --grain-opacity: .035;
  --overlay-navigation: 94%;
- --overlay-home-edge: .65;
- --gradient-strength: 24%;
- --mask-cinematic: polygon(0 0,100% 0,100% 94%,71% 100%,0 96%);
- --home-cover-size: min(72vw,34svh,296px);
- --home-hub-width: 440px;
- --home-type-release: clamp(30px,8.8vw,42px);
- --home-row-height: 76px;
- --home-tap-size: 44px;
- --home-film-overlay: .88;
- --home-film-position: 52% center;
+ --rift-paper: #e5e9eb;
+ --rift-rule: rgb(168 199 223 / 35%);
+ --font-poster: 'Anton', 'Barlow Condensed', Impact, sans-serif;
+ --font-index: 'Courier New', monospace;
+ /* Brim, inward notch, then the descending rim of the open briefcase. */
+ --rift-cut: polygon(25% 0,100% 0,100% 100%,0 100%,15% 57%,7% 54%,28% 24%,20% 21%);
+ --rift-corner: polygon(0 0,100% 0,100% 66%,90% 68%,100% 72%,85% 100%,0 100%);
  --release-art-size: min(49svh,440px);
  --release-title-size: clamp(44px,5.4vw,88px);
  --release-control-height: 56px;

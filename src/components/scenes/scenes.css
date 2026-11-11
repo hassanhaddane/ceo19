@@ -8,48 +8,9 @@ body:has(.scene-flow) { padding-bottom: 0; }
 /* Top-layer dialogs must be viewport-fixed; absolute dialogs can scroll a snapped
    document to its origin when the browser focuses their first control. */
 dialog:is(.architectural-menu,.media-viewer),.scene-flow dialog.media-viewer { position: fixed; inset: 0; }
-.scene-flow .scene-heading h2 { font-size: clamp(68px, 10svh, 130px); line-height: 1.08; }
-.scene-flow :is(.music-scene,.scene-archive) { display: flex; flex-direction: column; justify-content: center; }
-/* Native dialog inertness blocks interaction while the editorial paper reveals
-   over the existing scene, then uncovers that same scene on close. */
-/* Keep the opener rendered so native dialogs can restore focus on immediate close. */
-html[data-menu-open='true'] .visual-site-shell > .site-header { animation:none; opacity: 0; pointer-events: none; }
-.architectural-menu { background: transparent; display: none; isolation: isolate; padding: 0 var(--gutter); }
-.architectural-menu[open] { display: flex; flex-direction: column; }
-.architectural-menu::backdrop { background: transparent; }
-.architectural-menu[data-closing='true'] { pointer-events: none; }
-.menu-atmosphere { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(110deg,rgb(2 9 17 / .95) 0%,rgb(8 34 58 / .88) 42%,rgb(15 47 78 / .32) 70%,rgb(2 9 17 / .5)); }
-.architectural-menu .menu-top { min-height: 94px; padding-block: 16px; flex-shrink: 0; }
-.architectural-menu .menu-top .logo-mark { width: 50px; }
-.architectural-menu .menu-top .metadata { color: var(--ceo-cream); font-size: 9px; }
-.architectural-menu .menu-links { display: flex; flex-direction: column; flex: 1; justify-content: center; gap: 0; width: min(100%,1050px); padding-block: 22px; margin-left: 5vw; }
-.architectural-menu .menu-links a { display: flex; align-items: baseline; gap: 34px; min-height: 0; padding: 5px 0; border: none; color: var(--ceo-cream); }
-.architectural-menu .menu-links a > span:nth-child(2) { font-family: var(--font-display); font-size: clamp(50px,10.6svh,140px); font-weight:var(--weight-display); line-height: 1.12; }
-.architectural-menu .menu-links .metadata { font-size: 9px; color: var(--ceo-blue-light); }
-.architectural-menu .menu-links a[aria-current] > span:nth-child(2) { color: var(--ceo-blue-light); }
-.architectural-menu .menu-bottom { padding-block: 18px max(26px,env(safe-area-inset-bottom)); flex-shrink: 0; display: flex; gap: 34px; align-items: center; border-top: 1px solid var(--border-dark); }
-.architectural-menu .menu-bottom .metadata { margin-right: auto; }
+/* Keep the opener rendered so native dialogs can restore focus. */
+html[data-menu-open='true'] .visual-site-shell > .site-header { animation:none; opacity:0; pointer-events:none; }
 .press-finished { padding-top: 140px; }
 @media (max-width: 767px) {
  .scene-flow { --scene-top: 94px; --scene-bottom: 86px; }
- .scene-flow .scene-heading h2 { font-size: clamp(48px,7.6svh,76px); }
- .scene-flow .scene-heading .metadata { font-size: 8px; margin-top: 7px; }
- .architectural-menu .menu-top { min-height: 78px; gap: 18px; }
- .architectural-menu .menu-top > .metadata { display: none; }
- .architectural-menu .menu-top .logo-mark { width: 42px; }
- .architectural-menu .menu-links { margin: 0; padding-block: 10px; }
- .architectural-menu .menu-links a { gap: 20px; padding-block: 8px; }
- .architectural-menu .menu-links a > span:nth-child(2) { font-size: clamp(40px,8.9svh,76px); }
- .architectural-menu .menu-bottom { flex-wrap: wrap; gap: 6px 24px; padding-block: 16px 24px; }
- .architectural-menu .menu-bottom .metadata { width: 100%; font-size: 8px; }
 }
-@media (max-height: 580px) and (min-width: 768px) {
- .architectural-menu .menu-top { min-height: 70px; }
- .architectural-menu .menu-links a > span:nth-child(2) { font-size: 10svh; }
- .architectural-menu .menu-links { padding-block: 8px; }
- .architectural-menu .menu-bottom { padding-block: 12px; }
-}
-@media (prefers-reduced-motion: reduce) {
-}
-
-.menu-motion-reset { min-height:44px; text-align:left; text-transform:uppercase; }

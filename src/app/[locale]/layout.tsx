@@ -5,7 +5,6 @@ import '@/components/scenes/scenes.css';
 import '@/components/music/musicWorld.css';
 import '@/components/cinema/cinema.css';
 import '@/components/archive/spatialArchive.css';
-import '@/components/v4.css';
 import '@/components/editorial/home.css';
 import '@/components/site-shell.css';
 import '@/components/intro/intro.css';

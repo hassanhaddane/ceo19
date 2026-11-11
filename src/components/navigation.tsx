@@ -60,13 +60,13 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
   };
   let disposed = false;
   const frame = requestAnimationFrame(update);
-  // Font swaps and the compact-header transition both change intrinsic link geometry.
+  // Font swaps can change the width and position of the active link.
   const observer = new ResizeObserver(update);
   if (nav.current) { observer.observe(nav.current); nav.current.querySelectorAll('a').forEach(link => observer.observe(link)); }
   void document.fonts.ready.then(() => { if (!disposed) update(); });
   document.fonts.addEventListener('loadingdone', update); window.addEventListener('resize', update);
   return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); document.fonts.removeEventListener('loadingdone', update); window.removeEventListener('resize', update); };
- }, [scene.active, scene.compact, locale, pathname]);
+ }, [scene.active, locale, pathname]);
  const finishClose = useCallback(() => {
   const after = closeAction.current; closeAction.current = undefined;
   menuRef.current?.close();
@@ -147,17 +147,17 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
  }
  return <>
   <a className="skip-link" href="#main">{copy.skip}</a>
-  <header className="site-header floating-navigation" data-compact={pathname !== `/${locale}` || scene.compact} data-scene={scene.active} data-surface={pathname.endsWith('/epk') ? 'cream' : pathname.endsWith('/shop') ? 'dark' : scenes.find(item => item.id === scene.active)?.navigationSurface}>
+  <header className="site-header floating-navigation" data-scene={scene.active} data-surface={pathname.endsWith('/epk') ? 'cream' : pathname === `/${locale}` ? scenes.find(item => item.id === scene.active)?.navigationSurface : 'dark'}>
    <nav ref={nav} aria-label={copy.index} className="desktop-nav">{scenes.map(({ id, number }) => <NavigationAction client href={`/${locale}#${id}`} key={id} onClick={event => {
     if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene(id); }
-   }} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="navigation-number" aria-hidden="true">{number}</span><span className="navigation-label"><ActionLabel>{copy.nav[id]}</ActionLabel></span></NavigationAction>)}<span ref={marker} className="navigation-marker" aria-hidden="true"/></nav>
+   }} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="navigation-number" aria-hidden="true">{number}</span><span className="navigation-label"><ActionLabel>{copy.nav[id]}</ActionLabel></span></NavigationAction>)}<NavigationAction client href={experienceStart(locale,'epk')} aria-label={copy.press} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}><span className="navigation-label"><ActionLabel>EPK</ActionLabel></span></NavigationAction><span ref={marker} className="navigation-marker" aria-hidden="true"/></nav>
    <NavigationAction client className="brand-link" data-cursor="enter" href={`/${locale}#home`} onClick={event => {
     if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene('home'); }
    }} aria-label={`${artist.name} — ${copy.nav.home}`}><LogoMark /></NavigationAction>
    <div className="header-controls"><SoundSettings locale={locale}/><LanguageSwitcher locale={locale} label={copy.language} pathname={pathname}/><ActionButton family="navigation" ref={trigger} className="menu-toggle" data-cursor="enter" data-owned-interaction aria-label={copy.menu} aria-haspopup="dialog" aria-expanded={open} aria-controls="site-menu" onClick={() => { openerRef.current = trigger.current; setOpen(true); }}><span className="header-menu-label"><span className="header-menu-desktop">INDEX</span><span className="header-menu-mobile">MENU</span></span><span className="menu-toggle-mark" aria-hidden="true"><i/><i/></span></ActionButton><nav aria-label="Shop" className="header-shop-nav"><ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/></nav></div>
   </header>
   <dialog id="site-menu" ref={menuRef} onClick={event => { if (event.target === event.currentTarget || event.target instanceof Element && event.target.classList.contains('menu-paper')) close(); }} className="menu-dialog architectural-menu" data-owned-interaction data-closing={closing} aria-labelledby="menu-title" onCancel={event => { event.preventDefault(); close(); }}>
-   <div className="menu-paper" aria-hidden="true"/><div className="menu-cut-track" aria-hidden="true"><span/></div>
+   <div className="menu-paper" aria-hidden="true"><LogoMark sizes="44vw" /></div><div className="menu-cut-track" aria-hidden="true"><span/></div>
    <div className="menu-top"><NavigationAction client href={`/${locale}#home`} data-cursor="enter" onClick={event => menuNavigate(event, 'home')}><LogoMark /></NavigationAction><span id="menu-title" className="metadata">{artist.name} / {copy.index}</span><LanguageSwitcher locale={locale} label={copy.language} pathname={pathname}/><UtilityButton className="menu-toggle" data-cursor="close" onClick={() => close()}>{copy.close}<UtilityGlyph kind="close"/></UtilityButton></div>
    <nav aria-label={copy.index} className="menu-links">{scenes.map(({ id, number }) => <NavigationAction client key={id} href={`/${locale}#${id}`} onClick={event => menuNavigate(event, id)} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="metadata">{number}</span><ActionLabel>{copy.nav[id]}</ActionLabel></NavigationAction>)}<ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event, true)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/><span className="menu-editorial-marker" aria-hidden="true"/></nav>
    <div className="menu-bottom">
