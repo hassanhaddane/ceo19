@@ -1,11 +1,10 @@
-import type { SectionId } from '@/types/content';
+import type { SceneChapter } from '@/lib/sceneNavigation';
 
 /** Event-driven effects only; all durations are milliseconds. */
 export const visualEffects = {
  background: { duration: 700 },
- scenes: { transition: 720, settleDelay: 180, wheelIdle: 190, wheelIntent: 80 },
- menu: { open: 780, close: 780 },
- parallax: { intensity: .8, mobileIntensity: .28, interpolation: .12 },
+ menu: { open: 640, close: 260 },
+ parallax: { intensity: .8 },
  releases: { retract: 160, duration: 760, reduced: 120, fragments: 2400, interruption: 160, wheelIdle: 250, wheelThreshold: 90, easing: 'cubic-bezier(.2,.7,.2,1)' },
  cinema: { entry: 760, change: 650, exit: 520, reduced: 140, providerTimeout: 15000 },
  lyrics: { timeout: 9000, entry: 420 },
@@ -23,11 +22,12 @@ export const parallaxPresets = {
 } as const;
 export type ParallaxLayer = keyof typeof parallaxPresets;
 
-export type VisualScene = SectionId | 'intro' | 'menu';
+export type VisualScene = SceneChapter | 'intro' | 'menu';
 export const backgroundPresentation: Record<VisualScene, { opacity: number; overlay: number; scale: number; saturation: number }> = {
  intro: { opacity: 1, overlay: .2, scale: 1.075, saturation: .7 },
  menu: { opacity: .7, overlay: .4, scale: 1.06, saturation: .45 },
  home: { opacity: 1, overlay: .2, scale: 1.075, saturation: .7 },
  music: { opacity: 0, overlay: .16, scale: 1.025, saturation: .7 },
  archive: { opacity: 0, overlay: .58, scale: 1.075, saturation: .45 },
+ connect: { opacity: 0, overlay: .58, scale: 1, saturation: .45 },
 };

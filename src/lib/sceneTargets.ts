@@ -2,6 +2,8 @@ import { scenes } from '../data/artist.ts';
 import type { SectionId } from '@/types/content';
 
 export const sceneOrder:readonly SectionId[]=scenes.map(scene=>scene.id);
+export type SceneChapter = SectionId | 'connect';
+export const sceneChapterOrder:readonly SceneChapter[] = [...sceneOrder, 'connect'];
 export interface SceneTarget { scene:SectionId; anchor:'connect'|null; }
 /** Legacy contact bookmarks land on the compact footer, outside the three scenes. */
 export function resolveSceneTarget(hash:string):SceneTarget|null {
@@ -13,6 +15,10 @@ export function resolveSceneTarget(hash:string):SceneTarget|null {
  return null;
 }
 export function sceneFromHash(hash:string):SectionId|null { return resolveSceneTarget(hash)?.scene??null; }
+export function chapterFromHash(hash: string): SceneChapter | null {
+ const target = resolveSceneTarget(hash);
+ return target?.anchor ?? target?.scene ?? (hash === '' || hash === '#main' ? 'home' : null);
+}
 /** A final scene's interior anchor may sit below the last possible scroll offset.
  * Clamp to the actual document end instead of waiting forever for an impossible alignment. */
 export function sceneScrollTarget(sectionTop:number,anchorTop:number|null,viewportHeight:number,documentHeight:number,headerClearance=100) {

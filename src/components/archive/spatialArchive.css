@@ -16,8 +16,6 @@ body:has(.persistent-player[data-engaged='true']) .scene-flow > .scene-archive {
 .archive-film-treatment { position:absolute; inset:0; z-index:3; background:var(--ceo-blue); mix-blend-mode:multiply; }
 .archive-film-treatment::after { content:''; position:absolute; inset:0; background:url('/images/grain.svg'); opacity:.12; }
 .scene-archive .spatial-archive { flex:1; min-height:0; display:flex; flex-direction:column; z-index:1; transition:opacity 500ms ease; }
-html:has(.scene-flow[data-scene='archive'][data-transition='scrolling']) .scene-archive .spatial-archive { opacity:.78; }
-html[data-archive-departing='true'] .scene-archive :is(.spatial-archive,.archive-documentary) { opacity:0; transition-duration:220ms; }
 .spatial-stage { flex:1; min-height:240px; position:relative; margin-inline:calc(-1 * var(--gutter)); perspective:1800px; perspective-origin:50% 50%; transform-style:preserve-3d; transform:translateY(var(--archive-entry,0px)) rotateX(var(--archive-angle,0deg)); touch-action:pan-y pinch-zoom; user-select:none; -webkit-user-select:none; cursor:grab; isolation:isolate; overflow:clip; transition:opacity 400ms; }
 .spatial-stage::before { content:''; position:absolute; inset:0; z-index:-1; background:var(--ceo-blue); clip-path:var(--rift-cut); opacity:.34; pointer-events:none; }
 .spatial-stage:focus-visible { outline:1px solid rgb(155 194 220 / .5); outline-offset:-2px; }

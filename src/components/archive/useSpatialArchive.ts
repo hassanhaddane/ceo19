@@ -131,9 +131,9 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
   const over=(event:PointerEvent)=>{if(dragging||event.pointerType!=='mouse'||mobile)return;const plane=(event.target as Element).closest<HTMLElement>('[data-photo-plane]');hover=plane?Number(plane.dataset.photoPlane):-1;wake();};
   const out=(event:PointerEvent)=>{const next=event.relatedTarget instanceof Element?event.relatedTarget.closest('[data-photo-plane]'):null;if(!next){hover=-1;wake();}};
   const wheel=(event:WheelEvent)=>{
-   if(event.ctrlKey||flags.current.blocked||dragging||!(Math.abs(event.deltaX)>Math.abs(event.deltaY)*1.1||event.shiftKey))return;
+   if(event.ctrlKey||flags.current.blocked||dragging||Math.abs(event.deltaX)<=Math.abs(event.deltaY)*1.1)return;
    event.preventDefault();event.stopPropagation();release??=acquireSceneGesture('archive',element);
-   const delta=(event.shiftKey?event.deltaY||event.deltaX:event.deltaX)*(event.deltaMode===1?16:event.deltaMode===2?width:1);
+   const delta=event.deltaX*(event.deltaMode===1?16:event.deltaMode===2?width:1);
    navigation=null;chosen=null;autoSpeed=velocity=0;camera+=delta;idleUntil=performance.now()+ARCHIVE_IDLE_DELAY;wake();
    clearTimeout(wheelTimer);wheelTimer=setTimeout(unlock,settings.wheelIdle);
   };
@@ -156,7 +156,7 @@ export function useSpatialArchive(stage:RefObject<HTMLDivElement|null>,options:{
    if(intended!==undefined){const target=layout.prints[intended].center-width*(mobile?.5:.25);navigation={from:camera,to:camera+shortestArchiveDistance(camera,target,layout.length),start:performance.now(),index:intended};}
    setCompact(mobile);wake();
   };
-  const historyChange=()=>{const index=archiveWorld.findIndex(photo=>photo.id===location.hash.slice(9));if(index>=0){go(index);if(!inView){camera=layout.prints[index].center-(width*(mobile?.5:.25));position.current=camera;navigation=null;}}};
+  const historyChange=()=>{const index=archiveWorld.findIndex(photo=>photo.id===location.hash.slice(9));if(index>=0){go(index);if(!inView||flags.current.blocked){camera=layout.prints[index].center-(width*(mobile?.5:.25));position.current=camera;navigation=null;}}};
   const visibility=()=>{if(document.hidden){cancel();cancelAnimationFrame(frame);frame=0;}else{lastFrame=0;idleUntil=performance.now()+500;wake();}};
   const intersection=new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;if(!inView){cancel();cancelAnimationFrame(frame);frame=0;}else{lastFrame=0;wake();}},{threshold:.1});intersection.observe(element);
   const observer=new ResizeObserver(resize);observer.observe(element);

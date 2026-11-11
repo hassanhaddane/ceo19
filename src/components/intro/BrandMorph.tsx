@@ -44,87 +44,117 @@ function texture(image: HTMLImageElement, inkOnWhite: boolean) {
  if (!points.length) throw new Error('Empty brand mask');
  return { canvas, points };
 }
-/** Transparent presentation of the actual black-on-white HKZ file; no asset replacement. */
 export function drawHkzMark(canvas: HTMLCanvasElement, image: HTMLImageElement) {
  const mark = texture(image, true);
- canvas.width = canvas.height = introSettings.textureSize;
- canvas.getContext('2d')?.drawImage(mark.canvas, 0, 0);
+ const context = canvas.getContext('2d');
+ if (context) context.drawImage(mark.canvas, 0, 0, canvas.width, canvas.height);
  mark.canvas.width = mark.canvas.height = 1;
+ return !!context;
 }
 const seed = (index: number) => { const n = Math.sin(index * 127.1 + 31.7) * 43758.5453; return n - Math.floor(n); };
 
-/** Actual image tiles fragment into a bounded mask-particle flow and reassemble.
- * One Canvas2D surface, no WebGL context, no React state updates per frame. */
-export function createBrandMorph(canvas: HTMLCanvasElement, brands: Brands, profile: IntroProfile, origin?: { x: number; y: number; size: number }) {
- const context = canvas.getContext('2d'); if (!context) throw new Error('Canvas unavailable');
+type Placement = { x: number; y: number; size: number };
+
+/** Raster shards travel in perspective before the source silhouette is restored. */
+export function createBrandMorph(canvas: HTMLCanvasElement, brands: Brands, profile: IntroProfile,
+ origin?: Placement, destination?: () => Placement | undefined) {
+ const context = canvas.getContext('2d');
+ if (!context) throw new Error('Canvas unavailable');
  const source = texture(brands.hkz, true), target = texture(brands.ceo, false);
- const particles = Array.from({ length: profile.density }, (_, i) => ({
-  from: source.points[Math.floor(seed(i + 1) * source.points.length)],
-  to: target.points[Math.floor(seed(i + 8021) * target.points.length)],
-  x: (seed(i + 2001) - .5) * 2, y: (seed(i + 5001) - .5) * 1.3,
-  z: seed(i + 3001), size: .7 + seed(i + 4001) * 1.2,
+ const count = profile.slices, cell = introSettings.textureSize / count;
+ const shards = Array.from({ length: count * count }, (_, index) => {
+  const row = Math.floor(index / count), column = index % count;
+  return {
+   row, column, stagger: seed(index + 9) * .14,
+   x: column + .5 - count / 2, y: row + .5 - count / 2,
+   angle: (seed(index + 83) - .5) * 2.1,
+   depth: .35 + seed(index + 150) * .65,
+   sweep: (seed(index + 31) - .35) * 1.2,
+  };
+ });
+ const particles = Array.from({ length: profile.density }, (_, index) => ({
+  from: source.points[Math.floor(seed(index + 1) * source.points.length)],
+  to: target.points[Math.floor(seed(index + 8021) * target.points.length)],
+  x: seed(index + 2001) - .5, y: seed(index + 5001) - .5,
+  z: seed(index + 3001), size: .55 + seed(index + 4001) * 1.6,
  }));
- let width = 0, height = 0, logoSize = 0, disposed = false;
+ let width = 0, height = 0, logoSize = 0, disposed = false, landing: Placement | undefined;
  const resize = () => {
   width = canvas.clientWidth; height = canvas.clientHeight;
   const dpr = Math.min(devicePixelRatio || 1, introSettings.maxDpr);
   canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
   context.setTransform(dpr, 0, 0, dpr, 0, 0);
   logoSize = Math.min(introSettings.maxLogoSize, Math.min(width, height) * introSettings.logoViewportRatio);
+  landing = destination?.();
  };
  resize();
- const image = (art: HTMLCanvasElement, opacity: number, scale = 1, lean = 0, anchor = { x: width / 2, y: height / 2 }) => {
+ const image = (art: HTMLCanvasElement, at: Placement, opacity: number) => {
   if (opacity <= 0) return;
-  context.save(); context.globalAlpha = opacity; context.translate(anchor.x, anchor.y);
-  context.transform(scale, lean, -lean * .2, scale, 0, 0);
-  context.drawImage(art, -logoSize / 2, -logoSize / 2, logoSize, logoSize); context.restore();
+  context.globalAlpha = opacity;
+  context.drawImage(art, at.x - at.size / 2, at.y - at.size / 2, at.size, at.size);
+  context.globalAlpha = 1;
  };
- const slices = (art: HTMLCanvasElement, amount: number, incoming: boolean) => {
-  const count = profile.slices, cell = introSettings.textureSize / count, unit = logoSize / count;
-  for (let row = 0; row < count; row++) for (let column = 0; column < count; column++) {
-   const index = row * count + column, stagger = seed(index + 9) * .12;
-   const travel = incoming ? 1 - smooth(.4 + stagger, 1, amount) : smooth(stagger, .68, amount);
-   const opacity = incoming ? smooth(.4, .72, amount) : 1 - smooth(.17, .58, amount);
-   if (opacity <= 0) continue;
-   const angle = (seed(index + 83) - .5) * travel * 1.8;
-   const depth = 1 + travel * seed(index + 150) * profile.depth / 280;
-   const x = (column + .5 - count / 2) * unit, y = (row + .5 - count / 2) * unit;
-   context.save(); context.globalAlpha = opacity; context.translate(width / 2 + x * depth + travel * (seed(index + 31) - .5) * profile.depth, height / 2 + y * depth - travel * seed(index + 81) * profile.depth * .45);
-   context.rotate(angle); context.scale(Math.max(.12, 1 - travel * .8), 1 - travel * .3);
-   context.drawImage(art, column * cell, row * cell, cell, cell, -unit / 2, -unit / 2, unit + .3, unit + .3); context.restore();
+ const mix = (from: Placement, to: Placement, progress: number): Placement => ({
+  x: from.x + (to.x - from.x) * progress,
+  y: from.y + (to.y - from.y) * progress,
+  size: from.size + (to.size - from.size) * progress,
+ });
+ const project = (z: number) => 650 / (650 - z);
+ const slices = (art: HTMLCanvasElement, amount: number, incoming: boolean, center: Placement) => {
+  const unit = center.size / count;
+  const opacity = incoming ? smooth(.16, .55, amount) * (1 - smooth(.94, 1, amount)) : 1 - smooth(.22, .69, amount);
+  if (opacity <= 0) return;
+  for (const shard of shards) {
+   const travel = incoming ? 1 - smooth(.11 + shard.stagger, .94, amount) : smooth(shard.stagger, .67, amount);
+   const z = profile.depth * shard.depth * travel * (incoming ? -1 : 1);
+   const lens = project(z);
+   const x = (shard.x * unit + shard.sweep * travel * profile.depth) * lens;
+   const y = (shard.y * unit - travel * (shard.depth - .38) * profile.depth) * lens;
+   context.save();
+   context.globalAlpha = opacity;
+   context.translate(center.x + x, center.y + y);
+   context.rotate(shard.angle * travel);
+   context.transform(lens * (1 - travel * .65), travel * .24, travel * -.28, lens, 0, 0);
+   context.drawImage(art, shard.column * cell, shard.row * cell, cell, cell, -unit / 2, -unit / 2, unit + .25, unit + .25);
+   context.restore();
   }
  };
  return {
   draw(progress: number) {
    if (disposed) return;
    if (width !== canvas.clientWidth || height !== canvas.clientHeight) resize();
-   const frame = introFrame(progress), m = frame.morph;
    context.clearRect(0, 0, width, height);
-   if (profile.reduced) {
-    // The access mode is deliberately a short, static logo handoff, with no depth/particles.
-    const handoff = smooth(.3, .65, progress);
-    image(source.canvas, (1 - handoff) * smooth(0, .15, progress));
-    image(target.canvas, handoff * (1 - frame.exit)); return;
+   const { morph, exit, reveal } = introFrame(progress);
+   const center = { x: width / 2, y: height * .46, size: logoSize };
+   if (morph === 0) { image(source.canvas, mix(origin ?? center, center, reveal), 1); return; }
+   if (morph === 1) {
+    const at = mix(center, landing ?? center, smooth(0, .92, exit));
+    image(target.canvas, at, 1 - smooth(.68, 1, exit));
+    return;
    }
-   if (m === 0) {
-    const r = frame.reveal, start = origin ?? { x: width / 2, y: height / 2, size: logoSize };
-    image(source.canvas, 1, start.size / logoSize * (1 - r) + r, Math.sin(progress * 5) * .003,
-     { x: start.x * (1 - r) + width / 2 * r, y: start.y * (1 - r) + height / 2 * r }); return;
-   }
-   if (m === 1) { image(target.canvas, 1 - smooth(0, .7, frame.exit), 1 + frame.exit * .12); return; }
-   slices(source.canvas, m, false); slices(target.canvas, m, true);
-   const arc = Math.sin(m * Math.PI), opacity = smooth(0, .15, m) * (1 - smooth(.8, 1, m));
-   context.globalAlpha = opacity;
+   slices(source.canvas, morph, false, center);
+   slices(target.canvas, morph, true, center);
+   const assembly = smooth(.8, 1, morph);
+   image(target.canvas, center, assembly);
+   const arc = Math.sin(morph * Math.PI);
+   context.globalCompositeOperation = 'screen';
+   context.globalAlpha = smooth(0, .16, morph) * (1 - assembly) * .84;
    for (const particle of particles) {
-    const depth = 1 + arc * particle.z * profile.depth / 300;
-    const x = ((particle.from.x * (1 - m) + particle.to.x * m) * logoSize + particle.x * arc * profile.depth * .65) * depth;
-    const y = ((particle.from.y * (1 - m) + particle.to.y * m) * logoSize + particle.y * arc * profile.depth * .4) * depth;
-    const size = particle.size * (1 + arc * particle.z);
-    context.fillStyle = particle.z > .7 ? introSettings.color.blue : introSettings.color.cream;
-    context.fillRect(width / 2 + x, height / 2 + y, size, size);
+    const lens = project(arc * particle.z * profile.depth);
+    const x = ((particle.from.x * (1 - morph) + particle.to.x * morph) * logoSize + particle.x * arc * profile.depth) * lens;
+    const y = ((particle.from.y * (1 - morph) + particle.to.y * morph) * logoSize + particle.y * arc * profile.depth * .55) * lens;
+    const size = particle.size * lens;
+    context.fillStyle = particle.z > .56 ? '#76b9ef' : '#edf5ff';
+    context.fillRect(center.x + x, center.y + y, size * (1 + arc * particle.z * 1.7), size);
    }
    context.globalAlpha = 1;
+   context.globalCompositeOperation = 'source-over';
   },
-  dispose() { disposed = true; context.clearRect(0, 0, width, height); canvas.width = canvas.height = 1; source.canvas.width = target.canvas.width = 1; },
+  dispose() {
+   if (disposed) return;
+   disposed = true;
+   context.clearRect(0, 0, width, height);
+   canvas.width = canvas.height = source.canvas.width = source.canvas.height = target.canvas.width = target.canvas.height = 1;
+  },
  };
 }

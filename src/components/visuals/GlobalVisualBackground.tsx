@@ -13,7 +13,7 @@ export function VideoBackground({ intro }: { intro: boolean }) {
  const { active: scene, menuOpen } = useSceneState();
  // Covered scenes keep the same element, source and playhead, without decoding
  // an invisible background behind an explicitly opened music provider.
- const suspended = !intro && !menuOpen && (scene === 'music' || scene === 'archive');
+ const suspended = !intro && !menuOpen && scene !== 'home';
  const [playing, setPlaying] = useState(false);
  useEffect(() => {
   const media = video.current;
@@ -33,7 +33,7 @@ export function VideoBackground({ intro }: { intro: boolean }) {
   '--background-duration': `${visualEffects.background.duration}ms`,
   backgroundImage: `url("${assetUrl(assets.videoPoster)}")`,
  } as CSSProperties;
- return <div className="global-visual-background" data-scene={active} data-parallax="video" style={style} aria-hidden="true">
+ return <div className="global-visual-background" data-scene={active} style={style} aria-hidden="true">
   <video ref={video} src={motion ? assetUrl(assets.backgroundVideo) : undefined} poster={assetUrl(assets.videoPoster)} autoPlay={motion && !suspended} muted loop playsInline controls={false} preload={motion ? suspended ? 'metadata' : 'auto' : 'none'} tabIndex={-1} disablePictureInPicture data-playing={playing && motion} />
   <div className="global-visual-shade" />
  </div>;

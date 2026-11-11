@@ -37,7 +37,7 @@ export function PhotoStage({locale}:{locale:Locale}) {
   }} onClickCapture={clickCapture}>
    {archiveWorld.map((photo,index)=><figure key={photo.id} className="spatial-photo" data-photo-plane={index} data-active={index===active} style={{'--photo-ratio':photo.aspectRatio} as CSSProperties}>
     <button type="button" data-photo-id={photo.id} data-ceo-action="utility" data-ceo-motion="cutout" data-view-label={locale==='fr'?'VOIR ↗':'VIEW ↗'} className="spatial-photo-button" data-cursor="view" aria-label={`${copy.view}: ${photo.alt[locale]}`} aria-haspopup="dialog" tabIndex={-1} onClick={event=>handleOpen(index,event.currentTarget,event.timeStamp)}>
-     {scene.active==='archive'&&nearby.includes(index)&&<Image src={photo.asset.path} alt={photo.alt[locale]} fill sizes={compact?'82vw':`(max-width:1200px) ${Math.round(photo.heightScale*photo.aspectRatio*53)}vw, ${Math.round(photo.heightScale*photo.aspectRatio*65)}svh`} loading="eager" draggable={false} style={{objectFit:'contain'}}/>}
+     {nearby.includes(index)&&<Image src={photo.asset.path} alt={photo.alt[locale]} fill sizes={compact?'82vw':`(max-width:1200px) ${Math.round(photo.heightScale*photo.aspectRatio*53)}vw, ${Math.round(photo.heightScale*photo.aspectRatio*65)}svh`} loading="lazy" draggable={false} style={{objectFit:'contain'}}/>}
     </button>
    </figure>)}
   </div>

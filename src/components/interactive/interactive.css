@@ -164,3 +164,17 @@ html[data-motion-preference='reduced'] :is(.ceo-action,.ceo-action-visual,.ceo-a
 /* These variants keep their original line; only Music uses the duplicate-line mask. */
 .ceo-action--utility:is(:hover,:focus-visible) .ceo-label-original,
 .ceo-action--shop:is(:hover,:focus-visible) .ceo-label-original { translate:none; }
+
+
+/* The print moves inside the hit area, including links without a visual wrapper. */
+@media(hover:hover) and (pointer:fine) {
+ .ceo-action > :is(.ceo-action-label,.navigation-label) {
+  transform:translate3d(var(--action-x),var(--action-y),0);
+ }
+ .ceo-action:not(:disabled):active .ceo-action-mark { scale:.82; }
+}
+.ceo-leaf-cursor > svg { transition:rotate 210ms var(--ease),scale 210ms var(--ease); }
+.ceo-leaf-cursor[data-state='drag'] > svg { rotate:-26deg; scale:1.14; }
+.ceo-leaf-cursor[data-state='view'] > svg { rotate:14deg; scale:1.22; }
+.ceo-leaf-cursor[data-state='close'] > svg { rotate:38deg; scale:.82; }
+.ceo-leaf-cursor[data-state='shop'] > svg { rotate:-14deg; scale:1.18; }

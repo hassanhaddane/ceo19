@@ -5,14 +5,14 @@ import { UtilityButton, UtilityGlyph } from './interactive/UtilityAction';
 import { ActionButton, ActionLabel, ActionMark } from './interactive/ActionButton';
 import { SoundSettings } from '@/features/audio/SoundSettings';
 import { usePathname, useRouter } from 'next/navigation';
-import type { Locale, SectionId } from '@/types/content';
+import type { Locale } from '@/types/content';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { artist, scenes } from '@/data/artist';
 import { professional } from '@/data/professional';
 import { useMediaDialog } from './media/useMediaDialog';
 import { LogoMark } from './primitives';
 import { useEntryExperience } from './visuals/VisualExperience';
-import { navigateScene, publishScene, useSceneState } from '@/lib/sceneNavigation';
+import { navigateScene, publishScene, useSceneState, type SceneChapter } from '@/lib/sceneNavigation';
 import { isSignalMotionEnabled, resetSignalMotion, setSignalMotion, useSignalMotion, useSignalMotionPreference } from '@/lib/signalMotion';
 import { experienceStart } from '@/lib/experienceRoutes';
 import { shopEntry } from '@/lib/shopEntry';
@@ -31,11 +31,6 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
  const menuController = useRef<ReturnType<typeof createMenuController> | null>(null);
  const closeAction = useRef<(() => void) | undefined>(undefined);
  const closingRef = useRef(false);
- const departureTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
- useEffect(() => {
-  delete document.documentElement.dataset.archiveDeparting;
-  return () => { clearTimeout(departureTimer.current); delete document.documentElement.dataset.archiveDeparting; };
- }, [pathname]);
  function shopNavigate(event: MouseEvent<HTMLAnchorElement>, fromMenu = false) {
   if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   const rect = event.currentTarget.getBoundingClientRect();
@@ -45,11 +40,7 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
    return;
   }
   shopEntry.request(origin);
-  if (pathname === `/${locale}/shop`) { event.preventDefault(); return; }
-  if (pathname === `/${locale}` && scene.active === 'archive' && motion) {
-   event.preventDefault(); clearTimeout(departureTimer.current); document.documentElement.setAttribute('data-archive-departing', 'true');
-   departureTimer.current = setTimeout(() => router.push(experienceStart(locale,'shop')), 240);
-  }
+  if (pathname === `/${locale}/shop`) event.preventDefault();
  }
  useEffect(() => {
   const update = () => {
@@ -137,20 +128,22 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
  function close(after?: () => void) {
   if (closingRef.current) return;
   closeAction.current = after; closingRef.current = true; setClosing(true);
-  if (!menuController.current || !isSignalMotionEnabled() || document.hidden) finishClose();
+  if (after || !menuController.current || !isSignalMotionEnabled() || document.hidden) finishClose();
   else menuController.current.close();
  }
- function menuNavigate(event: MouseEvent<HTMLAnchorElement>, id: SectionId) {
+ function menuNavigate(event: MouseEvent<HTMLAnchorElement>, id: SceneChapter) {
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   if (pathname !== `/${locale}`) { event.preventDefault(); close(() => router.push(`/${locale}#${id}`)); return; }
   event.preventDefault(); close(() => navigateScene(id));
  }
  return <>
   <a className="skip-link" href="#main">{copy.skip}</a>
-  <header className="site-header floating-navigation" data-scene={scene.active} data-surface={pathname.endsWith('/epk') ? 'cream' : pathname === `/${locale}` ? scenes.find(item => item.id === scene.active)?.navigationSurface : 'dark'}>
+  <header className="site-header floating-navigation" data-scene={scene.active} data-surface={pathname.endsWith('/epk') ? 'cream' : pathname === `/${locale}` ? scenes.find(item => item.id === scene.active)?.navigationSurface ?? 'dark' : 'dark'}>
    <nav ref={nav} aria-label={copy.index} className="desktop-nav">{scenes.map(({ id, number }) => <NavigationAction client href={`/${locale}#${id}`} key={id} onClick={event => {
     if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene(id); }
-   }} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="navigation-number" aria-hidden="true">{number}</span><span className="navigation-label"><ActionLabel>{copy.nav[id]}</ActionLabel></span></NavigationAction>)}<NavigationAction client href={experienceStart(locale,'epk')} aria-label={copy.press} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}><span className="navigation-label"><ActionLabel>EPK</ActionLabel></span></NavigationAction><span ref={marker} className="navigation-marker" aria-hidden="true"/></nav>
+   }} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="navigation-number" aria-hidden="true">{number}</span><span className="navigation-label"><ActionLabel>{copy.nav[id]}</ActionLabel></span></NavigationAction>)}<NavigationAction client href={experienceStart(locale,'epk')} aria-label={copy.press} aria-current={pathname === `/${locale}/epk` ? 'page' : undefined}><span className="navigation-label"><ActionLabel>EPK</ActionLabel></span></NavigationAction><NavigationAction client href={`/${locale}#connect`} onClick={event => {
+    if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene('connect'); }
+   }} aria-current={pathname === `/${locale}` && scene.active === 'connect' ? 'location' : undefined}><span className="navigation-label"><ActionLabel>{copy.contact}</ActionLabel></span></NavigationAction><span ref={marker} className="navigation-marker" aria-hidden="true"/></nav>
    <NavigationAction client className="brand-link" data-cursor="enter" href={`/${locale}#home`} onClick={event => {
     if (pathname === `/${locale}` && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); navigateScene('home'); }
    }} aria-label={`${artist.name} — ${copy.nav.home}`}><LogoMark /></NavigationAction>
@@ -159,7 +152,7 @@ export function FloatingNavigation({ locale, copy }: { locale: Locale; copy: Dic
   <dialog id="site-menu" ref={menuRef} onClick={event => { if (event.target === event.currentTarget || event.target instanceof Element && event.target.classList.contains('menu-paper')) close(); }} className="menu-dialog architectural-menu" data-owned-interaction data-closing={closing} aria-labelledby="menu-title" onCancel={event => { event.preventDefault(); close(); }}>
    <div className="menu-paper" aria-hidden="true"><LogoMark sizes="44vw" /></div><div className="menu-cut-track" aria-hidden="true"><span/></div>
    <div className="menu-top"><NavigationAction client href={`/${locale}#home`} data-cursor="enter" onClick={event => menuNavigate(event, 'home')}><LogoMark /></NavigationAction><span id="menu-title" className="metadata">{artist.name} / {copy.index}</span><LanguageSwitcher locale={locale} label={copy.language} pathname={pathname}/><UtilityButton className="menu-toggle" data-cursor="close" onClick={() => close()}>{copy.close}<UtilityGlyph kind="close"/></UtilityButton></div>
-   <nav aria-label={copy.index} className="menu-links">{scenes.map(({ id, number }) => <NavigationAction client key={id} href={`/${locale}#${id}`} onClick={event => menuNavigate(event, id)} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="metadata">{number}</span><ActionLabel>{copy.nav[id]}</ActionLabel></NavigationAction>)}<ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event, true)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/><span className="menu-editorial-marker" aria-hidden="true"/></nav>
+   <nav aria-label={copy.index} className="menu-links">{scenes.map(({ id, number }) => <NavigationAction client key={id} href={`/${locale}#${id}`} onClick={event => menuNavigate(event, id)} data-cursor="enter" aria-current={pathname === `/${locale}` && scene.active === id ? 'location' : undefined}><span className="metadata">{number}</span><ActionLabel>{copy.nav[id]}</ActionLabel></NavigationAction>)}<NavigationAction client href={`/${locale}#connect`} onClick={event => menuNavigate(event, 'connect')} aria-current={pathname === `/${locale}` && scene.active === 'connect' ? 'location' : undefined}><span className="metadata">04</span><ActionLabel>{copy.contact}</ActionLabel></NavigationAction><ShopNavigationAction href={experienceStart(locale,'shop')} onClick={event => shopNavigate(event, true)} aria-current={pathname === `/${locale}/shop` ? 'page' : undefined}/><span className="menu-editorial-marker" aria-hidden="true"/></nav>
    <div className="menu-bottom">
     <div className="menu-settings-row"><SoundSettings locale={locale}/><UtilityButton type="button" className="menu-motion" aria-describedby="motion-setting-status" data-cursor="enter" aria-pressed={motion} aria-label={motionLabel} onClick={() => setSignalMotion(!motion)}>MOTION {motion ? 'ON' : 'OFF'}</UtilityButton></div>
     <span id="motion-setting-status" className="sr-only" role="status">{motionStatus}</span>

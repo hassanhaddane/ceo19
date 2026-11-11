@@ -1,10 +1,10 @@
 'use client';
 import { useSyncExternalStore } from 'react';
-import type { SectionId } from '@/types/content';
-export { sceneOrder, sceneFromHash, resolveSceneTarget, sceneScrollTarget } from './sceneTargets';
+import type { SceneChapter } from './sceneTargets';
+export type { SceneChapter } from './sceneTargets';
 
 export interface SceneState {
- active: SectionId; settled: SectionId; previous: SectionId;
+ active: SceneChapter; settled: SceneChapter; previous: SceneChapter;
  phase: 'idle' | 'scrolling'; compact: boolean; enabled: boolean; menuOpen: boolean;
 }
 const initial: SceneState = { active: 'home', settled: 'home', previous: 'home', phase: 'idle', compact: false, enabled: false, menuOpen: false };
@@ -19,7 +19,7 @@ export function getSceneState() { return state; }
 export function useSceneState() { return useSyncExternalStore(subscribeSceneState, getSceneState, () => initial); }
 export const sceneNavigateEvent = 'ceo:scene-navigate';
 export const sceneSettledEvent = 'ceo:scene-settled';
-export function navigateScene(id: SectionId, history: 'push' | 'replace' = 'push') {
+export function navigateScene(id: SceneChapter, history: 'push' | 'replace' = 'push') {
  window.dispatchEvent(new CustomEvent(sceneNavigateEvent, { detail: { id, history } }));
 }
 
@@ -36,15 +36,4 @@ export function acquireSceneGesture(owner: string, element: HTMLElement) {
   gesture = null; delete document.documentElement.dataset.sceneGesture;
   window.dispatchEvent(new Event('ceo:gesture-change'));
  };
-}
-/** A scrollable panel gets first refusal; at its edge document navigation is available. */
-export function ownsVerticalScroll(target: EventTarget | null, direction: number) {
- if (!(target instanceof Element)) return false;
- if (target.closest('dialog[open],input,textarea,select,[contenteditable="true"],iframe,video')) return true;
- let element = target.closest<HTMLElement>('[data-scroll-owner]');
- while (element) {
-  if (element.scrollHeight > element.clientHeight + 2 && (direction > 0 ? element.scrollTop + element.clientHeight < element.scrollHeight - 2 : element.scrollTop > 2)) return true;
-  element = element.parentElement?.closest<HTMLElement>('[data-scroll-owner]') ?? null;
- }
- return false;
 }

@@ -7,7 +7,7 @@ body:has(.experience-page):not(:has(.persistent-player[data-engaged='true'])) { 
  position:relative; isolation:isolate; overflow:hidden; display:grid;
  grid-template-columns:1fr auto auto; align-items:center; gap:10px clamp(16px,4vw,70px);
  padding:clamp(28px,5vw,80px) var(--gutter) 20px; color:var(--ceo-cream); background:var(--ceo-black);
- scroll-snap-align:end; border-top:1px solid var(--rift-rule);
+ border-top:1px solid var(--rift-rule);
 }
 body:has(.persistent-player[data-engaged='true']) .compact-footer.site-footer { padding-bottom:calc(92px + env(safe-area-inset-bottom)); }
 .compact-footer::before,.compact-footer::after { content:''; position:absolute; inset:0; pointer-events:none; z-index:-1; }

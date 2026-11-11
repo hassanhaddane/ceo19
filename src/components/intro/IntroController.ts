@@ -2,13 +2,12 @@ import { gsap } from 'gsap';
 
 /** One finite timeline. Units are milliseconds; phases are normalized progress. */
 export const introSettings = {
- duration: { desktop: 2480, mobile: 1540, reduced: 520 },
- density: { desktop: 1600, mobile: 560, economy: 260 },
- slices: { desktop: 9, mobile: 5, economy: 4 },
- depth: { desktop: 180, mobile: 70, economy: 36 },
- maxDpr: 1.5, textureSize: 256, maxLogoSize: 280, logoViewportRatio: .48,
- loadHintAfter: 180, loadTimeout: 1400,
- phases: { black: .055, reveal: .22, hold: .31, morph: .64, settle: .78 },
+ duration: { desktop: 1860, mobile: 1370, reduced: 220 },
+ density: { desktop: 1080, mobile: 460, economy: 230 },
+ slices: { desktop: 12, mobile: 7, economy: 5 },
+ depth: { desktop: 260, mobile: 115, economy: 70 },
+ maxDpr: 1.5, textureSize: 256, maxLogoSize: 440, logoViewportRatio: .57,
+ phases: { black: .015, reveal: .17, hold: .22, morph: .61, settle: .68 },
  color: { black: '#020304', blue: '#3572a3', cream: '#eae5d6' },
 } as const;
 export type IntroProfile = { duration: number; density: number; slices: number; depth: number; reduced: boolean };
@@ -37,8 +36,8 @@ export function createIntroController({ duration, reduced, choice, wash, draw, c
   if (disposed || completed) return; completed = true; complete();
  } });
  timeline.to(choice, { opacity: 0, duration: reduced ? .08 : .2, ease: 'power2.out' }, 0);
- if (!reduced) timeline.fromTo(wash, { scale: 0, opacity: .8 }, { scale: 1, opacity: .8, duration: .36, ease: 'power3.in' }, 0)
-  .to(wash, { opacity: 0, duration: .28, ease: 'power2.out' }, .36);
+ if (!reduced) timeline.fromTo(wash, { xPercent: -75, opacity: 0 }, { xPercent: 12, opacity: .8, duration: .32, ease: 'power3.out' }, 0)
+  .to(wash, { xPercent: 120, opacity: 0, duration: .28, ease: 'power2.in' }, .32);
  timeline.to(clock, { progress: 1, duration: duration / 1000, ease: 'none', onUpdate: () => { if (!disposed) draw(clock.progress); } }, 0);
  return {
   timeline,

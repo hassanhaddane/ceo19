@@ -131,7 +131,6 @@
  .home-platforms { justify-content:flex-end; }
 }
 @media (max-width:767px) {
- html[data-home-reading='true']:has(.scene-flow) { scroll-snap-type:none; }
  .home-poster {
   --portrait-width:88%;
   flex:none;

@@ -1,16 +1,126 @@
-/* Three native document snap areas, followed by a compact contact footer. */
-html:has(.scene-flow) { scroll-snap-type: y mandatory; scroll-padding: 0; scroll-behavior: auto; overflow-x: clip; }
-body:has(.scene-flow) { padding-bottom: 0; }
-.scene-flow { --scene-top: 106px; --scene-bottom: 102px; }
-.scene-flow > .v3-scene { min-height: 100svh; scroll-snap-align: start; scroll-snap-stop: always; scroll-margin: 0; padding-block: var(--scene-top) var(--scene-bottom); }
-.scene-flow > .v3-scene:focus { outline: none; }
-.scene-flow .legacy-anchor { scroll-margin-top: 0; }
-/* Top-layer dialogs must be viewport-fixed; absolute dialogs can scroll a snapped
-   document to its origin when the browser focuses their first control. */
-dialog:is(.architectural-menu,.media-viewer),.scene-flow dialog.media-viewer { position: fixed; inset: 0; }
-/* Keep the opener rendered so native dialogs can restore focus. */
-html[data-menu-open='true'] .visual-site-shell > .site-header { animation:none; opacity:0; pointer-events:none; }
-.press-finished { padding-top: 140px; }
-@media (max-width: 767px) {
- .scene-flow { --scene-top: 94px; --scene-bottom: 86px; }
+html:has(.scene-flow) { scroll-behavior:auto; overflow-x:clip; }
+body:has(.scene-flow) { padding-bottom:0; }
+.scene-flow {
+ --scene-top:106px;
+ --scene-bottom:102px;
+ --camera-x:0;
+ --camera-y:0;
+ --rift-travel:0;
+ --rift-opening:0;
+ --camera-strength:1;
+ position:relative;
 }
+.scene-flow > .v3-scene {
+ --chapter-arrival:1;
+ --chapter-drift:0;
+ min-height:100svh;
+ padding-block:var(--scene-top) var(--scene-bottom);
+}
+.scene-flow > :is(.v3-scene,.site-footer):focus { outline:none; }
+.scene-flow .legacy-anchor { scroll-margin-top:0; }
+.scene-flow > .compact-footer.site-footer {
+ --chapter-arrival:1;
+ --chapter-drift:0;
+ min-height:min(72svh,650px);
+ align-content:center;
+ padding-top:calc(var(--header-height) + 20px);
+}
+.scene-spine {
+ display:none;
+ position:sticky;
+ top:var(--header-height);
+ z-index:10;
+ height:0;
+ pointer-events:none;
+}
+.scene-flow[data-cinematic='true'] .scene-spine { display:block; }
+.scene-spine-camera {
+ position:absolute;
+ inset:0 0 auto;
+ height:calc(100svh - var(--header-height));
+ overflow:hidden;
+ perspective:1000px;
+}
+.scene-spine-cut {
+ position:absolute;
+ inset:-14% -14% -12% auto;
+ width:clamp(230px,42vw,840px);
+ background:var(--ceo-blue-light);
+ clip-path:polygon(25% 0,26% 0,21% 21%,29% 24%,8% 54%,16% 57%,1% 100%,0 100%,15% 57%,7% 54%,28% 24%,20% 21%);
+ mix-blend-mode:screen;
+ opacity:calc(var(--rift-opening) * .86);
+ transform:translate3d(calc((1 - var(--rift-opening)) * 31% + var(--rift-travel) * -4%),calc(var(--rift-travel) * 3%),0)
+  rotateY(calc((var(--rift-travel) - 1.5) * 16deg))
+  rotateZ(calc(var(--rift-travel) * -6deg))
+  scaleX(calc(1 + var(--rift-opening) * 1.2));
+}
+.scene-spine-logo.logo-mark {
+ position:absolute;
+ top:23%;
+ right:var(--gutter);
+ width:clamp(82px,14vw,200px);
+ opacity:calc(var(--rift-opening) * .46);
+ transform:translate3d(calc(var(--rift-opening) * -10%),calc(var(--rift-travel) * 19%),0)
+  rotateY(calc((var(--rift-travel) - 1.5) * 24deg))
+  rotateZ(calc((var(--rift-travel) - 1.5) * -12deg));
+}
+.scene-flow [data-parallax] {
+ --plane-depth:1;
+ --plane-drift:34px;
+}
+.scene-flow [data-parallax='atmosphere'] { --plane-depth:1.45; --plane-drift:44px; }
+.scene-flow [data-parallax='architecture'] { --plane-depth:1.8; --plane-drift:60px; }
+.scene-flow [data-parallax='type'] { --plane-depth:1.4; --plane-drift:50px; }
+.scene-flow [data-parallax='detail'] { --plane-depth:.55; --plane-drift:20px; }
+.scene-flow [data-parallax='archiveFilm'] { --plane-depth:.35; --plane-drift:13px; }
+.scene-flow[data-cinematic='true'] [data-parallax] {
+ translate:calc(var(--camera-x) * var(--plane-depth) * 20px)
+  calc((var(--camera-y) * var(--plane-depth) * 14px - var(--chapter-drift) * var(--plane-drift)) * var(--camera-strength));
+ rotate:calc(var(--camera-x) * var(--plane-depth) * .65deg);
+}
+.scene-flow[data-cinematic='true'] .home-portrait img {
+ transform:perspective(1000px) rotateY(calc(var(--camera-x) * -7deg)) scale(calc(1.07 + var(--chapter-drift) * .045));
+}
+.scene-flow[data-cinematic='true'] :is(.music-world-heading h2,.scene-archive .scene-heading h2,.footer-identity strong) {
+ transform-origin:left bottom;
+ translate:0 calc((1 - var(--chapter-arrival)) * 25px * var(--camera-strength));
+ transform:skewX(calc((1 - var(--chapter-arrival)) * -8deg * var(--camera-strength)));
+ clip-path:inset(0 0 calc((1 - var(--chapter-arrival)) * 24%) 0);
+}
+.scene-flow[data-cinematic='true'] .home-poster h1 > span:not(.sr-only) {
+ translate:calc(var(--chapter-drift) * -12px * var(--camera-strength)) calc(var(--chapter-drift) * -48px * var(--camera-strength));
+}
+.scene-flow[data-cinematic='true'] .home-poster h1 > span:nth-child(2) {
+ translate:calc(var(--chapter-drift) * 32px * var(--camera-strength)) calc(var(--chapter-drift) * -30px * var(--camera-strength));
+}
+.scene-flow[data-cinematic='true'] .release-world::after {
+ translate:calc((1 - var(--chapter-arrival)) * 5%) 0;
+ scale:calc(1 + (1 - var(--chapter-arrival)) * .09);
+}
+.scene-flow[data-cinematic='true'] .spatial-stage {
+ --archive-entry:calc((1 - var(--chapter-arrival)) * 20px * var(--camera-strength));
+ --archive-angle:calc((1 - var(--chapter-arrival)) * 5deg * var(--camera-strength));
+}
+.scene-flow > :is(#music,#archive,#connect)::after {
+ content:'';
+ position:absolute;
+ inset:0 0 auto;
+ height:14px;
+ z-index:5;
+ background:var(--ceo-blue);
+ clip-path:polygon(0 0,100% 0,100% 18%,64% 18%,57% 100%,58% 25%,0 25%);
+ pointer-events:none;
+}
+dialog:is(.architectural-menu,.media-viewer),.scene-flow dialog.media-viewer { position:fixed; inset:0; }
+html[data-menu-open='true'] .visual-site-shell > .site-header { opacity:0; pointer-events:none; }
+.press-finished { padding-top:140px; }
+
+@media(max-width:767px) {
+ .scene-flow { --scene-top:94px; --scene-bottom:86px; --camera-strength:.36; }
+ .scene-spine-cut { inset:-9% -39% -12% auto; width:88vw; }
+ .scene-spine-logo.logo-mark { top:12%; width:23vw; opacity:calc(var(--rift-opening) * .28); }
+ .scene-flow[data-cinematic='true'] .home-portrait img { transform:scale(calc(1.04 + var(--chapter-drift) * .02)); }
+ .scene-flow[data-cinematic='true'] .spatial-stage { --archive-angle:0deg; }
+ .scene-flow > .compact-footer.site-footer { min-height:67svh; }
+}
+html[data-motion-enabled='false'] .scene-spine { display:none; }

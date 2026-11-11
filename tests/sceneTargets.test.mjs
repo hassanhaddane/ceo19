@@ -1,7 +1,7 @@
 import test from 'node:test';
 import { legacyProfessionalDestination } from '../src/lib/experienceRoutes.ts';
 import assert from 'node:assert/strict';
-import { sceneOrder, resolveSceneTarget, sceneFromHash, sceneScrollTarget } from '../src/lib/sceneTargets.ts';
+import { sceneOrder, sceneChapterOrder, chapterFromHash, resolveSceneTarget, sceneFromHash, sceneScrollTarget } from '../src/lib/sceneTargets.ts';
 
 test('public scene targets preserve content links and send CONNECT bookmarks to the footer',()=>{
  assert.deepEqual(sceneOrder,['home','music','archive']);
@@ -14,6 +14,15 @@ test('public scene targets preserve content links and send CONNECT bookmarks to 
  assert.equal(sceneFromHash('#film-timals'),'music');
  assert.equal(sceneFromHash('#archive-show-13'),'archive');
  assert.equal(resolveSceneTarget('#unrecognized'),null);
+});
+test('the cinematic chapter follows legacy and content anchors without rewriting them',()=>{
+ assert.deepEqual(sceneChapterOrder,['home','music','archive','connect']);
+ for (const hash of ['#connect','#network']) assert.equal(chapterFromHash(hash),'connect');
+ for (const hash of ['#release-original','#film-timals']) assert.equal(chapterFromHash(hash),'music');
+ assert.equal(chapterFromHash('#archive-show-13'),'archive');
+ assert.equal(chapterFromHash('#main'),'home');
+ assert.equal(chapterFromHash(''),'home');
+ assert.equal(chapterFromHash('#world'),null);
 });
 test('an interior network target settles at the document end on compact and tall final scenes',()=>{
  // Desktop: the entire combined scene already fills the last viewport.

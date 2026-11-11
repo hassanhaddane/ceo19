@@ -18,7 +18,7 @@ export function ArchiveDocumentary({ paused = false }: { paused?: boolean }) {
  useEffect(() => {
   const first = front.current, second = back.current, layer = stage.current;
   if (!first || !second || !layer) return;
-  if (!entered || !enabled || active !== 'archive' || menuOpen) { layer.dataset.state = 'hidden'; return; }
+  if (!entered || !enabled || active !== 'archive' || menuOpen) { layer.dataset.state = 'poster'; return; }
   if (!motion) { layer.dataset.state = 'poster'; return; }
   const device = navigator as Navigator & { connection?: { saveData?: boolean }; deviceMemory?: number };
   const economy = !!device.connection?.saveData || device.deviceMemory !== undefined && device.deviceMemory <= 2;

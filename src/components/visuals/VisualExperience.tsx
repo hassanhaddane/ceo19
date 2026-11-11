@@ -3,8 +3,8 @@ import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useRe
 import { usePathname, useRouter } from 'next/navigation';
 import type { Locale } from '@/types/content';
 import { IntroSequence } from '../intro/IntroSequence';
+import { navigateScene } from '@/lib/sceneNavigation';
 import { VideoBackground } from './GlobalVisualBackground';
-import { GlobalParallax } from './GlobalParallax';
 
 // This flag belongs to this document's JS lifetime, never session/local storage.
 let enteredThisDocument = false;
@@ -31,7 +31,6 @@ export function VisualExperience({ children, locale }: { children: ReactNode; lo
  }, []);
  const finish = useCallback(() => {
   if (completed.current) return; completed.current = true; enteredThisDocument = true;
-  document.documentElement.dataset.introHomeReveal = 'true';
   setPhase('closed'); setRevealing(false);
   requestAnimationFrame(() => {
    (document.getElementById('main') ?? document.querySelector<HTMLElement>('main'))?.focus({ preventScroll: true });
@@ -41,13 +40,13 @@ export function VisualExperience({ children, locale }: { children: ReactNode; lo
  const reveal = useCallback(() => setRevealing(true), []);
  const replay = useCallback(() => {
   completed.current = false; setRevealing(false); setRun(value => value + 1); setPhase('running');
-  if (pathname !== `/${locale}`) router.push(`/${locale}#home`);
- }, [pathname, locale, router]);
+  if (publicRoute) navigateScene('home');
+  else router.push(`/${locale}#home`);
+ }, [publicRoute, locale, router]);
  const value = useMemo(() => ({ replay, entered: !active }), [replay, active]);
  return <EntryContext.Provider value={value}>
-  {publicRoute && <VideoBackground intro={active} />}
-  {publicRoute && <GlobalParallax />}
+  {publicRoute && <VideoBackground intro={active && !revealing} />}
   <div ref={shell} className="visual-site-shell" data-intro-state={active ? revealing ? 'revealing' : 'running' : 'closed'}>{children}</div>
-  {active && <IntroSequence key={run} enabled locale={locale} onStart={start} onReveal={reveal} onComplete={finish} />}
+  {active && <IntroSequence key={run} locale={locale} onStart={start} onReveal={reveal} onComplete={finish} />}
  </EntryContext.Provider>;
 }

@@ -49,7 +49,8 @@ export function MagneticSurface({ locale }: { locale: Locale }) {
    if (!fine.matches || event.pointerType !== 'mouse' || !target || target.closest('input,textarea,select,[contenteditable="true"],iframe') || typeof node.showPopover !== 'function') { hide(); return; }
    mx = event.clientX; my = event.clientY;
    const action = target.closest<HTMLElement>('[data-ceo-action]');
-   const next = action?.dataset.ceoMotion?.split(' ').includes('depth') && !action.matches(':disabled,[aria-disabled="true"]') ? action : null;
+   const next = action?.matches('[data-ceo-motion~="depth"],[data-ceo-action="entry"],[data-ceo-action="music"],[data-ceo-action="navigation"]') &&
+    !action.matches(':disabled,[aria-disabled="true"]') && action.querySelector('.ceo-action-label,.ceo-action-visual,.navigation-label') ? action : null;
    if (surface !== next) { resetSurface(); surface = next; }
    if (surface) {
     const rect = surface.getBoundingClientRect();

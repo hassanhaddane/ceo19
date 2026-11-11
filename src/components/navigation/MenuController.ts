@@ -11,14 +11,14 @@ export function createMenuController({ sheet, cut, items, signature, scope, onCl
  const finish = () => { if (!disposed && closing && !completed) { completed = true; onClosed(); } };
  const context = gsap.context(() => {
   timeline = gsap.timeline({ paused: true, onComplete: () => { if (!disposed && !closing) onStage?.('open'); }, onReverseComplete: finish });
-  timeline.fromTo(sheet, { clipPath: 'polygon(0% 0%,0% 0%,-8% 100%,0% 100%)' }, {
-   clipPath: 'polygon(0% 0%,108% 0%,100% 100%,0% 100%)', duration: visualEffects.menu.open / 1000, ease: 'power3.inOut',
+  timeline.fromTo(sheet, { clipPath: 'polygon(0% 0%,0% 0%,-4% 22%,0% 24%,-8% 55%,-4% 58%,-12% 100%,0% 100%)' }, {
+   clipPath: 'polygon(0% 0%,113% 0%,109% 22%,113% 24%,105% 55%,109% 58%,101% 100%,0% 100%)', duration: visualEffects.menu.open / 1000, ease: 'power3.inOut',
   }, 0);
-  timeline.fromTo(cut, { xPercent: -8, opacity: 0 }, { xPercent: 108, opacity: .6, duration: .68, ease: 'power3.inOut' }, 0)
-   .to(cut, { opacity: 0, duration: .1 }, .68);
-  timeline.fromTo(items, { y: 18, opacity: .45 }, { y: 0, opacity: 1, duration: .46, stagger: .045, ease: 'power3.out' }, .12);
+  timeline.fromTo(cut, { xPercent: -8, opacity: 0 }, { xPercent: 108, opacity: .6, duration: .48, ease: 'power3.inOut' }, 0)
+   .to(cut, { opacity: 0, duration: .1 }, .48);
+  timeline.fromTo(items, { y: 15, skewX: -5, opacity: .58 }, { y: 0, skewX: 0, opacity: 1, duration: .34, stagger: .034, ease: 'power3.out' }, .12);
   // Keep the CSS translate used for row positioning independent from GSAP transforms.
-  timeline.fromTo(signature, { clipPath: 'inset(50% 0)', opacity: 0 }, { clipPath: 'inset(0% 0)', opacity: 1, duration: .3, ease: 'power2.out' }, .44);
+  timeline.fromTo(signature, { clipPath: 'inset(50% 0)', opacity: 0 }, { clipPath: 'inset(0% 0)', opacity: 1, duration: .3, ease: 'power2.out' }, .31);
  }, scope);
  return {
   timeline,
